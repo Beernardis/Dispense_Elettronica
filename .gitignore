@@ -1,0 +1,14 @@
+# Ignora tutte le cartelle build in qualsiasi sottocartella
+**/build/
+
+# File temporanei LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Opzionale: ignora PDF generati (se vuoi tenere solo i sorgenti)
+**/build/*.pdf

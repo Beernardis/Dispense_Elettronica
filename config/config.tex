@@ -1,0 +1,91 @@
+% =========================================================
+%                        CONFIGURAZIONE
+% =========================================================
+
+% region Pacchetti base
+\usepackage[utf8]{inputenc}      % codifica UTF-8
+\usepackage[italian]{babel}      % lingua italiana
+\usepackage[T1]{fontenc}         % font T1
+\usepackage[most]{tcolorbox}     % box colorati
+\usepackage{enumitem}            % controllo liste
+
+\usepackage{amsmath, amsfonts, amssymb}  % pacchetti matematici
+\usepackage{geometry}                   % margini
+\geometry{margin=2.5cm}
+
+\setlength{\headheight}{14.49998pt}    % altezza header
+% endregion
+
+% region Grafica e diagrammi
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{circuitikz}   % per schemi elettrici
+
+\usepackage{nicematrix}
+\usepackage{xcolor}
+
+\pgfplotsset{compat=1.18}
+% endregion
+
+% region Unità e collegamenti ipertestuali
+\usepackage{siunitx}      % unità di misura
+\usepackage{hyperref}     % link ipertestuali
+% endregion
+
+% region Header e piè di pagina personalizzati
+\usepackage{fancyhdr}     % intestazioni personalizzate
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{\nouppercase{\leftmark}} % nome capitolo
+\fancyhead[R]{\thepage}                % numero pagina
+\renewcommand{\headrulewidth}{0.4pt}   % linea sotto header
+
+% anche nelle pagine di inizio capitolo
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyhead[L]{\nouppercase{\leftmark}}
+    \fancyhead[R]{\thepage}
+    \renewcommand{\headrulewidth}{0.4pt}
+}
+% endregion
+
+% region Info autore
+\author{Prof. Bernardis Pierluigi}
+\date{}
+% endregion
+
+% region Paragrafo e indentazione
+\setlength{\parindent}{0cm}
+% endregion
+
+% region Box per equazioni
+\tcbset{
+    myequationstyle/.style={
+        colback=blue!3,        
+        colframe=blue!100,      
+        arc=4pt,               
+        boxrule=0.8pt,         
+        left=6pt, right=6pt, top=4pt, bottom=4pt, 
+        boxsep=0pt,
+        enhanced
+    }
+}
+
+\newtcolorbox{eqbox}[1][]{
+    myequationstyle,
+    #1
+}
+
+\let\oldequation\equation
+\let\endoldequation\endequation
+
+\renewenvironment{equation}{
+    \begin{eqbox}
+    \begin{oldequation}
+}{
+    \end{oldequation}
+    \end{eqbox}
+}
+% endregion

@@ -1,0 +1,174 @@
+\chapter{Strumenti matematici: metodo di Gauss-Jordan}
+
+\section{Risoluzione dei sistemi lineari}
+
+\subsection{Formulazione del sistema a partire dalle maglie}
+Per risolvere un circuito mediante il metodo delle correnti di maglia, occorre innanzitutto identificare tutte le maglie indipendenti. Su ciascuna maglia si applica la legge di Kirchhoff delle tensioni (KVL), che stabilisce che la somma algebrica delle tensioni lungo qualsiasi percorso chiuso è nulla. Le equazioni ottenute contengono come incognite le correnti di maglia e come coefficienti le resistenze dei rami attraversati da ciascuna corrente. In questo modo si ottiene un sistema lineare di equazioni, in cui ogni equazione rappresenta la relazione di tensione per una maglia indipendente.
+Quindi, per un generico circuito con $n$ maglie indipendenti, si otterrà un sistema di $n$ equazioni lineari con $n$ incognite, che rappresentano le correnti di maglia da determinare:
+\begin{equation}
+\begin{cases}
+a_{11} I_1 + a_{12} I_2 + \ldots + a_{1n} I_n = b_1 \\
+a_{21} I_1 + a_{22} I_2 + \ldots + a_{2n} I_n = b_2 \\
+\qquad \vdots \\
+a_{n1} I_1 + a_{n2} I_2 + \ldots + a_{nn} I_n = b_n
+\end{cases}
+\end{equation}
+
+I pedici dei coefficienti $a_{ij}$ hanno una logica ben precisa: il primo numero, $i$, indica la maglia a cui si riferisce l’equazione, mentre il secondo numero, $j$, indica la maglia a cui si riferisce la corrente. Se la maglia $j$ attraversa un ramo che fa parte della maglia $i$, allora il coefficiente $a_{ij}$ sarà pari alla resistenza di quel ramo (con segno positivo o negativo a seconda del verso della corrente rispetto alla maglia). Se invece la maglia $j$ non attraversa alcun ramo della maglia $i$, allora il coefficiente $a_{ij}$ sarà zero. I termini noti $b_i$ rappresentano le sorgenti di tensione presenti nella maglia $i$, con segno positivo o negativo a seconda del verso delle sorgenti rispetto alla maglia.
+
+Sembra un concetto abbastanza difficile, ma possiamo chiarirlo con un esercizio:
+
+\begin{center}
+\begin{tikzpicture}
+	% circuito
+	\draw (0, 4) to[european voltage source, l_={$15V$}] (0, 0);
+	\draw (0, 4) to[american resistor, l={$\SI{10}{k\Omega}$}] (3, 4);
+	\draw (3, 4) to[american resistor, l={$\SI{5}{k\Omega}$}] (3, 1.8);
+	\draw (3, 4) to[american resistor, l={$\SI{2}{k\Omega}$}] (6, 4);
+	\draw (6, 4) to[american resistor, l={$\SI{4}{k\Omega}$}] (6, 0);
+	\draw (3, 2) to[european voltage source, l={$10V$}] (3, 0);
+	\draw (0, 0) -- (6, 0);
+
+	% segni +
+	\node at (-0.4,2.8) {$+$};
+	\node at (2.6,1.5) {$+$};
+
+	% corrente di maglia sinistra
+	\draw[->, thick, red] (1,2.7) arc[start angle=150,end angle=-10,radius=0.7];
+	\node at (1.7,2.7) {$I_1$};
+
+	% corrente di maglia destra
+	\draw[->, thick, red] (4,2.7) arc[start angle=150,end angle=-10,radius=0.7];
+	\node at (4.7,2.7) {$I_2$};
+
+\end{tikzpicture}
+\end{center}
+
+
+Abbiamo già capito come creare il sistema di equazioni, che risulta essere: 
+\begin{equation}
+    \begin{cases}
+        5 \texttt{k} \,\,I_1 + 5\texttt{k} \,\,I_2 = 5 \\
+        5 \texttt{k} \,\,I_1 + 1\texttt{k} \,\,I_2 = 10
+    \end{cases}
+	\label{eq:gauss-jordan}
+\end{equation}
+
+Da questa matrice possiamo dunque capire immediatamente chi sono i termini $a_{ij}$ e chi sono i termini $b_i$. In particolare, $a_{11} = 5\texttt{k}$, $a_{12} = 5$, $a_{21} = 5\texttt{k}$, $a_{22} = 1\texttt{k}$, $b_1 = 5$ e $b_2 = 10$.
+
+In parole puramente matematiche, i pedici $ij$ dei coefficienti $a_{ij}$ indicano la posizione del coefficiente nella matrice dei coefficienti, dove $i$ rappresenta la riga (ovvero l’equazione) e $j$ rappresenta la colonna (ovvero la corrente di maglia). I termini noti $b_i$ sono invece associati alla riga $i$ dell’equazione, rappresentando il valore a cui è uguale la combinazione lineare delle correnti di maglia.
+
+
+
+
+\subsection{Concetto di matrice e vettore delle correnti}
+Definiamo in maniera molto semplice cos’è una matrice e cos’è un vettore. 
+
+Una matrice è una tabella rettangolare di numeri disposti in righe e colonne.\\
+Un vettore invece è una matrice con una sola colonna (vettore colonna) o una sola riga (vettore riga).
+
+Vediamo un esempio molto semplice di matrice e vettore:
+\begin{equation}
+	A = \begin{bmatrix}
+	3 & 2 \\
+	-1 & 5
+	\end{bmatrix}, \quad
+	\mathbf{b} = \begin{bmatrix}
+	2 \\
+	9
+	\end{bmatrix}
+	\label{eq: generic Matrix and Vector}
+\end{equation}
+
+Sappiamo che una generica equazione lineare può essere scritta come $ax = b$, dove $a$ è un coefficiente, $x$ è l’incognita e $b$ è il termine noto. Per determinare il valore di $x$, possiamo dividere entrambi i membri dell’equazione per $a$, ottenendo $x = \frac{b}{a}$. Troveremo sempre un valore per $x$ a meno che $a$ non sia zero, nel qual caso l’equazione non ha soluzione o ha infinite soluzioni a seconda del valore di $b$.
+
+Nell'algebra matriciale il concetto è più o meno identico a quello di un'equazione lineare, ma invece di avere un solo coefficiente e una sola incognita, abbiamo una matrice di coefficienti e un vettore di incognite. La matrice dei coefficienti rappresenta le relazioni tra le incognite, mentre il vettore dei termini noti rappresenta i risultati di queste relazioni. \\
+
+Tornando all'esempio del circuito, possiamo rappresentare il sistema di equazioni \eqref{eq:gauss-jordan} in forma matriciale come segue:
+\begin{equation}
+A\, I \,= \,b \quad \Rightarrow \quad
+\begin{bmatrix}
+a_{11} & a_{12} \\
+a_{21} & a_{22}
+\end{bmatrix}
+\begin{bmatrix}
+I_1 \\
+I_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+b_1 \\
+b_2
+\end{bmatrix}
+\quad \Rightarrow \quad
+\begin{bmatrix}
+5k & 5 \\
+5k & 1k
+\end{bmatrix}
+\begin{bmatrix}
+I_1 \\
+I_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+5 \\
+10
+\end{bmatrix}
+\end{equation}
+
+Si nota che la matrice dei coefficienti è composta dai valori $a_{ij}$, il vettore delle incognite è composto dalle correnti di maglia $I_1$ e $I_2$, e il vettore dei termini noti è composto dai valori $b_1$ e $b_2$. Questa rappresentazione matriciale ci permette di applicare il metodo di Gauss-Jordan in modo sistematico per risolvere il sistema di equazioni e trovare i valori delle correnti di maglia.
+
+Riscriviamo quindi il sistema di equazioni utilizzando la \textbf{matrice aumentata}, che è una matrice che combina la matrice dei coefficienti e il vettore dei termini noti in un'unica matrice. La matrice aumentata per il nostro sistema di equazioni è la seguente:
+\begin{equation}
+\left[
+\begin{array}{c|c}
+	A & b
+\end{array}
+\right] \quad \Rightarrow \quad	
+\left[
+\begin{array}{cc|c}
+5\texttt{k} & 5\texttt{k} & 5 \\
+5\texttt{k} & 1\texttt{k} & 10
+\end{array}
+\right]
+\end{equation}
+
+
+
+\section{Metodo di Gauss-Jordan Semplificato}
+
+\subsection{Procedura passo passo}
+Il metodo di riduzione a gradini Gauss-Jordan è una tecnica di algebra lineare utilizzata per risolvere sistemi lineari di equazioni. Consiste nel trasformare la matrice aumentata, composta dai coefficienti delle incognite e dai termini noti, in una forma speciale detta matrice triangolare inferiore. Questo processo si realizza tramite operazioni elementari sulle righe della matrice, in modo da ottenere progressivamente degli zeri sotto la diagonale principale della matrice. Una volta completata questa trasformazione, è molto semplice ricavare il valore dell'ultima incognita e, successivamente, risalire alle altre incognite tramite sostituzione all'indietro.
+
+Un esempio di matrice triangolare inferiore del quarto ordine è la seguente:
+\begin{equation}
+\begin{bmatrix}
+\tikz[baseline]{\node[draw,circle,inner sep=1pt]{12};} & 23 & 11 & -14 \\
+0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{-3};} & 10 & 12 \\
+0 & 0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{9};} & 3 \\
+0 & 0 & 0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{7};}
+\end{bmatrix}
+\end{equation}
+Notiamo subito come la matrice triangolare inferiore abbia tutti gli elementi al di sotto della diagonale principale uguali a zero, mentre gli elementi sulla diagonale principale possono essere diversi da zero.
+
+Il metodo di Gauss-Jordan semplificato è una variante del metodo di Gauss-Jordan che mira a ridurre il numero di operazioni necessarie per risolvere il sistema di equazioni. In questo approccio, si eseguono solo le operazioni essenziali per ottenere la matrice triangolare inferiore, evitando passaggi superflui che non contribuiscono direttamente alla soluzione del sistema. Questo rende il processo più efficiente, soprattutto per sistemi di grandi dimensioni, senza compromettere la precisione dei risultati.\\
+
+Vediamo quindi come poter applicare il metodo di Gauss-Jordan semplificato al nostro sistema di equazioni. Partendo dalla matrice aumentata, eseguiamo le operazioni elementari sulle righe per ottenere la matrice triangolare inferiore. In questo caso, possiamo sottrarre la prima riga dalla seconda per eliminare il coefficiente $a_{21}$, ottenendo così una matrice con un elemento zero sotto la diagonale principale. 
+\begin{equation}
+\left[
+\begin{array}{cc|c}
+5\texttt{k} & 5\texttt{k} & 5 \\
+5\texttt{k} & 1\texttt{k} & 10
+\end{array}
+\right]
+\quad \xrightarrow{R_2 \Rightarrow R_2 - R_1} \quad
+\left[
+\begin{array}{cc|c}
+5\texttt{k} & 5\texttt{k} & 5 \\
+0 & -4\texttt{k} & 5
+\end{array}
+\right]
+\end{equation}
+
+Dall'ultima matrice ottenuta, possiamo ricavare il valore di $I_2$ dividendo il termine noto della seconda riga per il coefficiente $-4\texttt{k}$, ottenendo così $I_2 = -\frac{5}{4\texttt{k}} = \SI{-1.25}{mA}$. Successivamente, possiamo sostituire il valore di $I_2$ nella prima riga per trovare il valore di $I_1$, ottenendo $I_1 = \frac{5 - 5\texttt{k} \cdot I_2}{5\texttt{k}} = \frac{5 - 5\texttt{k} \cdot (-\frac{5}{4\texttt{k}})}{5\texttt{k}} = \SI{2.25}{mA}$.
+
