@@ -1,8 +1,6 @@
-\chapter{Strumenti matematici: metodo di Gauss-Jordan}
+\chapter{Strumenti matematici per la risoluzione dei sistemi lineari}
 
-\section{Risoluzione dei sistemi lineari}
-
-\subsection{Formulazione del sistema a partire dalle maglie}
+\section{Formulazione del sistema a partire dalle maglie}
 Per risolvere un circuito mediante il metodo delle correnti di maglia, occorre innanzitutto identificare tutte le maglie indipendenti. Su ciascuna maglia si applica la legge di Kirchhoff delle tensioni (KVL), che stabilisce che la somma algebrica delle tensioni lungo qualsiasi percorso chiuso è nulla. Le equazioni ottenute contengono come incognite le correnti di maglia e come coefficienti le resistenze dei rami attraversati da ciascuna corrente. In questo modo si ottiene un sistema lineare di equazioni, in cui ogni equazione rappresenta la relazione di tensione per una maglia indipendente.
 Quindi, per un generico circuito con $n$ maglie indipendenti, si otterrà un sistema di $n$ equazioni lineari con $n$ incognite, che rappresentano le correnti di maglia da determinare:
 \begin{equation}
@@ -133,27 +131,213 @@ Riscriviamo quindi il sistema di equazioni utilizzando la \textbf{matrice aument
 \right]
 \end{equation}
 
+\section{Metodo dei determinanti di Cramer}
+
+Il metodo di Cramer, anche noto come metodo dei determinanti, fornisce una formula esplicita per la soluzione di un sistema lineare quadrato (stesso numero di equazioni e incognite) a patto che il determinante della matrice dei coefficienti sia diverso da zero. Per un sistema scritto in forma matriciale \(A \mathbf{I} = \mathbf{b}\), l'incognita \(I_j\) si calcola come:
+\begin{equation}
+I_j = \frac{\det(A_j)}{\det(A)}
+\label{eq:cramer_formula}
+\end{equation}
+dove \(A_j\) è la matrice ottenuta sostituendo la \(j\)-esima colonna di \(A\) con il vettore dei termini noti \(\mathbf{b}\).
+
+Questo metodo risulta particolarmente comodo per sistemi di piccole dimensioni (2 o 3 equazioni) perché richiede il calcolo di pochi determinanti. Per dimensioni superiori diventa rapidamente inefficiente rispetto a metodi diretti come Gauss-Jordan.
+
+\subsection{Sistemi di due equazioni}
+
+Consideriamo un sistema lineare di due equazioni in due incognite, come quello che si ottiene dall'analisi di un circuito con due maglie indipendenti:
+\begin{equation}
+\begin{cases}
+10 I_1 + 5 I_2 = 15 \\
+5 I_1 + 20 I_2 = 10
+\end{cases}
+\label{eq:sistema_2x2_esempio}
+\end{equation}
+In forma matriciale:
+\begin{equation}
+A = \begin{bmatrix}
+10 & 5 \\
+5  & 20
+\end{bmatrix},\qquad
+\mathbf{I} = \begin{bmatrix}
+I_1 \\ I_2
+\end{bmatrix},\qquad
+\mathbf{b} = \begin{bmatrix}
+15 \\ 10
+\end{bmatrix}
+\label{eq:matrice_2x2_esempio}
+\end{equation}
+Il determinante di una matrice quadrata di ordine 2 si calcola sottraendo alla moltiplicazione di tutti i termini sulla diagonale principale, con direzione nord-ovest / sud-est, la moltiplicazione di tutti i termini sulla diagonale secondaria, con direzione nord-est / sud-ovest.
+Quindi per una generica matrice del secodo ordine, il determinante si calcola così:
+\begin{equation}
+A = \begin{bmatrix}
+a_{11} & a_{12} \\
+a_{21}  & a_{22}
+\end{bmatrix}\qquad
+\Rightarrow \qquad
+\det (A) = a_{11} \cdot a_{22} - a_{12} \cdot a_{21}
+\end{equation}
+
+Quindi, nell'esempio \ref{eq:matrice_2x2_esempio} possiamo calcolare il determinante della matrice dei coefficienti:
+\begin{equation}
+\det(A) = 10 \cdot 20 - 5 \cdot 5 = 200 - 25 = 175
+\label{eq:detA_2x2}
+\end{equation}
+Poiché \(\det(A) \neq 0\), il sistema ammette un'unica soluzione. Calcoliamo ora i determinanti delle matrici \(A_1\) e \(A_2\):
+\begin{itemize}
+\item \(A_1\) si ottiene sostituendo la prima colonna di \(A\) con il vettore \(\mathbf{b}\) colorata in rosso:
+\begin{equation}
+A_1 = \begin{bmatrix}
+\textcolor{red}{15} & 5 \\
+\textcolor{red}{10} & 20
+\end{bmatrix},\quad
+\det(A_1) = 15 \cdot 20 - 5 \cdot 10 = 300 - 50 = 250
+\label{eq:detA1_2x2}
+\end{equation}
+\item \(A_2\) si ottiene sostituendo la seconda colonna di \(A\) con \(\mathbf{b}\) colorata in rosso:
+\begin{equation}
+A_2 = \begin{bmatrix}
+10 & \textcolor{red}{15} \\
+5  & \textcolor{red}{10}
+\end{bmatrix},\quad
+\det(A_2) = 10 \cdot 10 - 15 \cdot 5 = 100 - 75 = 25
+\label{eq:detA2_2x2}
+\end{equation}
+\end{itemize}
+Applicando la formula di Cramer \eqref{eq:cramer_formula} troviamo:
+\begin{equation}
+I_1 = \frac{\det(A_1)}{\det(A)} = \frac{250}{175} = \frac{10}{7} \approx \SI{1.4286}{A},\qquad
+I_2 = \frac{\det(A_2)}{\det(A)} = \frac{25}{175} = \frac{1}{7} \approx \SI{0.1429}{A}
+\label{eq:soluzione_2x2}
+\end{equation}
+
+\subsection{Sistemi di tre equazioni e regola di Sarrus}
+
+Per un sistema di tre equazioni in tre incognite, il calcolo dei determinanti di ordine 3 può essere eseguito agevolmente con la \textbf{regola di Sarrus}. Consideriamo il seguente sistema, ipotizzando che provenga da un circuito con tre maglie:
+\begin{equation}
+\begin{cases}
+2 I_1 + I_2 - I_3 = 8 \\
+-3 I_1 - I_2 + 2 I_3 = -11 \\
+-2 I_1 + I_2 + 2 I_3 = -3
+\end{cases}
+\label{eq:sistema_3x3_esempio}
+\end{equation}
+La matrice dei coefficienti e il vettore dei termini noti sono:
+\begin{equation}
+A = \begin{bmatrix}
+2 & 1 & -1 \\
+-3 & -1 & 2 \\
+-2 & 1 & 2
+\end{bmatrix},\qquad
+\mathbf{b} = \begin{bmatrix}
+8 \\ -11 \\ -3
+\end{bmatrix}
+\label{eq:matrice_3x3_esempio}
+\end{equation}
+Per calcolare \(\det(A)\) con la regola di Sarrus, si riscrivono le prime due colonne a destra della matrice:
+\[
+\begin{array}{ccc|cc}
+2 & 1 & -1 & 2 & 1 \\
+-3 & -1 & 2 & -3 & -1 \\
+-2 & 1 & 2 & -2 & 1
+\end{array}
+\]
+Si sommano quindi i prodotti degli elementi delle tre diagonali principali (che scendono da sinistra verso destra) e si sottraggono i prodotti delle tre diagonali secondarie (che salgono da sinistra verso destra):
+\begin{align}
+\det(A) &= (2 \cdot (-1) \cdot 2) + (1 \cdot 2 \cdot (-2)) + ((-1) \cdot (-3) \cdot 1) \nonumber \\
+        &\quad - [((-1) \cdot (-1) \cdot (-2)) + (2 \cdot 2 \cdot 1) + (1 \cdot (-3) \cdot 2)] \nonumber \\
+        &= (-4) + (-4) + (3) - [(-2) + (4) + (-6)] \nonumber \\
+        &= -5 - (-4) = -5 + 4 = -1
+\label{eq:detA_3x3}
+\end{align}
+Poiché \(\det(A) = -1 \neq 0\), il sistema ha soluzione unica. Calcoliamo ora i determinanti delle matrici \(A_1\), \(A_2\) e \(A_3\) (sostituendo rispettivamente la prima, seconda e terza colonna con \(\mathbf{b}\)) utilizzando sempre la regola di Sarrus.
+
+\begin{itemize}
+\item Per \(A_1 = \begin{bmatrix} 8 & 1 & -1 \\ -11 & -1 & 2 \\ -3 & 1 & 2 \end{bmatrix}\):
+\[
+\begin{array}{ccc|cc}
+8 & 1 & -1 & 8 & 1 \\
+-11 & -1 & 2 & -11 & -1 \\
+-3 & 1 & 2 & -3 & 1
+\end{array}
+\]
+\begin{align}
+\det(A_1) &= (8 \cdot (-1) \cdot 2) + (1 \cdot 2 \cdot (-3)) + ((-1) \cdot (-11) \cdot 1) \nonumber \\
+          &\quad - [((-1) \cdot (-1) \cdot (-3)) + (2 \cdot 2 \cdot 1) + (1 \cdot (-11) \cdot 2)] \nonumber \\
+          &= (-16) + (-6) + (11) - [(-3) + (4) + (-22)] \nonumber \\
+          &= -11 - (-21) = -11 + 21 = 10
+\label{eq:detA1_3x3}
+\end{align}
+
+\item Per \(A_2 = \begin{bmatrix} 2 & 8 & -1 \\ -3 & -11 & 2 \\ -2 & -3 & 2 \end{bmatrix}\):
+\[
+\begin{array}{ccc|cc}
+2 & 8 & -1 & 2 & 8 \\
+-3 & -11 & 2 & -3 & -11 \\
+-2 & -3 & 2 & -2 & -3
+\end{array}
+\]
+\begin{align}
+\det(A_2) &= (2 \cdot (-11) \cdot 2) + (8 \cdot 2 \cdot (-2)) + ((-1) \cdot (-3) \cdot (-3)) \nonumber \\
+          &\quad - [((-1) \cdot (-11) \cdot (-2)) + (2 \cdot 2 \cdot (-2)) + (8 \cdot (-3) \cdot 2)] \nonumber \\
+          &= (-44) + (-32) + (-9) - [(-22) + (-8) + (-48)] \nonumber \\
+          &= -85 - (-78) = -85 + 78 = -7
+\label{eq:detA2_3x3}
+\end{align}
+
+\item Per \(A_3 = \begin{bmatrix} 2 & 1 & 8 \\ -3 & -1 & -11 \\ -2 & 1 & -3 \end{bmatrix}\):
+\[
+\begin{array}{ccc|cc}
+2 & 1 & 8 & 2 & 1 \\
+-3 & -1 & -11 & -3 & -1 \\
+-2 & 1 & -3 & -2 & 1
+\end{array}
+\]
+\begin{align}
+\det(A_3) &= (2 \cdot (-1) \cdot (-3)) + (1 \cdot (-11) \cdot (-2)) + (8 \cdot (-3) \cdot 1) \nonumber \\
+          &\quad - [(8 \cdot (-1) \cdot (-2)) + (2 \cdot (-11) \cdot 1) + (1 \cdot (-3) \cdot (-3))] \nonumber \\
+          &= (6) + (22) + (-24) - [(16) + (-22) + (9)] \nonumber \\
+          &= 4 - (3) = 1
+\label{eq:detA3_3x3}
+\end{align}
+\end{itemize}
+
+Infine, applicando la formula di Cramer \eqref{eq:cramer_formula} otteniamo:
+\begin{equation}
+I_1 = \frac{\det(A_1)}{\det(A)} = \frac{10}{-1} = -10,\quad
+I_2 = \frac{\det(A_2)}{\det(A)} = \frac{-7}{-1} = 7,\quad
+I_3 = \frac{\det(A_3)}{\det(A)} = \frac{1}{-1} = -1
+\label{eq:soluzione_3x3}
+\end{equation}
+Pertanto la soluzione del sistema è:
+\begin{equation}
+I_1 = \SI{-10}{A},\quad I_2 = \SI{7}{A},\quad I_3 = \SI{-1}{A}
+\label{eq:soluzione_3x2_valori}
+\end{equation}
+
+Come si può notare, il metodo di Cramer fornisce direttamente i valori delle incognite senza bisogno di eseguire sostituzioni in avanti o all'indietro. Tuttavia, per sistemi con più di tre equazioni il calcolo dei determinanti diventa rapidamente oneroso, e si preferiscono metodi come l'eliminazione di Gauss-Jordan.
 
 
 \section{Metodo di Gauss-Jordan Semplificato}
 
 \subsection{Procedura passo passo}
-Il metodo di riduzione a gradini Gauss-Jordan è una tecnica di algebra lineare utilizzata per risolvere sistemi lineari di equazioni. Consiste nel trasformare la matrice aumentata, composta dai coefficienti delle incognite e dai termini noti, in una forma speciale detta matrice triangolare inferiore. Questo processo si realizza tramite operazioni elementari sulle righe della matrice, in modo da ottenere progressivamente degli zeri sotto la diagonale principale della matrice. Una volta completata questa trasformazione, è molto semplice ricavare il valore dell'ultima incognita e, successivamente, risalire alle altre incognite tramite sostituzione all'indietro.
+Il metodo di riduzione a gradini Gauss-Jordan è una tecnica di algebra lineare utilizzata per risolvere sistemi lineari di equazioni. Consiste nel trasformare la matrice aumentata, composta dai coefficienti delle incognite e dai termini noti, in una forma speciale detta matrice triangolare superiore. Questo processo si realizza tramite operazioni elementari sulle righe della matrice, in modo da ottenere progressivamente degli zeri sotto la diagonale principale della matrice. Una volta completata questa trasformazione, è molto semplice ricavare il valore dell'ultima incognita e, successivamente, risalire alle altre incognite tramite sostituzione all'indietro.
 
-Un esempio di matrice triangolare inferiore del quarto ordine è la seguente:
+Un esempio di matrice triangolare superiore del quarto ordine è la seguente:
 \begin{equation}
 \begin{bmatrix}
-\tikz[baseline]{\node[draw,circle,inner sep=1pt]{12};} & 23 & 11 & -14 \\
-0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{-3};} & 10 & 12 \\
-0 & 0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{9};} & 3 \\
-0 & 0 & 0 & \tikz[baseline]{\node[draw,circle,inner sep=1pt]{7};}
+\tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {12};} & 23 & 11 & -14 \\
+0 & \tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {-3};} & 10 & 12 \\
+0 & 0 & \tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {9};} & 3 \\
+0 & 0 & 0 & \tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {7};}
 \end{bmatrix}
 \end{equation}
-Notiamo subito come la matrice triangolare inferiore abbia tutti gli elementi al di sotto della diagonale principale uguali a zero, mentre gli elementi sulla diagonale principale possono essere diversi da zero.
+Notiamo subito come la matrice triangolare superiore abbia tutti gli elementi al di sotto della diagonale principale uguali a zero, mentre gli elementi sulla diagonale principale possono essere diversi da zero.
 
-Il metodo di Gauss-Jordan semplificato è una variante del metodo di Gauss-Jordan che mira a ridurre il numero di operazioni necessarie per risolvere il sistema di equazioni. In questo approccio, si eseguono solo le operazioni essenziali per ottenere la matrice triangolare inferiore, evitando passaggi superflui che non contribuiscono direttamente alla soluzione del sistema. Questo rende il processo più efficiente, soprattutto per sistemi di grandi dimensioni, senza compromettere la precisione dei risultati.\\
+Il metodo di Gauss-Jordan semplificato è una variante del metodo di Gauss-Jordan che mira a ridurre il numero di operazioni necessarie per risolvere il sistema di equazioni. In questo approccio, si eseguono solo le operazioni essenziali per ottenere la matrice triangolare superiore, evitando passaggi superflui che non contribuiscono direttamente alla soluzione del sistema. Questo rende il processo più efficiente, soprattutto per sistemi di grandi dimensioni, senza compromettere la precisione dei risultati.\\
 
-Vediamo quindi come poter applicare il metodo di Gauss-Jordan semplificato al nostro sistema di equazioni. Partendo dalla matrice aumentata, eseguiamo le operazioni elementari sulle righe per ottenere la matrice triangolare inferiore. In questo caso, possiamo sottrarre la prima riga dalla seconda per eliminare il coefficiente $a_{21}$, ottenendo così una matrice con un elemento zero sotto la diagonale principale. 
+Vediamo quindi come poter applicare il metodo di Gauss-Jordan semplificato al nostro sistema di equazioni. Partendo dalla matrice aumentata, eseguiamo le operazioni elementari sulle righe per ottenere la matrice triangolare superiore. In questo caso, possiamo sottrarre la prima riga dalla seconda per eliminare il coefficiente $a_{21}$, ottenendo così una matrice con un elemento zero sotto la diagonale principale. 
+Possiamo attribuire alla seconda riga il nuovo valore, risultato della differenza $R_2 - R_1$:
+
 \begin{equation}
 \left[
 \begin{array}{cc|c}
@@ -172,3 +356,194 @@ Vediamo quindi come poter applicare il metodo di Gauss-Jordan semplificato al no
 
 Dall'ultima matrice ottenuta, possiamo ricavare il valore di $I_2$ dividendo il termine noto della seconda riga per il coefficiente $-4\texttt{k}$, ottenendo così $I_2 = -\frac{5}{4\texttt{k}} = \SI{-1.25}{mA}$. Successivamente, possiamo sostituire il valore di $I_2$ nella prima riga per trovare il valore di $I_1$, ottenendo $I_1 = \frac{5 - 5\texttt{k} \cdot I_2}{5\texttt{k}} = \frac{5 - 5\texttt{k} \cdot (-\frac{5}{4\texttt{k}})}{5\texttt{k}} = \SI{2.25}{mA}$.
 
+Supponiamo ora di avere un circuito con 4 maglie elementari e quindi con 4 correnti di maglia. Definiamo quindi la matrice aumentata come:
+
+\begin{equation}
+	\left[
+		\begin{array}{c c c c | c}
+		\tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {100};} & 225 & 350 & 300 & 5 \\
+		200 & -150 & 200 & -200 & 12 \\
+		100 & 100 & 100 & 0 & -10 \\
+		-200 & 450 & 0 & 200 & 10 
+		\end{array}
+	\right]
+	\label{mat: 4 ord aumentata}
+\end{equation}
+
+Come primo passaggio, fissiamo come pivot il numero in posizione $a_{11}$, cerchiato nella matrice \ref{mat: 4 ord aumentata}, e annulliamo ogni termine al di sotto di quel pivot, trovando operazioni tra le righe. 
+
+Per annullare il primo elemento della seconda riga, notiamo che è il doppio del primo elemento della prima riga, quindi sottraiamo alla seconda riga il doppio della prima. Lo stesso ragionamento lo facciamo per la terza riga, dove il primo elemento è uguale al pivot, e la quarta riga dove il primo elemento è il doppio del pivot, ma con segno opposto. Quindi si possono svolgere le seguenti trasformazioni:
+
+\begin{equation}
+\begin{aligned}
+R_2 &\Rightarrow R_2 - 2R_1 \\
+R_3 &\Rightarrow R_3 - R_1 \\
+R_4 &\Rightarrow R_4 + 2R_1
+\end{aligned}
+\end{equation}
+
+Svolgiamo la trasformazione della seconda riga: $R_2 \Rightarrow R_2 - 2R_1$
+
+
+\[
+\begin{array}{r | r | r | r | r || r}
+R_2: & 200 & -150 & 200 & -200 & 12 \\[1mm]
+2 R_1: & 2 \cdot 100 & 2 \cdot 225 & 2 \cdot 350 & 2 \cdot 300 & 2 \cdot 5 \\[1mm]
+\hline
+ R_2 - 2R_1: & 200-200 & -150-450 & 200-700 & -200-600 & 12-10 \\[1mm]
+\hline
+\text{Nuova }R_2: & 0 & -650 & -500 & -800 & 2
+\end{array}
+\]
+\vspace{0.5cm}
+
+
+Svolgiamo la trasformazione della terza riga: $R_3 \Rightarrow R_3 - R_1$
+\[
+\begin{array}{r | r | r | r | r || r}
+R_3: & 100 & 100 & 100 & 0 & -10 \\[1mm]
+R_1: & 100 & 225 & 350 & 300 & 5 \\[1mm]
+\hline
+R_3 - R_1: & 100-100 & 100-250 & 100-350 & 0-300 & -10-5 \\[1mm]
+\hline
+\text{Nuova }R_3: & 0 & -150 & -250 & -300 & -15
+\end{array}
+\]
+\vspace{0.5cm}
+
+
+Svolgiamo la trasformazione della quarta riga: $R_4 \Rightarrow R_4 + R_1$
+\[
+\begin{array}{r | r | r | r | r || r}
+R_4: & -200 & 400 & 0 & 200 & 10 \\[1mm]
+2 R_1: & 2 \cdot 100 & 2 \cdot 225 & 2 \cdot 350 & 2 \cdot 300 & 2 \cdot 5 \\[1mm]
+\hline
+R_4 + 2R_1: & -200+200 & 450+450 & 0+700 & 200+600 & 10+10 \\[1mm]
+\hline
+\text{Nuova }R_4: & 0 & 900 & 700 & 800 & 20
+\end{array}
+\]
+
+Dopo queste operazioni otteniamo la nuova matrice aumentata:
+\begin{equation}
+\left[
+\begin{array}{cccc|c}
+100 & 250 & 350 & 300 & 5 \\
+0   & \tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {-600};} & -500 & -800 & 2 \\
+0   & -150 & -250 & -300 & -15 \\
+0   & 900  & 700  & 800  & 20
+\end{array}
+\right]
+\label{mat: dopo primo pivot}
+\end{equation}
+
+Ripetiamo lo stesso procedimento per annullare gli elementi sotto il nuovo pivot:
+
+\begin{equation}
+\begin{aligned}
+R_3 &\Rightarrow 4 R_3 - R_2 \\
+R_4 &\Rightarrow 2 R_4 + 3 R_2
+\end{aligned}
+\end{equation}
+
+
+Svolgiamo la trasformazione della terza riga: $R_3 \Rightarrow 4R_3 - R_2$
+\[
+\begin{array}{r | r | r | r | r || r}
+R_3: & 4\cdot0 & 4\cdot(-150) & 4\cdot(-250) & 4\cdot(-300) & 4\cdot(-15) \\[1mm]
+R_2: & 0 & -600 & -500 & -800 & 2 \\[1mm]
+\hline
+4R_3 - R_2: & 0-0 & -600-(-600) & -1000-(-500) & -1200-(-800) & -60-2 \\[1mm]
+\hline
+\text{Nuova }R_3: & 0 & 0 & -500 & -400 & -62
+\end{array}
+\]
+\vspace{0.5cm}
+
+
+Svolgiamo la trasformazione della quarta riga: 
+\[
+\begin{array}{r | r | r | r | r || r}
+2R_4: & 2\cdot0 & 2\cdot900 & 2\cdot700 & 2\cdot800 & 2\cdot20 \\[1mm]
+3R_2: & 3\cdot0 & 3\cdot(-600) & 3\cdot(-500) & 3\cdot(-800) & 3\cdot2 \\[1mm]
+\hline
+2R_4 + 3R_2: & 0+0 & 1800+(-1800) & 1400+(-1500) & 1600+(-2400) & 40+6 \\[1mm]
+\hline
+\text{Nuova }R_4: & 0 & 0 & -100 & -800 & 46
+\end{array}
+\]
+
+Osserviamo una cosa importante: il numero di operazioni tra righe da svolgere diminuisce man mano che andiamo avanti con l'algoritmo. Quindi ci aspettiamo che per semplificare l'ultima riga, avremo bisogno di una sola operazione.
+
+La matrice è diventata:
+
+\begin{equation}
+\left[
+\begin{array}{cccc|c}
+100 & 250 & 350 & 300 & 5 \\
+0   & -600 & -500 & -800 & 2 \\
+0   & 0 & \tikz[baseline=(char.base)]{\node[draw,circle,inner sep=1pt] (char) {-500};} & -400 & -62 \\
+0   & 0  & -100  & -800  & 46
+\end{array}
+\right]
+\label{mat: dopo secondo pivot}
+\end{equation}
+
+Ripetiamo per l'ultima volta lo stesso procedimento per annullare gli elementi sotto il nuovo pivot:
+
+\begin{equation}
+\begin{aligned}
+R_4 &\Rightarrow 5 R_4 - R_3
+\end{aligned}
+\end{equation}
+
+
+Svolgiamo la trasformazione della quarta riga: $R_4 \Rightarrow 5R_4 - R_3$
+\[
+\begin{array}{r | r | r | r | r || r}
+5R_4: & 5\cdot0 & 5\cdot0 & 5\cdot(-100) & 5\cdot(-800) & 5\cdot(46) \\[1mm]
+R_3: & 0 & 0 & -500 & -400 & -62 \\[1mm]
+\hline
+5R_4 - R_3: & 0-0 & 0-0 & -500-(-500) & -4000-(-400) & 230-(-62) \\[1mm]
+\hline
+\text{Nuova }R_4: & 0 & 0 & 0 & -4400 & 292
+\end{array}
+\]
+
+Quindi abbiamo finalmente trovato la matrice triangolare superiore in questa forma:
+
+\begin{equation}
+	\left[
+		\begin{array}{cccc|c}
+		100 & 250 & 350 & 300 & 5 \\
+		0   & -600 & -500 & -800 & 2 \\
+		0   & 0 & -500 & -400 & -62 \\
+		0   & 0  & 0  & -4400  & 292
+		\end{array}
+	\right]
+\end{equation}
+
+Questa matrice si trasforma in maniera molto banale nel seguente sistema:
+
+\begin{equation}
+    \begin{cases}
+	100I_1+250I_2+350I_3+300I_4 = 5\\
+	\quad\qquad-600I_2-500I_3-800I_4 = 2\\
+	\,\,\,\,\qquad\qquad\qquad-500I_3-400I_4=-62\\
+	\qquad\qquad\qquad\qquad\quad\,\,\,\,\,-4400I_4=292
+    \end{cases}
+	\label{eq: sistema ridotto a gradini}
+\end{equation}
+
+Dalla quarta equazione si ricava facilmente il valore della corrente $I_4 = \frac{292}{-4400} \approx -66.36mA.$ Si procede poi sostituendo il valore della corrente $I_4$ nella terza equazione, ricavando il valore di $I_3$ e così via fino a trovare tutte le correnti di maglia.
+
+La soluzione completa del sistema è:
+
+\begin{equation}
+\left(\begin{matrix}
+I_1 = \SI{-214,67}{mA} \\
+I_2 = \SI{-62,42}{mA} \\
+I_3 = \SI{177,09}{mA}\\
+I_4 = \SI{-66,36}{mA}
+\end{matrix}\right)
+\end{equation}
