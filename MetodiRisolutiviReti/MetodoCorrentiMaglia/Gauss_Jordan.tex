@@ -233,85 +233,91 @@ A = \begin{bmatrix}
 \end{bmatrix}
 \label{eq:matrice_3x3_esempio}
 \end{equation}
-Per calcolare \(\det(A)\) con la regola di Sarrus, si riscrivono le prime due colonne a destra della matrice:
+Per calcolare \(\det(A)\) con la regola di Sarrus, si riscrivono le prime due colonne a destra della matrice, creando una matrice 3x5. Si tracciano poi le diagonali principali (con frecce continue) e le diagonali secondarie (con frecce tratteggiate):
+
+
+\begin{equation}
+  \begin{tikzpicture}[>=stealth, baseline=(current bounding box.center)]
+    \matrix [%
+      matrix of math nodes,
+      column sep=1em,
+      row sep=1em
+    ] (sarrus) {%
+      a_{11} & a_{12} & a_{13} & a_{11} & a_{12} \\
+      a_{21} & a_{22} & a_{23} & a_{21} & a_{22} \\
+      a_{31} & a_{32} & a_{33} & a_{31} & a_{32} \\
+    };
+
+    \path ($(sarrus-1-1.north west)-(0.5em,0)$) edge ($(sarrus-3-1.south west)-(0.5em,0)$)
+          ($(sarrus-1-3.north east)+(0.5em,0)$) edge ($(sarrus-3-3.south east)+(0.5em,0)$)
+          (sarrus-1-1)                          edge            (sarrus-2-2)
+          (sarrus-2-2)                          edge[->]        (sarrus-3-3)
+          (sarrus-1-2)                          edge            (sarrus-2-3)
+          (sarrus-2-3)                          edge[->]        (sarrus-3-4)
+          (sarrus-1-3)                          edge            (sarrus-2-4)
+          (sarrus-2-4)                          edge[->]        (sarrus-3-5)
+          (sarrus-3-1)                          edge[dashed]    (sarrus-2-2)
+          (sarrus-2-2)                          edge[->,dashed] (sarrus-1-3)
+          (sarrus-3-2)                          edge[dashed]    (sarrus-2-3)
+          (sarrus-2-3)                          edge[->,dashed] (sarrus-1-4)
+          (sarrus-3-3)                          edge[dashed]    (sarrus-2-4)
+          (sarrus-2-4)                          edge[->,dashed] (sarrus-1-5);
+  \end{tikzpicture}
+\end{equation}
+
+
+
+
+Si sommano quindi i prodotti degli elementi lungo le tre diagonali principali (che scendono da sinistra verso destra) e si sottraggono i prodotti delle tre diagonali secondarie (che salgono da sinistra verso destra):
 \[
-\begin{array}{ccc|cc}
-2 & 1 & -1 & 2 & 1 \\
--3 & -1 & 2 & -3 & -1 \\
--2 & 1 & 2 & -2 & 1
-\end{array}
+\det(A) = (2)(-1)(2) + (1)(2)(-2) + (-1)(-3)(1) - \bigl[(-1)(-1)(-2) + (2)(2)(1) + (1)(-3)(2)\bigr] = -5 + 4 = -1.
 \]
-Si sommano quindi i prodotti degli elementi delle tre diagonali principali (che scendono da sinistra verso destra) e si sottraggono i prodotti delle tre diagonali secondarie (che salgono da sinistra verso destra):
-\begin{align}
-\det(A) &= (2 \cdot (-1) \cdot 2) + (1 \cdot 2 \cdot (-2)) + ((-1) \cdot (-3) \cdot 1) \nonumber \\
-        &\quad - [((-1) \cdot (-1) \cdot (-2)) + (2 \cdot 2 \cdot 1) + (1 \cdot (-3) \cdot 2)] \nonumber \\
-        &= (-4) + (-4) + (3) - [(-2) + (4) + (-6)] \nonumber \\
-        &= -5 - (-4) = -5 + 4 = -1
-\label{eq:detA_3x3}
-\end{align}
-Poiché \(\det(A) = -1 \neq 0\), il sistema ha soluzione unica. Calcoliamo ora i determinanti delle matrici \(A_1\), \(A_2\) e \(A_3\) (sostituendo rispettivamente la prima, seconda e terza colonna con \(\mathbf{b}\)) utilizzando sempre la regola di Sarrus.
+Poiché \(\det(A) = -1 \neq 0\), il sistema ammette un'unica soluzione. Calcoliamo ora i determinanti delle matrici \(A_1\), \(A_2\) e \(A_3\), ottenute sostituendo rispettivamente la prima, la seconda e la terza colonna di \(A\) con il vettore dei termini noti \(\mathbf{b}\), utilizzando ancora la regola di Sarrus.
 
 \begin{itemize}
 \item Per \(A_1 = \begin{bmatrix} 8 & 1 & -1 \\ -11 & -1 & 2 \\ -3 & 1 & 2 \end{bmatrix}\):
-\[
-\begin{array}{ccc|cc}
-8 & 1 & -1 & 8 & 1 \\
--11 & -1 & 2 & -11 & -1 \\
--3 & 1 & 2 & -3 & 1
-\end{array}
-\]
+  \(\qquad \qquad \begin{array}{|ccc|cc}
+  8 & 1 & -1 & 8 & 1 \\
+  -11 & -1 & 2 & -11 & -1 \\
+  -3 & 1 & 2 & -3 & 1
+  \end{array}\)
 \begin{align}
-\det(A_1) &= (8 \cdot (-1) \cdot 2) + (1 \cdot 2 \cdot (-3)) + ((-1) \cdot (-11) \cdot 1) \nonumber \\
-          &\quad - [((-1) \cdot (-1) \cdot (-3)) + (2 \cdot 2 \cdot 1) + (1 \cdot (-11) \cdot 2)] \nonumber \\
-          &= (-16) + (-6) + (11) - [(-3) + (4) + (-22)] \nonumber \\
-          &= -11 - (-21) = -11 + 21 = 10
-\label{eq:detA1_3x3}
+\det(A_1) &= (8)(-1)(2) + (1)(2)(-3) + (-1)(-11)(1) - \left[(-1)(-1)(-3) + (2)(2)(1) + (1)(-11)(2)\right] \nonumber \\
+          &= (-16) + (-6) + 11 - \bigl[(-3) + 4 + (-22)\bigr] = -11 - (-21) = -11 + 21 = 10 \nonumber
 \end{align}
-
+\hrule
 \item Per \(A_2 = \begin{bmatrix} 2 & 8 & -1 \\ -3 & -11 & 2 \\ -2 & -3 & 2 \end{bmatrix}\):
-\[
-\begin{array}{ccc|cc}
-2 & 8 & -1 & 2 & 8 \\
--3 & -11 & 2 & -3 & -11 \\
--2 & -3 & 2 & -2 & -3
-\end{array}
-\]
+  \(\qquad \qquad \begin{array}{|ccc|cc}
+  2 & 8 & -1 & 2 & 8 \\
+  -3 & -11 & 2 & -3 & -11 \\
+  -2 & -3 & 2 & -2 & -3
+  \end{array}\)
 \begin{align}
-\det(A_2) &= (2 \cdot (-11) \cdot 2) + (8 \cdot 2 \cdot (-2)) + ((-1) \cdot (-3) \cdot (-3)) \nonumber \\
-          &\quad - [((-1) \cdot (-11) \cdot (-2)) + (2 \cdot 2 \cdot (-2)) + (8 \cdot (-3) \cdot 2)] \nonumber \\
-          &= (-44) + (-32) + (-9) - [(-22) + (-8) + (-48)] \nonumber \\
-          &= -85 - (-78) = -85 + 78 = -7
-\label{eq:detA2_3x3}
+\det(A_2) &= (2)(-11)(2) + (8)(2)(-2) + (-1)(-3)(-3) - \bigl[(-1)(-11)(-2) + (2)(2)(-2) + (8)(-3)(2)\bigr] \nonumber \\
+          &= (-44) + (-32) + (-9) - \bigl[(-22) + (-8) + (-48)\bigr] = -85 - (-78) = -85 + 78 = -7 \nonumber
 \end{align}
-
+\hrule
 \item Per \(A_3 = \begin{bmatrix} 2 & 1 & 8 \\ -3 & -1 & -11 \\ -2 & 1 & -3 \end{bmatrix}\):
-\[
-\begin{array}{ccc|cc}
-2 & 1 & 8 & 2 & 1 \\
--3 & -1 & -11 & -3 & -1 \\
--2 & 1 & -3 & -2 & 1
-\end{array}
-\]
+  \(\qquad \qquad\begin{array}{|ccc|cc}
+  2 & 1 & 8 & 2 & 1 \\
+  -3 & -1 & -11 & -3 & -1 \\
+  -2 & 1 & -3 & -2 & 1
+  \end{array}\)
 \begin{align}
-\det(A_3) &= (2 \cdot (-1) \cdot (-3)) + (1 \cdot (-11) \cdot (-2)) + (8 \cdot (-3) \cdot 1) \nonumber \\
-          &\quad - [(8 \cdot (-1) \cdot (-2)) + (2 \cdot (-11) \cdot 1) + (1 \cdot (-3) \cdot (-3))] \nonumber \\
-          &= (6) + (22) + (-24) - [(16) + (-22) + (9)] \nonumber \\
-          &= 4 - (3) = 1
-\label{eq:detA3_3x3}
+\det(A_3) &= (2)(-1)(-3) + (1)(-11)(-2) + (8)(-3)(1) - \bigl[(8)(-1)(-2) + (2)(-11)(1) + (1)(-3)(-3)\bigr] \nonumber \\
+          &= 6 + 22 + (-24) - \bigl[16 + (-22) + 9\bigr] = 4 - 3 = 1 \nonumber
 \end{align}
 \end{itemize}
 
-Infine, applicando la formula di Cramer \eqref{eq:cramer_formula} otteniamo:
+Infine, applicando la regola di Cramer \eqref{eq:cramer_formula} otteniamo:
 \begin{equation}
-I_1 = \frac{\det(A_1)}{\det(A)} = \frac{10}{-1} = -10,\quad
-I_2 = \frac{\det(A_2)}{\det(A)} = \frac{-7}{-1} = 7,\quad
-I_3 = \frac{\det(A_3)}{\det(A)} = \frac{1}{-1} = -1
-\label{eq:soluzione_3x3}
+I_1 = \frac{\det(A_1)}{\det(A)} = \frac{10}{-1} = -10,\qquad
+I_2 = \frac{\det(A_2)}{\det(A)} = \frac{-7}{-1} = 7,\qquad
+I_3 = \frac{\det(A_3)}{\det(A)} = \frac{1}{-1} = -1. \label{eq:soluzione_3x3}
 \end{equation}
 Pertanto la soluzione del sistema è:
 \begin{equation}
-I_1 = \SI{-10}{A},\quad I_2 = \SI{7}{A},\quad I_3 = \SI{-1}{A}
-\label{eq:soluzione_3x2_valori}
+I_1 = \SI{-10}{A},\quad I_2 = \SI{7}{A},\quad I_3 = \SI{-1}{A}. \label{eq:soluzione_3x2_valori}
 \end{equation}
 
 Come si può notare, il metodo di Cramer fornisce direttamente i valori delle incognite senza bisogno di eseguire sostituzioni in avanti o all'indietro. Tuttavia, per sistemi con più di tre equazioni il calcolo dei determinanti diventa rapidamente oneroso, e si preferiscono metodi come l'eliminazione di Gauss-Jordan.
