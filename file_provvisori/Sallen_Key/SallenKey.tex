@@ -1,0 +1,238 @@
+%=============================
+% Sallen-Key generico (Z)
+%=============================
+
+\newcommand{\SallenKeyZ}{
+\begin{center}
+\begin{tikzpicture}
+\node[op amp, yscale=-1] at (3.01, 0.003){};
+
+\draw (-0.715, 0.494) to[european resistor, l={$Z_2$}] (1, 0.492);
+\draw (-0.715, 0.494) to[european resistor, l_={$Z_1$}] (-2.415, 0.494);
+
+\draw (1.5, 1.6) to[european resistor, l={$Z_3$}] (4.1, 1.6);
+\draw (1.1, 0.3) to[european resistor, l_={$Z_4$}] (1.1, -1.5);
+
+\draw (1.82, -0.487) -| (1.6, -0.497) -| (1.6, -1.397) -- (4.3, -1.397) |- (4.2, 0.003);
+\draw (4.1, 1.6) |- (4.3, 1.6) -| (4.3, 0);
+
+\node[ground] at (1.1, -1.2){};
+
+\draw (1, 0.492) -| (1.1, 0.292);
+\draw (1.82, 0.485) |- (1.1, 0.492);
+
+\draw (1.5, 1.6) |- (-0.7, 1.6) -- (-0.7, 0.5);
+
+\node[circ](N1) at (-0.7, 0.5){};
+\node[anchor=north] at (N1.south){$v_x$};
+
+\node[circ] at (1.1, 0.492){};
+\node[circ] at (4.3, 0.003){};
+
+\draw (4.3, 0) -- (4.6, 0);
+
+\node[ocirc](N2) at (4.6, 0){};
+\node[anchor=west] at (N2.east){$v_{out}$};
+
+\node[ocirc](N3) at (-2.415, 0.494){};
+\node[anchor=east] at (N3.west){$v_{in}$};
+
+\end{tikzpicture}
+\end{center}
+}
+
+
+
+%=============================
+% Sallen-Key guadagno non unitario (K)
+%=============================
+
+\newcommand{\SallenKeyK}{
+\begin{center}
+\begin{tikzpicture}
+\node[op amp, yscale=-1] at (3.01, 0.003){};
+
+\draw (-0.715, 0.494) to[european resistor, l={$Z_2$}] (1, 0.492);
+\draw (-0.715, 0.494) to[european resistor, l_={$Z_1$}] (-2.415, 0.494);
+
+\draw (1.5, 1.6) to[european resistor, l={$Z_3$}] (4.1, 1.6);
+\draw (1.1, 0.3) to[european resistor, l_={$Z_4$}] (1.1, -1.5);
+
+\draw (4.3, 0) |- (4.2, 0.003);
+\draw (4.3, 0) to[resistor, l={$R_a$}] (4.3, -1.7);
+\node[circ](N0) at (4.3, -1.7){};
+\node[anchor=west] at (N0.south){$v_y$};
+\draw (4.3, -1.7) to[resistor, l={$R_b$}] (4.3, -3.4);
+\node[ground] at (4.3, -3.2){};
+\draw(4.3, -1.7) -| (1.7, -1.7) -| (1.7, -0.488) -- (1.9, -0.488);
+
+
+
+
+\draw (4.1, 1.6) |- (4.3, 1.6) -| (4.3, 0);
+
+\node[ground] at (1.1, -1.2){};
+
+\draw (1, 0.492) -| (1.1, 0.292);
+\draw (1.82, 0.485) |- (1.1, 0.492);
+
+\draw (1.5, 1.6) |- (-0.7, 1.6) -- (-0.7, 0.5);
+
+\node[circ](N1) at (-0.7, 0.5){};
+\node[anchor=north] at (N1.south){$v_x$};
+
+\node[circ] at (1.1, 0.492){};
+\node[circ] at (4.3, 0.003){};
+
+\draw (4.3, 0) -- (4.6, 0);
+
+\node[ocirc](N2) at (4.6, 0){};
+\node[anchor=west] at (N2.east){$v_{out}$};
+
+\node[ocirc](N3) at (-2.415, 0.494){};
+\node[anchor=east] at (N3.west){$v_{in}$};
+
+\end{tikzpicture}
+\end{center}
+}
+
+%=============================
+% Sallen-Key Low Pass
+%=============================
+
+\newcommand{\SallenKeyLP}{
+\begin{center}
+\begin{tikzpicture}
+\node[op amp, yscale=-1] at (3.01, 0.003){};
+
+\draw (-0.715, 0.494) to[resistor, l={$R_2$}] (1, 0.492);
+\draw (-0.715, 0.494) to[resistor, l_={$R_1$}] (-2.415, 0.494);
+
+\draw (1.5, 1.6) to[capacitor, l={$C_1$}] (4.1, 1.6);
+\draw (1.1, 0.3) to[capacitor, l_={$C_2$}] (1.1, -1.5);
+
+\draw (1.82, -0.487) -| (1.6, -0.497) -| (1.6, -1.397) -- (4.3, -1.397) |- (4.2, 0.003);
+\draw (4.1, 1.6) |- (4.3, 1.6) -| (4.3, 0);
+
+\node[ground] at (1.1, -1.2){};
+
+\draw (1, 0.492) -| (1.1, 0.292);
+\draw (1.82, 0.485) |- (1.1, 0.492);
+
+\draw (1.5, 1.6) |- (-0.7, 1.6) -- (-0.7, 0.5);
+
+\node[circ](N1) at (-0.7, 0.5){};
+\node[anchor=north] at (N1.south){$v_x$};
+
+\node[circ] at (1.1, 0.492){};
+\node[circ] at (4.3, 0.003){};
+
+\draw (4.3, 0) -- (4.6, 0);
+
+\node[ocirc](N2) at (4.6, 0){};
+\node[anchor=west] at (N2.east){$v_{out}$};
+
+\node[ocirc](N3) at (-2.415, 0.494){};
+\node[anchor=east] at (N3.west){$v_{in}$};
+
+\end{tikzpicture}
+\end{center}
+}
+
+%=============================
+% Sallen-Key High Pass
+%=============================
+
+\newcommand{\SallenKeyHP}{
+\begin{center}
+\begin{tikzpicture}
+\node[op amp, yscale=-1] at (3.01, 0.003){};
+
+\draw (-0.715, 0.494) to[capacitor, l={$C_2$}] (1, 0.492);
+\draw (-0.715, 0.494) to[capacitor, l_={$C_1$}] (-2.415, 0.494);
+
+\draw (1.5, 1.6) to[resistor, l={$R_1$}] (4.1, 1.6);
+\draw (1.1, 0.3) to[resistor, l_={$R_2$}] (1.1, -1.5);
+
+\draw (1.82, -0.487) -| (1.6, -0.497) -| (1.6, -1.397) -- (4.3, -1.397) |- (4.2, 0.003);
+\draw (4.1, 1.6) |- (4.3, 1.6) -| (4.3, 0);
+
+\node[ground] at (1.1, -1.2){};
+
+\draw (1, 0.492) -| (1.1, 0.292);
+\draw (1.82, 0.485) |- (1.1, 0.492);
+
+\draw (1.5, 1.6) |- (-0.7, 1.6) -- (-0.7, 0.5);
+
+\node[circ](N1) at (-0.7, 0.5){};
+\node[anchor=north] at (N1.south){$v_x$};
+
+\node[circ] at (1.1, 0.492){};
+\node[circ] at (4.3, 0.003){};
+
+\draw (4.3, 0) -- (4.6, 0);
+
+\node[ocirc](N2) at (4.6, 0){};
+\node[anchor=west] at (N2.east){$v_{out}$};
+
+\node[ocirc](N3) at (-2.415, 0.494){};
+\node[anchor=east] at (N3.west){$v_{in}$};
+
+\end{tikzpicture}
+\end{center}
+}
+
+
+
+%=============================
+% Sallen-Key guadagno non unitario (K Low Pass)
+%=============================
+
+\newcommand{\SallenKeyKLP}{
+\begin{center}
+\begin{tikzpicture}
+\node[op amp, yscale=-1] at (3.01, 0.003){};
+
+\draw (-0.715, 0.494) to[resistor, l={$R_2$}] (1, 0.492);
+\draw (-0.715, 0.494) to[resistor, l_={$R_1$}] (-2.415, 0.494);
+
+\draw (1.5, 1.6) to[capacitor, l={$C_1$}] (4.1, 1.6);
+\draw (1.1, 0.3) to[capacitor, l_={$C_2$}] (1.1, -1.5);
+
+\draw (4.3, 0) |- (4.2, 0.003);
+\draw (4.3, 0) to[resistor, l={$R_a$}] (4.3, -1.7);
+\node[circ](N0) at (4.3, -1.7){};
+\node[anchor=west] at (N0.south){$v_y$};
+\draw (4.3, -1.7) to[resistor, l={$R_b$}] (4.3, -3.4);
+\node[ground] at (4.3, -3.2){};
+\draw(4.3, -1.7) -| (1.7, -1.7) -| (1.7, -0.488) -- (1.9, -0.488);
+
+
+
+
+\draw (4.1, 1.6) |- (4.3, 1.6) -| (4.3, 0);
+
+\node[ground] at (1.1, -1.2){};
+
+\draw (1, 0.492) -| (1.1, 0.292);
+\draw (1.82, 0.485) |- (1.1, 0.492);
+
+\draw (1.5, 1.6) |- (-0.7, 1.6) -- (-0.7, 0.5);
+
+\node[circ](N1) at (-0.7, 0.5){};
+\node[anchor=north] at (N1.south){$v_x$};
+
+\node[circ] at (1.1, 0.492){};
+\node[circ] at (4.3, 0.003){};
+
+\draw (4.3, 0) -- (4.6, 0);
+
+\node[ocirc](N2) at (4.6, 0){};
+\node[anchor=west] at (N2.east){$v_{out}$};
+
+\node[ocirc](N3) at (-2.415, 0.494){};
+\node[anchor=east] at (N3.west){$v_{in}$};
+
+\end{tikzpicture}
+\end{center}
+}

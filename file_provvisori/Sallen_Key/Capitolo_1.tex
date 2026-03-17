@@ -1,0 +1,160 @@
+\chapter{Filtro attivo Sallen-Key}
+\section{Introduzione}
+
+Il \textbf{filtro Sallen‑Key} è una delle topologie più comuni per la realizzazione di filtri attivi del secondo ordine.
+Questi filtri utilizzano un OpAmp insieme a resistori e condensatori per ottenere
+risposte in frequenza desiderate (passa‑basso, passa‑alto, passa‑banda, ecc.).
+
+Le principali caratteristiche del filtro Sallen‑Key sono:
+
+\begin{itemize}
+    \item \textbf{Semplicità di progettazione:} è facile calcolare i valori dei componenti per ottenere una frequenza di taglio e un fattore di merito specifici.  
+
+    \item \textbf{Alta impedenza di ingresso e bassa impedenza di uscita:} grazie all’OpAmp, il filtro non carica lo stadio precedente e può pilotare comodamente lo stadio successivo.  
+          Questo rende la topologia particolarmente adatta in catene audio e in strumentazione, dove
+          è fondamentale isolare i vari blocchi per evitare interazioni indesiderate.
+    \item \textbf{Risposta precisa:} consente di realizzare facilmente filtri con caratteristiche standard come Butterworth, Chebyshev o Bessel.  
+          La possibilità di utilizzare componenti standard (ad esempio coppie \(R_1 = R_2\) e \(C_1 = C_2\)) semplifica ulteriormente il progetto e la taratura in produzione.
+\end{itemize}
+
+Nei paragrafi seguenti verranno analizzate le implementazioni \emph{passa‑basso LP},
+\emph{passa‑alto HP} e \emph{passa‑banda BP} della topologia Sallen‑Key,
+con particolare attenzione alla \emph{risposta in frequenza} e alla \emph{fase}, utilizzando grafici di Bode per diversi valori di \(Q\).
+
+
+\newpage
+\section{Filtro Sallen-Key a guadagno unitario}
+
+
+L'obiettivo dell'analisi è determinare la funzione di trasferimento $H(s) = \frac{V_{out}(s)}{V_{in}(s)}$. Per fare ciò, applichiamo la \textbf{Legge di Kirchhoff delle Correnti (LKC)} al nodo principale $v_x$. 
+
+\SallenKeyZ
+Assumendo che l'amplificatore operazionale sia ideale e operi in zona lineare, possiamo scrivere l'equazione di equilibrio delle correnti al nodo $v_x$ come segue:
+
+\begin{equation}
+    i_{Z_1} = i_{Z_2} + i_{Z_3}
+    \label{eq: LKT V_x}
+\end{equation}
+
+Dove la corrente entrante $i_{Z_1}$ si ripartisce tra il ramo di filtraggio diretto verso massa ($i_{Z_{24}}$) e il ramo di retroazione positiva ($i_{Z_3}$). Applicando la \textbf{Legge di Ohm generalizzata} alle singole impedenze, esprimiamo le correnti in funzione dei potenziali di nodo:
+
+\begin{itemize}
+    \item \textbf{Corrente $i_{Z_1}$:} Definita dalla differenza di potenziale tra l'ingresso e il nodo interno:
+
+    \begin{equation}
+        i_{Z_1} = \frac{v_{in} - v_x}{Z_1}
+        \label{eq: i_Z1}
+    \end{equation}
+
+    \item \textbf{Corrente $i_{Z_2}$:} Definita dalla differenza di potenziale tra il nodo interno e il morsetto non invertente dell'OpAmp:
+
+    \begin{equation}
+        i_{Z_2} = \frac{v_x - v^+}{Z_2}
+        \label{eq: i_Z2}
+    \end{equation}
+
+    \item \textbf{Corrente $i_{Z_3}$:} Corrente che scorre attraverso il ramo di feedback tra il nodo $v_x$ e l'uscita $v_{out}$:
+
+    \begin{equation}
+        i_{Z_3} = \frac{v_x - v_{out}}{Z_3}
+        \label{eq: i_Z3}
+    \end{equation}
+\end{itemize}
+Sostituendo le espressioni \ref{eq: i_Z1}, \ref{eq: i_Z2} e \ref{eq: i_Z3} nell'equazione di equilibrio \ref{eq: LKT V_x}, otteniamo la relazione fondamentale del sistema:
+
+\begin{equation}
+    \frac{v_{in} - v_x}{Z_1} = \frac{v_x-v^+}{Z_2} + \frac{v_x - v_{out}}{Z_3}
+    \label{eq: LKT completo}
+\end{equation}
+
+Questa equazione presenta tre incognite: $v_x,\, v^+$ e $v_{out}$. Per determinare quindi la funzione di trasferimento, dobbiamo ricorrere al \textbf{principio del corto circuito virtuale:} in un circuito con OpAmp retroazionato negativamente, la tensione sul morsetto invertente tenderà ad essere uguale alla tensione sul morsetto non invertente. 
+Per cui, dato che è presente una retroazione negativa, si ricava facilmente che \(v^+ = v^- =v_{out}\).
+\begin{equation}
+        \frac{v_{in} - v_x}{Z_1} = \frac{v_x-v_{out}}{Z_2} + \frac{v_x - v_{out}}{Z_3}
+        \label{eq: LKT con vout}
+\end{equation}
+Come ultimo passaggio dobbiamo considerare il morsetto non invertente. Applicando la LKC al nodo $v^+$ (ricordando sempre che si considera l'OpAmp ideale, quindi non entrano correnti dai morsetti) notiamo che la corrente che circola sull'impedenza $Z_2$ deve essere la stessa che circola su $Z_4$. Per cui:
+\begin{equation}
+    i_{Z_2} = i_{Z_4} 
+    \label{eq: iz2 iz4}
+\end{equation}
+Ricordando sempre che $v^+ = v_{out}$ per il principio del c.c. virtuale, queste correnti possono essere trovate applicando la legge di Ohm:
+\begin{equation}
+    \frac{v_x-v_{out}}{Z_2} = \frac{v_{out}}{Z_4}
+    \label{eq: Ohm Z2 Z4}
+\end{equation}
+Con pochi passaggi algebrici si trova la relazione lineare che lega le tensioni $v_x$ e $v_{out}$:
+
+\begin{equation}
+v_x = v_{out}\left(\frac{Z_2}{Z_4}+1\right)
+\label{eq: vx vout}  
+\end{equation}
+
+Unendo quindi l'equazione \ref{eq: LKT con vout} e l'equazione \ref{eq: vx vout}:
+\begin{equation}
+    \frac{v_{in} - v_{out}\left(\frac{Z_2}{Z_4}+1\right) }{Z_1} = \frac{v_{out}\left(\frac{Z_2}{Z_4}+1\right) -v_{out}}{Z_2} + \frac{v_{out}\left(\frac{Z_2}{Z_4}+1\right)  - v_{out}}{Z_3}
+    \label{eq: LKT vin vout}
+\end{equation}
+
+Con pochi passaggi algebrici è possibile definire la funzione di trasferimento di un generico filtro Sallen-Key:
+
+\begin{equation}
+    H(j\omega) \triangleq \frac{v_{out}}{v_{in}} = \frac{Z_3Z_4}{Z_1Z_2+Z_3(Z_1+Z_2)+Z_3Z_4}
+    \label{eq: Guadagno Sallen Key}
+\end{equation}
+
+
+
+
+
+
+
+\section{Filtro Sallen-Key a guadagno non unitario}
+
+\SallenKeyK
+
+In questa configurazione, il guadagno del filtro è determinato dai resistori $R_a$ e $R_b$ che formano un partitore di tensione tra l'uscita e il morsetto non invertente dell'OpAmp.
+
+Per ricavare la funzione di trasferimento si seguono gli stessi passaggi della sezione precedente, con l'unica differenza che ora il principio del corto circuito virtuale ci dice che 
+\begin{equation}
+    v^+ = v^- = v_y = v_{out}\cdot\frac{R_b}{R_a + R_b}
+    \label{eq: v_out partitore}
+\end{equation}
+
+Quindi possiamo riprendere l'equazione \ref{eq: LKT con vout} e sostituire \(v^+\) con \(v_{out}\frac{R_b}{R_a + R_b}\):
+\begin{equation}
+        \frac{v_{in} - v_x}{Z_1} = \frac{v_x-v_{out}\frac{R_b}{R_a + R_b}}{Z_2} + \frac{v_x - v_{out}}{Z_3}
+        \label{eq: vx vout partitore}
+\end{equation}
+Riprendendo l'equazione \ref{eq: Ohm Z2 Z4} e l'equazione \ref{eq: v_out partitore}, possiamo trovare la relazione lineare che lega le tensioni $v_x$ e $v_{out}$:
+\begin{equation}
+    \frac{v_x-v_{out}\frac{R_b}{R_a + R_b}}{Z_2} = \frac{v_{out}\frac{R_b}{R_a + R_b}}{Z_4} \quad\implies\quad v_x = v_{out}\frac{R_b}{R_a + R_b}\left(\frac{Z_2}{Z_4}+1\right)
+    \label{eq: vx con guadagno}
+\end{equation}
+
+Sostituendo quindi l'equazione \ref{eq: vx con guadagno} nell'equazione \ref{eq: vx vout partitore} e svolgendo pochi passaggi algebrici, si trova la funzione di trasferimento del filtro Sallen-Key a guadagno non unitario:
+\begin{equation}
+    H(j\omega) = \frac{v_{out}}{v_{in}} = \frac{Z_3Z_4}{Z_1Z_2+Z_3(Z_1+Z_2)+Z_3Z_4\left(1+\frac{R_b}{R_a}\right)}
+    \label{eq: Guadagno Sallen Key non unitario}
+\end{equation}
+
+Nel filtro Sallen-Key l'amplificatore operazionale è configurato come
+amplificatore non invertente con guadagno $1+\frac{R_b}{R_a}$.
+Tale fattore non compare come guadagno moltiplicativo dell'intera
+funzione di trasferimento, poiché l'operazionale amplifica il nodo
+interno della rete di impedenze e l'uscita viene reintrodotta nella
+rete passiva tramite retroazione. 
+
+Di conseguenza il termine
+$1+\frac{R_b}{R_a}$ compare nel denominatore della funzione di
+trasferimento, contribuendo al polinomio caratteristico del filtro.
+Esso quindi non modifica uniformemente il guadagno del sistema, ma
+influenza la posizione dei poli e il fattore di qualità $Q$.
+
+
+
+
+
+
+
+

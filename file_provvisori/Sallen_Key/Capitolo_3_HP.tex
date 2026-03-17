@@ -1,0 +1,246 @@
+\chapter{Il Filtro Passa-Alto (High-Pass)}
+
+
+\SallenKeyHP
+
+Sostituendo $Z_1$ e $Z_2$ con due condensatori $C_1$ e $C_2$ e $Z_3$ e $Z_4$ con due resistori $R_1$ e $R_2$ (invertendo la configurazione precedente), otteniamo \textbf{il filtro attivo Passa-Alto}. \\
+Un filtro passa-alto permette il passaggio delle alte frequenze e attenua le basse frequenze. Essendo un filtro del secondo ordine, l'attenuazione per frequenze inferiori alla pulsazione naturale $\omega_n$ sarà di $\SI{40}{dB/dec}$.
+
+La funzione di trasferimento nel dominio di Laplace $s$ si ottiene sostituendo le impedenze $Z_C = \frac{1}{sC}$ e $Z_R = R$:
+
+\begin{equation}
+        H(s) = \frac{s^2 C_1 C_2 R_1 R_2}{s^2 C_1 C_2 R_1 R_2 + s R_1 (C_1 + C_2) + 1}
+\end{equation}
+
+Dividendo numeratore e denominatore per il termine $s^2 C_1 C_2 R_1 R_2$, possiamo ricondurci alla forma canonica del secondo ordine per un passa-alto:
+
+\begin{equation}
+    H(s) = \frac{\frac{s^2}{\omega_n^2}}{\frac{s^2}{\omega_n^2} + \frac{s}{Q\omega_n} + 1}
+\end{equation}
+
+\section{Parametri caratteristici \texorpdfstring{$\omega_n$}{ωₙ} e \texorpdfstring{$Q$}{Q}}
+
+Dal confronto dei termini, si ricavano le medesime espressioni per la pulsazione naturale e il fattore di merito viste per il passa-basso (poiché il denominatore mantiene la stessa struttura circuitale):
+
+\begin{equation}
+    \omega_n = \frac{1}{\sqrt{R_1 R_2 C_1 C_2}}, \quad Q = \frac{\sqrt{R_1 R_2 C_1 C_2}}{R_1 (C_1 + C_2)} = \frac{\sqrt{\frac{R_2}{R_1} C_1 C_2}}{C_1 + C_2}
+\end{equation}
+
+\subsection{Diagramma di Bode del Modulo}
+
+
+
+
+Andiamo a dimostrare il comportamento del modulo della funzione di trasferimento. Si può ricavare l'espressione del modulo della funzione di trasferimento calcolando il modulo del numero complesso al denominatore:
+\begin{equation}
+    |H(j\omega)| = \frac{\left(\frac{\omega}{\omega_n}\right)^2}{\sqrt{\left(1-\left(\frac{\omega}{\omega_n}\right)^2\right)^2 + \left(\frac{\omega}{Q\omega_n}\right)^2}}
+\end{equation}
+
+
+A questo punto basterà calcolare i seguenti limiti per capire il comportamento del modulo alle frequenze basse, alla pulsazione naturale e alle frequenze elevate:
+\begin{equation}
+    \lim_{\omega \to 0} |H(j\omega)| = \frac{\left(\frac{0}{\omega_n}\right)^2}{\sqrt{\left(1-\left(\frac{0}{\omega_n}\right)^2\right)^2 + \left(\frac{0}{Q\omega_n}\right)^2}} = 0
+\end{equation}
+
+\begin{equation}
+    \lim_{\omega \to \omega_n} |H(j\omega)| = \frac{\left(\frac{\omega_n}{\omega_n}\right)^2}{\sqrt{\left(1-\left(\frac{\omega_n}{\omega_n}\right)^2\right)^2 + \left(\frac{\omega_n}{Q\omega_n}\right)^2}} = Q
+\end{equation}
+
+Ricorrendo ad un abuso di notazione, si può scrivere:
+
+\begin{equation}
+    \lim_{\omega \to \infty} |H(j\omega)| = \frac{\left(\frac{\infty}{\omega_n}\right)^2}{\sqrt{\left(1-\left(\frac{\infty}{\omega_n}\right)^2\right)^2 + \left(\frac{\infty}{Q\omega_n}\right)^2}} = 1
+\end{equation}
+Applicando la formula per la conversione in decibel, si ottiene:
+
+\begin{equation}
+    \begin{aligned}
+    20\log_{10} |H(j\omega_0)| =  20\log_{10} 0 = -\infty \text{ [dB]}\\\\
+    20\log_{10} |H(j\omega_n)| = 20\log_{10} Q \text{ [dB]} \\\\
+    20\log_{10} |H(j\infty)| = 20\log_{10} 1 = \SI{0}{dB}\\
+    \end{aligned}
+\end{equation}
+
+Ricordando la definizione di funzione di trasferimento come rapporto tra uscita e ingresso, 
+il modulo della funzione di trasferimento può essere interpretato come il guadagno del sistema. 
+Si possono quindi distinguere i seguenti casi:
+
+\begin{itemize}
+    \item \textbf{Frequenze molto basse} $(\omega \to 0):\qquad$
+    \(
+    |H(j\omega)| \to 0 \quad (-\infty\,\text{dB})\\
+    \)
+    Il guadagno tende a zero, quindi l'ampiezza del segnale di uscita tende ad annullarsi.
+
+    \item \textbf{Pulsazione naturale} $(\omega = \omega_n):\qquad$
+    \(
+    |H(j\omega_n)| = Q\\
+    \)
+    Il guadagno del sistema è pari a $Q$, che in decibel vale
+    \(
+    20\log_{10}(Q)\ \text{dB}.
+    \)
+
+    \item \textbf{Frequenze molto elevate} $(\omega \to \infty):\qquad$
+    \(
+    |H(j\omega)| \approx 1 \quad (0\,\text{dB})\\
+    \)
+    Il guadagno è unitario, quindi il segnale di uscita ha la stessa ampiezza del segnale di ingresso.
+
+\end{itemize}Essendo che il filtro è del secondo ordine, per frequenze inferiori alla pulsazione naturale $\omega_n$, il modulo cresce con una pendenza di $\SI{40}{dB/dec}$, come si può vedere dal diagramma di Bode del modulo riportato di seguito.
+\begin{center}
+\begin{tikzpicture}
+\begin{semilogxaxis}[
+    width=12cm, height=7cm, grid=both,
+    xlabel={Pulsazione $\omega$ [rad/s]}, ylabel={Modulo $|H(j\omega)|$ [dB]},
+    xmin=0.1, xmax=1000, ymin=-40, ymax=20,
+    legend pos=south east
+]
+\def\omegan{10}
+\def\Qone{0.5} \def\Qtwo{0.707} \def\Qthree{1.0} \def\Qfour{4.0} \def\Qfive{10.0}
+
+% Plot Modulo per vari Q
+\addplot[purple, thick, domain=0.1:1000, samples=\plotsamples] {20*log10((x/\omegan)^2 / sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qone))^2))}; \addlegendentry{$Q=0.5$}
+\addplot[blue, thick, domain=0.1:1000, samples=\plotsamples] {20*log10((x/\omegan)^2 / sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qtwo))^2))}; \addlegendentry{$Q=0.707$}
+\addplot[red, thick, domain=0.1:1000, samples=\plotsamples] {20*log10((x/\omegan)^2 / sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qthree))^2))}; \addlegendentry{$Q=1.0$}
+\addplot[green!70!black, thick, domain=0.1:1000, samples=\plotsamples] {20*log10((x/\omegan)^2 / sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qfour))^2))}; \addlegendentry{$Q=4.0$}
+\addplot[yellow!70!black, thick, domain=0.1:1000, samples=\plotsamples] {20*log10((x/\omegan)^2 / sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qfive))^2))}; \addlegendentry{$Q=10.0$}
+
+% Asintoti
+\addplot[dashed, black, domain=0.1:\omegan] {40*log10(x/\omegan)};
+\addplot[dashed, black, domain=\omegan:1000] {0};
+\end{semilogxaxis}
+\end{tikzpicture}
+\end{center}
+
+Come si può vedere nel diagramma del modulo la linea tratteggiata, che indica il diagramma asintotico del modulo, ha una pendenza di $\SI{40}{dB/dec}$ prima della pulsazione naturale ha una pendenza nulla appena superata la pulsazione naturale mentre .
+
+\begin{itemize}
+    \item Se $\omega < \omega_n: \SI{40}{dB/dec}$
+    \item Se $\omega > \omega_n:\SI{0}{dB/dec}$
+\end{itemize}
+Si nota anche che, avvicinandosi alla pulsazione naturale, il filtro si comporta in maniera diversa in funzione di $Q$: alti valori di $Q$, che ricordiamo corrispondono a bassi valori di $\zeta$, mostrano un picco; mentre, per bassi valori di $Q$, quindi alti di $\zeta$, il grafico non presenta picchi.
+
+\subsection{Diagramma di Bode della Fase}
+
+
+
+Andiamo ora a dimostrare il comportamento della fase della funzione di trasferimento. 
+
+\begin{equation}
+\phi(\omega) = \arg\left(H(j\omega)\right) = \arg\left(\frac{(j\omega)^2}{\omega_n^2}\right) - \arg\left(\frac{(j\omega)^2}{\omega_n^2} + \frac{j\omega}{Q\omega_n} + 1\right)
+\end{equation}
+
+Il primo termine, che rappresenta la fase dello zero di secondo ordine, è costante e pari a $+180^\circ$ (o $\pi$ radianti) per qualsiasi frequenza $\omega$. Quindi, per semplicità, si può riscrivere l'espressione della fase come:
+
+\begin{equation}
+\phi(\omega) = \arg\left(H(j\omega)\right) = \pi
+-\arctan\left(\frac{\frac{\omega}{Q\omega_n}}{1-\left(\frac{\omega}{\omega_n}\right)^2}\right)
+\end{equation}
+
+A questo punto basterà calcolare i seguenti limiti per capire il comportamento della fase espressa in radianti alle frequenze basse, alla pulsazione naturale e alle frequenze elevate:
+
+\begin{equation}
+\lim_{\omega \to 0} \phi(\omega) = \pi
+-\arctan\left(\frac{\frac{0}{Q\omega_n}}{1-\left(\frac{0}{\omega_n}\right)^2}\right)
+= \pi
+\end{equation}
+
+\begin{equation}
+\lim_{\omega \to \omega_n} \phi(\omega) = \pi
+-\arctan\left(\frac{\frac{\omega_n}{Q\omega_n}}{1-\left(\frac{\omega_n}{\omega_n}\right)^2}\right)
+=
+\pi-\arctan(\infty)
+=
+\pi-\frac{\pi}{2}=\frac{\pi}{2}
+\end{equation}
+
+Ricorrendo ad un abuso di notazione, si può scrivere:
+
+\begin{equation}
+\lim_{\omega \to \infty} \phi(\omega) = \pi
+-\arctan\left(\frac{\frac{\infty}{Q\omega_n}}{1-\left(\frac{\infty}{\omega_n}\right)^2}\right)
+=
+0
+\end{equation}
+
+Si possono quindi distinguere i seguenti casi:
+
+\begin{itemize}
+
+\item \textbf{Frequenze molto basse} $(\omega \to 0):\qquad$
+\(
+\phi(\omega) \approx \pi\SI{}{rad}
+\)
+
+Il segnale di uscita risulta invertito di fase rispetto al segnale di ingresso.
+
+\item \textbf{Pulsazione naturale} $(\omega = \omega_n):\qquad$
+\(
+\phi(\omega_n) = -\frac{\pi}{2}\,\SI{}{rad}
+\)
+
+Il segnale di uscita è sfasato di $90^\circ$ rispetto al segnale di ingresso.
+
+\item \textbf{Frequenze molto elevate} $(\omega \to \infty):\qquad$
+\(
+\phi(\omega) \to \,\SI{0}{rad}
+\)
+
+Il segnale di uscita è praticamente in fase con il segnale di ingresso.
+
+
+\end{itemize}
+
+Essendo il filtro del secondo ordine, la fase complessiva varia di $180^\circ$ tra basse ed alte frequenze, passando progressivamente da $180^\circ$ a $0^\circ$ nell'intorno della pulsazione naturale $\omega_n$, come si può osservare nel diagramma di Bode della fase riportato di seguito.
+\begin{center}
+\begin{tikzpicture}
+\begin{semilogxaxis}[
+    width=12cm, height=7cm, grid=both,
+    xlabel={Pulsazione $\omega$ [rad/s]}, ylabel={Fase $\angle H(j\omega)$ [rad]},
+    xmin=0.1, xmax=1000, ymin=-0.5, ymax=3.5,
+    legend pos=north east,
+    ytick={0, pi/2, pi, 3*pi/2, 2*pi},
+    yticklabels={$0$, $\pi/2$, $\pi$, $3\pi/2$, $2\pi$}
+]
+\def\omegan{10}
+\def\degTorad{pi/180}
+\def\Qone{0.5} \def\Qtwo{0.707} \def\Qthree{1.0} \def\Qfour{4.0} \def\Qfive{10.0}
+
+% Plot Fase: pi - atan2(...)
+% Q = 0.5
+\addplot[purple, thick, domain=0.1:1000, samples=\plotsamples]
+{pi-atan2(x/(\omegan*\Qone),1-(x/\omegan)^2)*\degTorad};
+\addlegendentry{$Q=0.5$}
+
+% Q = 0.707
+\addplot[blue, thick, domain=0.1:1000, samples=\plotsamples]
+{pi-atan2(x/(\omegan*\Qtwo),1-(x/\omegan)^2)*\degTorad};
+\addlegendentry{$Q=0.707$}
+
+% Q = 1
+\addplot[red, thick, domain=0.1:1000, samples=\plotsamples]
+{pi-atan2(x/(\omegan*\Qthree),1-(x/\omegan)^2)*\degTorad};
+\addlegendentry{$Q=1.0$}
+
+% Q = 4
+\addplot[green!70!black, thick, domain=0.1:1000, samples=\plotsamples]
+{pi-atan2(x/(\omegan*\Qfour),1-(x/\omegan)^2)*\degTorad};
+\addlegendentry{$Q=4.0$}
+
+% Q = 10
+\addplot[yellow!70!black, thick, domain=0.1:1000, samples=\plotsamples]
+{pi-atan2(x/(\omegan*\Qfive),1-(x/\omegan)^2)*\degTorad};
+\addlegendentry{$Q=10.0$}
+% Asintoti
+\addplot[dashed, black, domain=0.1:10] {pi};
+\addplot[dashed, black, domain=10:1000] {0};
+\end{semilogxaxis}
+\end{tikzpicture}
+\end{center}
+
+
+Come si può osservare dal diagramma della fase, per frequenze molto basse la fase è circa di $180^\circ$, mentre diminuisce progressivamente fino a raggiungere $0^\circ$ alle alte frequenze.
+
+
+Si nota inoltre che il parametro $Q$ influenza la rapidità con cui avviene la variazione della fase nell'intorno della pulsazione naturale $\omega_n$: valori elevati di $Q$ producono una variazione più brusca, mentre valori più bassi rendono la transizione più graduale.

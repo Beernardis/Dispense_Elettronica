@@ -1,0 +1,981 @@
+
+
+\chapter{Il Filtro Passa-Basso (Low-Pass)}
+
+\section{LP a Guadagno Unitario}
+Sostituendo $Z_1$ e $Z_2$ con due resistori $R_1$ e $R_2$ e $Z_3$ e $Z_4$ con due condensatori $C_1$ e $C_2$ troviamo la prima configurazione: \textbf{il filtro attivo Passa-Basso}.\\
+Ricordiamo che un filtro passa basso ha lo scopo di permettere il passaggio delle basse frequenze e attenuare le alte frequenze. Un filtro Passa-Basso del primo ordine attenua le alte frequenze di $\SI{-20}{dB/dec}$ dopo il superamento della pulsazione di rottura $\omega_n$.
+
+\SallenKeyLP
+
+\subsection{Funzione di trasferimento}
+La dimostrazione per il seguente filtro segue la dimostrazione fatta nel capitolo precedente, quindi possiamo utilizzare l'ultima formula e sostituire i valori di impedenza con $R$ per i resistori e con $\frac{1}{j\omega C}$ per i condensatori:
+
+\begin{equation}
+        H(j\omega) = \frac{\frac{1}{j\omega C_1}\cdot \frac{1}{j\omega C_2}}{R_1R_2+\frac{1}{j\omega C_1}\cdot(R_1+R_2)+\frac{1}{j\omega C_1}\frac{1}{j\omega C_2}}
+        \label{eq: FdT jw LP}
+\end{equation}
+
+Per studiare la stabilità dei sistemi e per disegnare i diagrammi di bode, ha senso applicare la sostituzione $s = j\omega$, passando dal dominio del tempo al dominio delle frequenze. La funzione di trasferimento diventerà quindi:
+
+\begin{equation}
+        H(s) = \frac{\frac{1}{s C_1}\cdot \frac{1}{s C_2}}{R_1R_2+\frac{1}{s C_1}\cdot(R_1+R_2)+\frac{1}{s C_1}\cdot\frac{1}{s C_2}}= \frac{1}{s^2C_1C_2R_1R_2+sC_2(R_1+R_2)+1}
+        \label{eq: FdT s LP}
+\end{equation}
+
+
+
+
+\subsection{Pulsazione di rottura \texorpdfstring{$\omega_n$}{ωₙ}}
+
+Per ricavare i parametri caratteristici del filtro, confrontiamo l'espressione ottenuta con la forma canonica di una funzione di trasferimento del secondo ordine:
+
+\begin{equation}
+    H(s) = \frac{1}{\left(\frac{s}{\omega_n}\right)^2 + \frac{2\zeta}{\omega_n}s + 1} = \frac{1}{\frac{s^2}{\omega_n^2} + \frac{s}{Q\omega_n} + 1}
+    \label{eq: FdT norm LP}
+\end{equation}
+
+Dal confronto dei coefficienti del termine costante si ottiene immediatamente:
+\begin{equation}
+    \frac{1}{\omega_n^2} = R_1 R_2 C_1 C_2 \quad \Rightarrow \quad 
+    \omega_n = \frac{1}{\sqrt{R_1 R_2 C_1 C_2}}
+    \label{eq: Pulsazione naturale LP}
+\end{equation}
+
+La corrispondente frequenza di taglio è quindi
+\begin{equation}
+    f_n = \frac{\omega_n}{2\pi} = \frac{1}{2\pi \sqrt{R_1 R_2 C_1 C_2}}
+    \label{eq: Frequenza naturale LP}
+\end{equation}
+
+Essendo un filtro del secondo ordine, il diagramma di Bode presenterà una pendenza di $\SI{-40}{dB/dec}$ oltre la frequenza di taglio.
+
+\subsection{Fattore di merito \texorpdfstring{$Q$}{Q} e smorzamento \texorpdfstring{$\zeta$}{ζ}}
+
+Confrontando ora il termine lineare in $s$ del denominatore del circuito,
+\(
+s\,C_2(R_1 + R_2),
+\)
+con la forma standard $\frac{\omega_n s}{Q}$, si ottiene
+\begin{equation}
+    \frac{1}{\omega_n Q} = C_2(R_1 + R_2) \quad \Rightarrow \quad 
+    Q = \frac{1}{\omega_n C_2(R_1 + R_2)}
+    \label{eq: Fattore di merito LP}
+\end{equation}
+
+Sostituendo l'espressione ottenuta nella \ref{eq: Pulsazione naturale LP} di $\omega_n$ si ricava
+\begin{equation}
+    Q = \frac{\sqrt{R_1 R_2 C_1 C_2}}{C_2 (R_1 + R_2)}
+      = \frac{\sqrt{R_1 R_2 \frac{C_1}{C_2}}}{R_1 + R_2}
+      \label{eq: Fattore di merito RC LP}
+\end{equation}
+
+Questa formula evidenzia chiaramente come il fattore di merito dipenda dai valori dei componenti del circuito: le resistenze $R_1$ e $R_2$ e le capacità $C_1$ e $C_2$. Un $Q$ elevato corrisponde a un picco più pronunciato nella risposta in frequenza del filtro, mentre un $Q$ basso indica un sistema più smorzato.
+
+Se invece si vuole ragionare in termini di smorzamento $\zeta$, si può utilizzare la relazione $Q = \frac{1}{2\zeta}$, ottenendo:
+\begin{equation}
+    \zeta = \frac{1}{2Q} = \frac{C_2(R_1 + R_2)}{2\sqrt{R_1 R_2 C_1 C_2}}
+    \label{eq: Smorzamento LP}
+\end{equation}
+
+
+
+
+\subsection{Progettazione filtro Sallen-Key LP}
+\label{sec:progetto_lowpass}
+
+Dopo aver ricavato le espressioni di \(\omega_n\) e \(Q\) in funzione dei componenti, è utile capire come scegliere \(R_1,R_2,C_1,C_2\) per soddisfare determinate specifiche (frequenza di taglio \(f_n\) e fattore di merito \(Q\)). 
+\subsubsection{Strategie di progetto}
+Poiché abbiamo quattro componenti ma solo due specifiche (\(\omega_n\) e \(Q\)), esistono infinite soluzioni. Per semplificare il dimensionamento si adottano vari approcci:
+
+\begin{enumerate}
+\item \textbf{Componenti uguali:} \(R_1 = R_2 = R\) e \(C_1 = C_2 = C\).  
+In questo caso si ottiene immediatamente \(Q = 0.5\) e \(\omega_n = 1/(RC)\). È la scelta più semplice, ma vincola il fattore di merito a 0.5 (filtro criticamente smorzato).
+
+\item \textbf{Condensatori uguali:} \(C_1 = C_2 = C\).  
+Ponendo \(C_1 = C_2 = C\) si ha:
+\begin{equation}
+\omega_n = \frac{1}{C\sqrt{R_1R_2}}, \qquad 
+Q = \frac{\sqrt{R_1R_2}}{R_1+R_2}. \label{eq: wnQ_Cequal LP}
+\end{equation}
+Fissato \(Q\), si può ricavare il rapporto tra le resistenze. Indicando con \(k = R_2/R_1\) si ha:
+\begin{equation}
+Q = \frac{\sqrt{k}}{1+k} \quad\Rightarrow\quad k^2 - 2\left(2Q^2-1\right)k + 1 = 0. \label{LP:Q_k}
+\end{equation}
+Questa equazione fornisce due soluzioni; in pratica si sceglie quella che porta a valori di resistenza ragionevoli.
+
+\item \textbf{Resistenze uguali:} \(R_1 = R_2 = R\).  
+In questo caso:
+\begin{equation}
+\omega_n = \frac{1}{R\sqrt{C_1C_2}}, \qquad 
+Q = \sqrt{\frac{C_1}{C_2}}\,\frac{1}{2}. \label{eq:wnQ_Requal LP}
+\end{equation}
+Quindi il rapporto delle capacità determina \(Q\):
+\begin{equation}
+\frac{C_1}{C_2} = 4Q^2. \label{eq:C_ratio LP}
+\end{equation}
+
+\item \textbf{Relazioni scalate:} \(R_1 = nR_2\) e \(C_1 = mC_2\).  
+Questa è la scelta più generale, che include come casi particolari quelle precedenti (\(n=1\) resistenze uguali, \(m=1\) condensatori uguali). Sostituendo nelle espressioni di \(\omega_n\) e \(Q\) si ottiene:
+\begin{equation}
+\omega_n = \frac{1}{\sqrt{nR_2^2 \cdot mC_2^2}} = \frac{1}{R_2C_2\sqrt{nm}}, \qquad 
+Q = \frac{\sqrt{nR_2^2\,\dfrac{mC_2}{C_2}}}{nR_2+R_2} = \frac{R_2\sqrt{nm}}{R_2(n+1)} = \frac{\sqrt{nm}}{n+1}. \label{eq:wnQ_general LP}
+\end{equation}
+Fissati \(\omega_n\) e \(Q\), possiamo determinare i rapporti \(n\) e \(m\):
+\begin{equation}
+Q = \frac{\sqrt{nm}}{n+1} \quad\Rightarrow\quad m = \frac{Q^2 (n+1)^2}{n}. \label{eq:m_n LP}
+\end{equation}
+A questo punto si sceglie un valore comodo per \(n\) (ad esempio \(n=1,2,3,\dots\)) che dia un \(m\) ragionevole (tipicamente compreso tra 0,1 e 10 per evitare componenti troppo diversi). Una volta fissati \(n\) e \(m\), si ricava \(R_2\) (o \(C_2\)) dalla pulsazione naturale:
+\begin{equation}
+R_2C_2 = \frac{1}{\omega_n\sqrt{nm}}. \label{eq:R2C2 LP}
+\end{equation}
+Si assegna quindi un valore arbitrario a \(C_2\) (per esempio \(10\,\text{nF}\)) e si calcola \(R_2\); infine si determinano \(R_1=nR_2\) e \(C_1=mC_2\). Questa procedura garantisce il soddisfacimento di entrambe le specifiche con la massima flessibilità.
+\end{enumerate}
+\subsubsection{Scelta dei componenti reali}
+\begin{itemize}
+\item \textbf{Resistenze:} utilizzare resistenze con tolleranza \(1\%\) o \(0,5\%\) per mantenere il \(Q\) entro limiti accettabili. Il valore di \(Q\) è sensibile alle tolleranze, soprattutto quando si richiedono picchi pronunciati.
+\item \textbf{Condensatori:} preferire condensatori con bassa tolleranza (es. film in poliestere o polipropilene, \(5\%\) o meglio \(2\%\)). Evitare condensatori ceramici ad alta costante dielettrica (classe Y5V, Z5U) perché fortemente non lineari e variabili con la tensione.
+\item \textbf{Amplificatore operazionale:} la larghezza di banda dell'OpAmp deve essere molto maggiore di \(f_n\) (almeno 10–100 volte) per non alterare la risposta. Per \(f_n = 1\,\text{kHz}\) un comune LM358 o TL081 è sufficiente; per frequenze più alte servono OpAmp a banda larga (es. NE5532, AD823).
+\end{itemize}
+
+
+
+\subsubsection{Analisi della sensibilità ai componenti}
+\label{sec:sensitivita}
+
+Quando si realizza un filtro con componenti reali, è importante valutare come le inevitabili tolleranze e le variazioni termiche influenzino i parametri caratteristici \(\omega_n\) e \(Q\). Lo strumento matematico più comune è la \textbf{sensibilità normalizzata}, definita come:
+
+\begin{equation}
+S_x^y = \frac{x}{y} \frac{\partial y}{\partial x}
+\label{eq:def_sensibilita LP}
+\end{equation}
+
+che rappresenta la variazione percentuale di \(y\) conseguente a una variazione dell'\(1\%\) di \(x\). Ad esempio, \(S_x^y = 0,5\) significa che un incremento dell'\(1\%\) di \(x\) produce un incremento dello \(0,5\%\) di \(y\).
+
+\paragraph{Sensibilità di \(\omega_n\)}
+
+Per il filtro passa-basso Sallen-Key, la pulsazione naturale l'abbiamo ricavata nella formula (2.4).
+
+Calcoliamo le sensibilità rispetto a ciascun componente:
+
+\begin{equation}
+S_{R_1}^{\omega_n} = \frac{R_1}{\omega_n} \cdot \frac{\partial \omega_n}{\partial R_1}
+= \frac{R_1}{\omega_n} \cdot \left( -\frac{1}{2} \frac{1}{R_1^{3/2} \sqrt{R_2 C_1 C_2}} \right)
+= -\frac{1}{2}.
+\label{eq:S_R1_wn LP}
+\end{equation}
+
+Analogamente si ottiene:
+
+\begin{equation}
+S_{R_2}^{\omega_n} = -\frac{1}{2},\qquad 
+S_{C_1}^{\omega_n} = -\frac{1}{2},\qquad 
+S_{C_2}^{\omega_n} = -\frac{1}{2}
+\label{eq:S_altre_wn LP}
+\end{equation}
+
+Tutte le sensibilità sono uguali a \(-1/2\): una variazione dell'\(1\%\) in uno qualsiasi dei quattro componenti modifica \(\omega_n\) dello \(-0,5\%\) (cioè in direzione opposta). Questa uniformità è una caratteristica interessante della topologia: non vi sono componenti critici per la frequenza di taglio.
+
+\paragraph{Sensibilità di \(Q\)}
+
+Ricordando la formula di \(Q\) in termini dei componenti (2.6)/(2.7), si può calcolare la sensibilità rispetto a ciascun componente. La dipendenza è più complessa rispetto a \(\omega_n\), e le sensibilità non sono tutte uguali.
+
+Calcoliamo le sensibilità una per volta, ricordando che \(\omega_n\) dipende a sua volta dai componenti. Possiamo procedere in due modi: applicare la definizione direttamente alla formula di \(Q\) in termini di \(R_1,R_2,C_1,C_2\), oppure sfruttare le proprietà delle sensibilità. Seguiamo il primo approccio per chiarezza.
+
+\begin{itemize}
+\item \textbf{Sensibilità rispetto a \(R_1\):}
+
+\begin{equation}
+\frac{\partial Q}{\partial R_1} = \frac{\partial}{\partial R_1} \left( \frac{\sqrt{R_1 R_2 C_1 C_2}}{C_2 (R_1+R_2)} \right)
+\end{equation}
+
+Ponendo \(A = \sqrt{R_1 R_2 C_1 C_2}\) e \(B = C_2 (R_1+R_2)\), si ha \(\frac{\partial Q}{\partial R_1} = \frac{A' B - A B'}{B^2}\) con \(A' = \frac{1}{2} \sqrt{\frac{R_2 C_1 C_2}{R_1}}\) e \(B' = C_2\). Dopo qualche passaggio si ottiene:
+
+\begin{equation}
+S_{R_1}^{Q} = \frac{R_1}{Q} \frac{\partial Q}{\partial R_1} = \frac{1}{2} - \frac{R_1}{R_1+R_2}
+\label{eq:S_R1_Q}
+\end{equation}
+
+\item \textbf{Sensibilità rispetto a \(R_2\):} per simmetria,
+
+\begin{equation}
+S_{R_2}^{Q} = \frac{1}{2} - \frac{R_2}{R_1+R_2}
+\label{eq:S_R2_Q}
+\end{equation}
+
+\item \textbf{Sensibilità rispetto a \(C_1\):} poiché \(Q\) è proporzionale a \(\sqrt{C_1}\),
+
+\begin{equation}
+S_{C_1}^{Q} = \frac{1}{2}
+\label{eq:S_C1_Q}
+\end{equation}
+
+\item \textbf{Sensibilità rispetto a \(C_2\):} qui \(Q\) è proporzionale a \(\sqrt{C_2}\) a numeratore e a \(C_2\) a denominatore, quindi complessivamente \(Q \propto 1/\sqrt{C_2}\). Si ricava:
+
+\begin{equation}
+S_{C_2}^{Q} = -\frac{1}{2}
+\label{eq:S_C2_Q}
+\end{equation}
+\end{itemize}
+
+Si noti che le sensibilità rispetto a \(R_1\) e \(R_2\) dipendono dal rapporto tra le resistenze, mentre quelle rispetto alle capacità sono costanti (\(\pm 1/2\)). In particolare, se \(R_1 = R_2\), si ha:
+
+\begin{equation}
+S_{R_1}^{Q} = \frac{1}{2} - \frac{1}{2} = 0,\qquad S_{R_2}^{Q} = 0
+\label{eq:S_R_uguali}
+\end{equation}
+
+Questo è un risultato notevole: nella configurazione con resistenze uguali, il fattore di merito è insensibile alle variazioni delle resistenze (primo ordine). Invece, se \(R_1 \ll R_2\), allora \(S_{R_1}^{Q} \approx \frac{1}{2}\) e \(S_{R_2}^{Q} \approx -\frac{1}{2}\), rendendo \(Q\) più vulnerabile alle tolleranze.
+
+\paragraph{Implicazioni pratiche}
+
+\begin{itemize}
+\item La frequenza di taglio \(\omega_n\) ha sensibilità moderata e uniforme: una tolleranza del \(5\%\) su un componente si traduce in una variazione del \(2,5\%\) su \(f_n\). È quindi facile mantenere la frequenza entro limiti accettabili con componenti standard.
+\item Il fattore di merito \(Q\) può essere molto sensibile, soprattutto se si scelgono valori di resistenze molto diversi. Per applicazioni che richiedono un \(Q\) preciso (ad esempio filtri con picco pronunciato), è consigliabile:
+\begin{itemize}
+    \item Usare resistenze uguali per rendere \(Q\) insensibile alle variazioni di \(R\).
+    \item Usare condensatori con tolleranza stretta poiché \(S_{C_1}^{Q} = +1/2\) e \(S_{C_2}^{Q} = -1/2\).
+    \item In generale, evitare rapporti estremi tra i componenti.
+\end{itemize}
+\item Le variazioni termiche possono essere compensate in parte scegliendo componenti con coefficienti di temperatura simili (ad esempio resistori e condensatori con lo stesso segno e ordine di grandezza del coefficiente).
+\end{itemize}
+
+\paragraph{Esempio numerico}
+
+Riprendiamo il filtro Butterworth con \(f_n = 1\,\text{kHz}\) progettato con resistenze uguali (\(R=11\,\text{k}\Omega\)) e \(C_1 = 22\,\text{nF}\), \(C_2 = 10\,\text{nF}\). In questo caso:
+
+\begin{equation}
+S_{R}^{Q}=0,\quad S_{C_1}^{Q}=0,5,\quad S_{C_2}^{Q}=-0,5.
+\label{eq:esempio_sensibilita}
+\end{equation}
+
+Se i condensatori hanno tolleranza del \(5\%\), la variazione massima di \(Q\) si ottiene considerando variazioni indipendenti:
+
+\begin{equation}
+\frac{\Delta Q}{Q} \approx S_{C_1}^{Q} \frac{\Delta C_1}{C_1} + S_{C_2}^{Q} \frac{\Delta C_2}{C_2}.
+\label{eq:variazione_Q}
+\end{equation}
+
+Nel caso peggiore con \(\Delta C_1/C_1 = +5\%\) e \(\Delta C_2/C_2 = -5\%\), si ha:
+
+\begin{equation}
+\frac{\Delta Q}{Q} \approx 0,5 \cdot 0,05 + (-0,5) \cdot (-0,05) = 0,025 + 0,025 = 0,05 = 5\%.
+\label{eq:calcolo_esempio}
+\end{equation}
+
+Pertanto \(Q\) può variare del \(5\%\) a causa delle tolleranze dei condensatori. Se il progetto richiede un \(Q\) preciso (ad esempio per un filtro Chebyshev con ripple definito), potrebbe essere necessario selezionare i componenti o utilizzare condensatori con tolleranza dell'1\%.
+
+
+\subsubsection{L'operazionale reale: limitazioni e scelta}
+
+Nell'analisi fin qui condotta si è assunto che l'amplificatore operazionale sia ideale: guadagno infinito, banda infinita, impedenza d'ingresso infinita, impedenza d'uscita nulla e assenza di tensioni/correnti di offset. In un progetto reale queste idealità cadono e le caratteristiche dell'operazionale influenzano le prestazioni del filtro, talvolta in modo significativo.
+
+\paragraph{Prodotto guadagno–larghezza di banda (GBWP)}
+La limitazione più importante per un filtro attivo è la risposta in frequenza finita dell'operazionale. Un modello semplice ma efficace è quello a \textbf{polo dominante}:
+
+\begin{equation}
+A(s) = \frac{A_0}{1 + \frac{s}{\omega_p}} \approx \frac{\text{GBWP}}{s} \quad \text{(per } \omega \gg \omega_p\text{)}.
+\label{eq:opamp_polo_dominante}
+\end{equation}
+
+dove \(A_0\) è il guadagno differenziale in continua e \(\omega_p\) è la pulsazione del polo dominante; il prodotto \(A_0 \omega_p = \text{GBWP}\) è costante (in rad/s o Hz). Per frequenze superiori a \(\omega_p\) il guadagno diminuisce di 20 dB/dec.
+
+Nella configurazione Sallen-Key con guadagno unitario (buffer), l'operazionale viene utilizzato proprio come inseguitore di tensione. Il suo guadagno ad anello chiuso ideale è 1, ma la risposta reale presenterà una banda limitata e uno sfasamento aggiuntivo. Per filtri con frequenza di taglio \(f_n\) elevata, il guadagno disponibile dall'operazionale alla frequenza \(f_n\) potrebbe non essere sufficientemente alto da garantire il comportamento ideale. Una regola empirica comune è:
+
+\begin{equation}
+\text{GBWP} \gtrsim (10 \div 100) \cdot f_n.
+\label{eq:regola_gbwp}
+\end{equation}
+
+Se il GBWP è troppo basso, il filtro mostrerà un \textbf{picco di Q} anomalo (il fattore di merito effettivo può aumentare) e la frequenza di taglio effettiva si discosterà da quella teorica.
+
+\paragraph{Slew rate}
+Lo \textbf{slew rate} (SR) è la massima velocità di variazione della tensione di uscita, espressa in V/µs. Quando il segnale di ingresso richiede una variazione più rapida di quanto l'operazionale possa sostenere, si verifica \textbf{distorsione di slew rate} (il segnale d'uscita non riesce a seguire quello ideale, appiattendosi). Questo fenomeno è particolarmente critico in filtri che devono elaborare segnali di grande ampiezza ad alta frequenza.
+
+Per un'onda sinusoidale di ampiezza \(V_p\) e frequenza \(f\), la massima pendenza è \(2\pi f V_p\). Affinché non si abbia distorsione occorre:
+
+\begin{equation}
+2\pi f_{\text{max}} V_p \le \text{SR}.
+\label{eq:slew_rate}
+\end{equation}
+
+Nel contesto del filtro, se all'ingresso sono presenti segnali con componenti spettrali vicine a \(f_n\) e di ampiezza elevata, lo slew rate può limitare la dinamica utile.
+
+\paragraph{Altre non idealità}
+\begin{itemize}
+    \item \textbf{Tensione di offset} (\(V_{os}\)): compare all'uscita anche con ingresso nullo e può saturare lo stadio successivo se il guadagno in continua è elevato. Nel filtro Sallen-Key con guadagno unitario l'offset viene trasferito direttamente in uscita. Si può ridurre scegliendo operazionali con \(V_{os}\) molto bassa (es. OP07, chopper) o prevedendo un circuito di azzeramento.
+    \item \textbf{Correnti di bias} (\(I_b\)): fluiscono negli ingressi e, interagendo con le resistenze del circuito, generano tensioni di offset aggiuntive. Per ridurre l'effetto è opportuno che le resistenze viste dai due ingressi siano bilanciate (cosa che in Sallen-Key spesso non avviene). L'uso di operazionali con ingresso a FET (es. TL081) minimizza \(I_b\).
+    \item \textbf{Impedenza di ingresso}: molto alta (ideale infinita) ma non infinita; nel caso di operazionali bipolari può caricare i nodi interni del filtro, alterando leggermente i poli.
+    \item \textbf{Impedenza di uscita}: non nulla, può causare interazioni con carichi successivi. Per evitare variazioni della risposta, si può interporre uno stadio buffer separato se il filtro deve pilotare carichi bassi.
+    \item \textbf{Rumore}: l'operazionale introduce rumore termico e rumore a bassa frequenza (flicker). In applicazioni a basso segnale è essenziale scegliere componenti a basso rumore (es. NE5534, AD797).
+\end{itemize}
+
+\paragraph{Scelta dell'operazionale}
+Per filtri Sallen-Key di uso generale fino a qualche decina di kHz, operazionali come \textbf{TL081}, \textbf{LM358} o \textbf{NE5532} (quest'ultimo con GBWP di circa 10 MHz) sono adeguati. Per frequenze più elevate (centinaia di kHz o MHz) occorrono operazionali a banda larga come \textbf{AD823} (16 MHz), \textbf{OPA657} (1,6 GHz) o \textbf{LT6230}. È sempre consigliabile verificare sui data sheet che il GBWP sia almeno 10–20 volte maggiore della massima frequenza di interesse, e che lo slew rate sia sufficiente per l'ampiezza massima del segnale.
+
+
+
+
+\subsection{Diagrammi di Bode}
+In questo paragrafo andremo ad analizzare i diagrammi di Bode del modulo e della fase della funzione di trasferimento del filtro attivo passa-basso, con particolare attenzione al comportamento del filtro in funzione del fattore di merito $Q$.\\\\
+Come prima cosa bisogna sostituire $s$ con $j\omega$ nella funzione di trasferimento, ottenendo così la funzione di trasferimento nel dominio delle frequenze:
+
+\begin{equation}
+        H(j\omega) = \frac{1}{\left(\frac{j\omega}{\omega_n}\right)^2 + \frac{j\omega}{Q\omega_n} + 1}
+        \label{eq: sostituzione jw LP}
+\end{equation}
+
+Svolgendo pochi passaggi algebrici, raggruppiamo i termini al denominatore in modo da evidenziare la parte reale e quella immaginaria:
+\begin{equation}
+        H(j\omega) = \frac{1}{\left(1-\left(\frac{\omega}{\omega_n}\right)^2\right) + j\frac{\omega}{Q\omega_n}}
+        \label{eq: isolare Re e Im LP}
+\end{equation}
+
+
+
+
+
+
+
+
+\subsubsection{Diagramma di Bode del Modulo}
+
+Andiamo a dimostrare il comportamento del modulo della funzione di trasferimento. Si può ricavare l'espressione del modulo della funzione di trasferimento calcolando il modulo del numero complesso al denominatore:
+\begin{equation}
+    |H(j\omega)| = \frac{1}{\sqrt{\left(1-\left(\frac{\omega}{\omega_n}\right)^2\right)^2 + \left(\frac{\omega}{Q\omega_n}\right)^2}}
+    \label{eq: modulo LP}
+\end{equation}
+
+
+A questo punto basterà calcolare i seguenti limiti per capire il comportamento del modulo alle frequenze basse, alla pulsazione naturale e alle frequenze elevate:
+\begin{equation}
+    \lim_{\omega \to 0} |H(j\omega)| = \frac{1}{\sqrt{\left(1-\left(\frac{0}{\omega_n}\right)^2\right)^2 + \left(\frac{0}{Q\omega_n}\right)^2}} = 1
+    \label{eq: lim w 0 LP}
+\end{equation}
+
+\begin{equation}
+    \lim_{\omega \to \omega_n} |H(j\omega)| = \frac{1}{\sqrt{\left(1-\left(\frac{\omega_n}{\omega_n}\right)^2\right)^2 + \left(\frac{\omega_n}{Q\omega_n}\right)^2}} = Q
+    \label{eq: lim w wn LP}
+\end{equation}
+
+Ricorrendo ad un abuso di notazione, si può scrivere:
+
+\begin{equation}
+    \lim_{\omega \to \infty} |H(j\omega)| = \frac{1}{\sqrt{\left(1-\left(\frac{\infty}{\omega_n}\right)^2\right)^2 + \left(\frac{\infty}{Q\omega_n}\right)^2}} = 0
+    \label{eq: lim w infty LP}
+\end{equation}
+
+Applicando la formula per la conversione in decibel, si ottiene:
+
+\begin{equation}
+    \begin{aligned}
+    20\log_{10} |H(j\omega_0)| = 20\log_{10} 1 = \SI{0}{dB} \\\\
+    20\log_{10} |H(j\omega_n)| = 20\log_{10} Q \text{ [dB]} \\\\
+    20\log_{10} |H(j\infty)| = 20\log_{10} 0 = -\infty \text{ [dB]}\\
+    \end{aligned}
+    \label{eq: log modulo LP}
+\end{equation}
+
+Ricordando la definizione di funzione di trasferimento come rapporto tra uscita e ingresso, 
+il modulo della funzione di trasferimento può essere interpretato come il guadagno del sistema. 
+Si possono quindi distinguere i seguenti casi:
+
+\begin{itemize}
+    \item \textbf{Frequenze molto basse} $(\omega \to 0):\qquad$
+    \(
+    |H(j\omega)| \approx 1 \quad (0\,\text{dB})\\
+    \)
+    Il guadagno è unitario, quindi il segnale di uscita ha la stessa ampiezza del segnale di ingresso.
+
+    \item \textbf{Pulsazione naturale} $(\omega = \omega_n):\qquad$
+    \(
+    |H(j\omega_n)| = Q\\
+    \)
+    Il guadagno del sistema è pari a $Q$, che in decibel vale
+    \(
+    20\log_{10}(Q)\ \text{dB}.
+    \)
+
+    \item \textbf{Frequenze molto elevate} $(\omega \to \infty):\qquad$
+    \(
+    |H(j\omega)| \to 0 \quad (-\infty\,\text{dB})\\
+    \)
+    Il guadagno tende a zero, quindi l'ampiezza del segnale di uscita tende ad annullarsi.
+\end{itemize}Essendo che il filtro è del secondo ordine, per frequenze superiori alla pulsazione naturale $\omega_n$, il modulo decresce con una pendenza di $\SI{-40}{dB/dec}$, come si può vedere dal diagramma di Bode del modulo riportato di seguito.
+
+\begin{center}
+    
+\begin{tikzpicture}
+\begin{semilogxaxis}[
+    width=12cm,
+    height=7cm,
+    grid=both,
+    xlabel={Pulsazione $\omega$ [rad/s]},
+    ylabel={Modulo $|H(j\omega)|$ [dB]},
+    xmin=0.1, xmax=1000,
+    ymin=-30, ymax=20,
+    legend pos=south west
+]
+
+% Parametri del filtro
+\def\omegan{10} % Pulsazione naturale
+\def\Qone{0.5}
+\def\Qtwo{1.0}
+\def\Qthree{10.0}
+\def\Qfour{4.0}
+\def\Qfive{0.707}
+
+% Funzione Bode del modulo per Q=0.5
+\addplot[purple, thick, domain=0.1:1000, samples=\plotsamples] 
+    {20*log10(1/sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qone))^2))};
+\addlegendentry{$Q=0.5$}
+% Funzione Bode del modulo per Q=0.5
+\addplot[blue, thick, domain=0.1:1000, samples=\plotsamples] 
+    {20*log10(1/sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qfive))^2))};
+\addlegendentry{$Q=0.707$}
+
+
+% Funzione Bode del modulo per Q=1.0
+\addplot[red, thick, domain=0.1:1000, samples=\plotsamples] 
+    {20*log10(1/sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qtwo))^2))};
+\addlegendentry{$Q=1.0$}
+
+% Funzione Bode del modulo per Q=5.0
+\addplot[green!70!black, thick, domain=0.1:1000, samples=\plotsamples] 
+    {20*log10(1/sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qfour))^2))};
+    
+\addlegendentry{$Q=4.0$}% Funzione Bode del modulo per Q=5.0
+\addplot[yellow!70!black, thick, domain=0.1:1000, samples=\plotsamples] 
+    {20*log10(1/sqrt((1-(x/\omegan)^2)^2 + (x/(\omegan*\Qthree))^2))};
+\addlegendentry{$Q=10.0$}
+
+% Linee asintotiche basse frequenze (0 dB)
+\addplot[dashed, black, domain=0.1:\omegan, samples=2] {0};
+% Linee asintotiche alte frequenze (-40 dB/dec)
+\addplot[dashed, black, domain=\omegan:1000, samples=2] { -40*log10(x/\omegan) };
+
+\end{semilogxaxis}
+\end{tikzpicture}
+\end{center}
+
+Come si può vedere nel diagramma del modulo la linea tratteggiata, che indica il diagramma asintotico del modulo, ha una pendenza nulla prima della pulsazione naturale mentre ha una pendenza di $\SI{-40}{dB/dec}$ appena superata la pulsazione naturale.
+
+\begin{itemize}
+    \item Se $\omega < \omega_n: \SI{0}{dB/dec}\qquad$
+    \item Se $\omega > \omega_n:\SI{-40}{dB/dec}\qquad$
+\end{itemize}
+Si nota anche che, avvicinandosi alla pulsazione naturale, il filtro si comporta in maniera diversa in funzione di $Q$: alti valori di $Q$, che ricordiamo corrispondono a bassi valori di $\zeta$, mostrano un picco; mentre, per bassi valori di $Q$, quindi alti di $\zeta$, il grafico non presenta picchi.
+
+\subsubsection{Diagramma di Bode della Fase}
+
+Andiamo ora a dimostrare il comportamento della fase della funzione di trasferimento. 
+Sostituendo $s$ con $j\omega$ nella funzione di trasferimento e calcolando l'argomento del numero complesso ottenuto, si ricava l'espressione della fase:
+
+\begin{equation}
+\phi(\omega) = \arg\left(H(j\omega)\right) =
+-\arctan\left(\frac{\frac{\omega}{Q\omega_n}}{1-\left(\frac{\omega}{\omega_n}\right)^2}\right)
+\label{eq: Fase jw LP}
+\end{equation}
+
+A questo punto basterà calcolare i seguenti limiti per capire il comportamento della fase espressa in radianti alle frequenze basse, alla pulsazione naturale e alle frequenze elevate:
+
+\begin{equation}
+\lim_{\omega \to 0} \phi(\omega) =
+-\arctan\left(\frac{\frac{0}{Q\omega_n}}{1-\left(\frac{0}{\omega_n}\right)^2}\right)= 0
+\label{eq: Fase w 0 LP}
+\end{equation}
+
+\begin{equation}
+\lim_{\omega \to \omega_n} \phi(\omega) =
+-\arctan\left(\frac{\frac{\omega_n}{Q\omega_n}}{1-\left(\frac{\omega_n}{\omega_n}\right)^2}\right) = -\arctan(\infty) = -\frac{\pi}{2}
+\label{eq: Fase w wn LP}
+\end{equation}
+
+Ricorrendo ad un abuso di notazione, si può scrivere:
+
+\begin{equation}
+\lim_{\omega \to \infty} \phi(\omega) =
+-\arctan\left(\frac{\frac{\infty}{Q\omega_n}}{1-\left(\frac{\infty}{\omega_n}\right)^2}\right) = -\pi
+\label{eq: Fase w infty LP}
+\end{equation}
+
+Si possono quindi distinguere i seguenti casi:
+
+\begin{itemize}
+
+\item \textbf{Frequenze molto basse} $(\omega \to 0):\qquad$
+\(
+\phi(\omega) \approx \SI{0}{rad}
+\)
+
+Il segnale di uscita è praticamente in fase con il segnale di ingresso.
+
+\item \textbf{Pulsazione naturale} $(\omega = \omega_n):\qquad$
+\(
+\phi(\omega_n) = -\frac{\pi}{2}\,\SI{}{rad}
+\)
+
+Il segnale di uscita è sfasato di $90^\circ$ rispetto al segnale di ingresso.
+
+\item \textbf{Frequenze molto elevate} $(\omega \to \infty):\qquad$
+\(
+\phi(\omega) \to -\pi\,\SI{}{rad}
+\)
+
+Il segnale di uscita risulta invertito di fase rispetto al segnale di ingresso.
+
+\end{itemize}
+
+Essendo il filtro del secondo ordine, la fase complessiva varia di $180^\circ$ tra basse ed alte frequenze, passando progressivamente da $0^\circ$ a $-180^\circ$ nell'intorno della pulsazione naturale $\omega_n$, come si può osservare nel diagramma di Bode della fase riportato di seguito.
+
+\begin{center}
+
+\begin{tikzpicture}
+\begin{semilogxaxis}[
+    width=12cm,
+    height=7cm,
+    grid=both,
+    xlabel={Pulsazione $\omega$ [rad/s]},
+    ylabel={Fase $\phi(\omega)$ [gradi]},
+    xmin=0.01, xmax=100,
+    ymin=-190, ymax=10,
+    legend pos=south west,
+    ytick={0,-45,-90,-135,-180},
+    yticklabels={$0$, $-\pi/4$, $-\pi/2$, $-3\pi/4$, $-\pi$}
+]
+
+% Parametri del filtro
+\def\omegan{1}
+\def\Qone{0.5}
+\def\Qtwo{1.0}
+\def\Qthree{10.0}
+\def\Qfour{4.0}
+\def\Qfive{0.707}
+
+% Funzione fase per Q=0.5
+\addplot[purple, thick, domain=0.01:100, samples=\plotsamples]
+{-atan2((x/(\Qone*\omegan)),(1-(x/\omegan)^2))};
+\addlegendentry{$Q=0.5$}
+
+% Q = 0.707
+\addplot[blue, thick, domain=0.01:100, samples=\plotsamples]
+{-atan2((x/(\Qfive*\omegan)),(1-(x/\omegan)^2))};
+\addlegendentry{$Q=0.707$}
+
+% Q = 1
+\addplot[red, thick, domain=0.01:100, samples=\plotsamples]
+{-atan2((x/(\Qtwo*\omegan)),(1-(x/\omegan)^2))};
+\addlegendentry{$Q=1.0$}
+
+% Q = 4
+\addplot[green!70!black, thick, domain=0.01:100, samples=\plotsamples]
+{-atan2((x/(\Qfour*\omegan)),(1-(x/\omegan)^2))};
+\addlegendentry{$Q=4.0$}
+
+% Q = 10
+\addplot[yellow!70!black, thick, domain=0.01:100, samples=\plotsamples]
+{-atan2((x/(\Qthree*\omegan)),(1-(x/\omegan)^2))};
+\addlegendentry{$Q=10.0$}
+
+% Asintoti
+\addplot[dashed, black, domain=0.1:1, samples=2] {0};
+\addplot[dashed, black, domain=1:1000, samples=2] {-180};
+
+\end{semilogxaxis}
+\end{tikzpicture}
+
+\end{center}
+
+Come si può osservare dal diagramma della fase, per frequenze molto basse la fase è circa nulla, mentre diminuisce progressivamente fino a raggiungere $-180^\circ$ alle alte frequenze.
+
+Si nota inoltre che il parametro $Q$ influenza la rapidità con cui avviene la variazione della fase nell'intorno della pulsazione naturale $\omega_n$: valori elevati di $Q$ producono una variazione più brusca, mentre valori più bassi rendono la transizione più graduale.
+
+\subsection{Casi particolari}
+\subsubsection{Fattore di merito \texorpdfstring{$Q$}{Q} = 0.5}
+
+Analizzando matematicamente il denominatore della Funzione di Trasferimento, si può notare che un valore particolare che può assumere il fattore $Q$ è $0.5$. Questo perchè per $Q = 0.5$ il denominatore sarà un quadrato di binomio. 
+
+\begin{equation}
+\frac{s^2}{\omega_n^2} + \frac{s}{0.5\omega_n} + 1 = \frac{s^2}{\omega_n^2} + \frac{2s}{\omega_n} + 1 = \left(\frac{s}{\omega_n}+1\right)^2
+\label{eq: Completamento quadrato LP}
+\end{equation}
+
+Questa situazione si verifica quando i resistori hanno resistenza uguale e i condensatori hanno capacità uguale: $R = R_1 = R_2$ e $C = C_1 = C_2$.\\
+Si trovano quindi anche per questa particolare casistica i valori $\omega_n$ e $Q$:
+\begin{equation}
+    \omega_n = \frac{1}{\sqrt{R^2C^2}} = \frac{1}{RC}\qquad\qquad
+    Q = \frac{\sqrt{R^2 C^2}}{2RC} = \frac{1}{2} = 0.5
+    \label{eq: wn Q 0.5 LP}
+\end{equation}
+In questa situazione ha senso andare a calcolare il valore del modulo della FdT per $\omega = \omega_n$. 
+Sostituendo $\omega = \omega_n$ nella funzione di trasferimento si ottiene infatti:
+
+\begin{equation}
+\left|H(j\omega_n)\right| = \frac{1}{\sqrt{2^2}} = \frac{1}{2}
+\quad\implies\quad
+20\log_{10}\left(\frac{1}{2}\right) \approx \SI{-6.02}{dB}
+\label{eq: Modulo in dB LP}
+\end{equation}
+
+Il sistema risulta fortemente smorzato e il comportamento del filtro è equivalente a quello di due filtri del primo ordine identici posti in cascata, ciascuno caratterizzato dalla stessa pulsazione $\omega_n = \frac{1}{RC}$.
+
+\subsubsection{Fattore di merito \texorpdfstring{$Q = \frac{1}{\sqrt{2}} \approx 0.707$}{} (Butterworth)}
+Un altro caso particolare è quello in cui $Q$ assume il valore di $\frac{1}{\sqrt{2}} \approx 0.707$. In questo caso, il filtro è detto di Butterworth e presenta una risposta in frequenza particolarmente piatta nella banda passante, con un'attenuazione che aumenta gradualmente oltre la frequenza di taglio senza picchi o risonanze. 
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \begin{tikzpicture}[scale=0.8]
+            \begin{semilogxaxis}[
+                title={Modulo Butterworth ($Q=0.707$)},
+                xlabel={$\omega/\omega_n$},
+                ylabel={Guadagno [dB]},
+                grid=both,
+                xmin=0.1, xmax=10,
+                ymin=-40, ymax=5,
+                domain=0.1:10,
+                samples=\plotsamples
+            ]
+                \addplot[blue, thick] {20*log10(1 / sqrt((1-x^2)^2 + (x/0.707)^2))};
+                \draw[red, dashed] (1,0) -- (1,-3);
+                \node[red, anchor=south west] at (axis cs:1,-3) {\tiny -3dB};
+            \end{semilogxaxis}
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \begin{tikzpicture}[scale=0.8]
+            \begin{semilogxaxis}[
+                title={Fase Butterworth},
+                xlabel={$\omega/\omega_n$},
+                ylabel={Fase [rad]},
+                grid=both,
+                xmin=0.01, xmax=100,
+                ymin=-pi, ymax=0,
+                domain=0.01:100,
+                samples=\plotsamples,
+                ytick={0,-pi/4,-pi/2,-3*pi/4,-pi},
+                yticklabels={$0$, $-\pi/4$, $-\pi/2$, $-3\pi/4$, $-\pi$}
+            ]
+                \addplot[blue, thick] {-atan2((x/0.707), (1-x^2))*pi/180};
+            \end{semilogxaxis}
+        \end{tikzpicture}
+    \end{minipage}
+\end{figure}
+
+% --- SEZIONE BESSEL ---
+\paragraph{Fattore di merito \texorpdfstring{$Q = \frac{1}{\sqrt{3}} \approx 0.577$}{} (Bessel)}
+Un altro caso di interesse è quello in cui $Q$ assume il valore di $\frac{1}{\sqrt{3}} \approx 0.577$. In questo caso, il filtro è detto di Bessel e si caratterizza per una risposta in frequenza che preserva la forma d'onda del segnale, minimizzando la distorsione di fase. Questo lo rende particolarmente adatto per applicazioni in cui è importante mantenere l'integrità del segnale, come ad esempio nei sistemi audio o nelle comunicazioni.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \begin{tikzpicture}[scale=0.8]
+            \begin{semilogxaxis}[
+                title={Modulo Bessel ($Q=0.577$)},
+                xlabel={$\omega/\omega_n$},
+                ylabel={Guadagno [dB]},
+                grid=both,
+                xmin=0.1, xmax=10,
+                ymin=-40, ymax=5,
+                domain=0.1:10,
+                samples=\plotsamples
+            ]
+                \addplot[orange, thick] {20*log10(1 / sqrt((1-x^2)^2 + (x/0.577)^2))};
+                \node[orange, anchor=north west] at (axis cs:0.12,-5) {\tiny Roll-off più dolce};
+            \end{semilogxaxis}
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \begin{tikzpicture}[scale=0.8]
+            \begin{semilogxaxis}[
+                title={Fase Bessel (Lineare)},
+                xlabel={$\omega/\omega_n$},
+                ylabel={Fase [deg]},
+                grid=both,
+                xmin=0.01, xmax=100,
+                ymin=-pi, ymax=0,
+                domain=0.01:100,
+                samples=\plotsamples,
+                ytick={0,-pi/4,-pi/2,-3*pi/4,-pi},
+                yticklabels={$0$, $-\pi/4$, $-\pi/2$, $-3\pi/4$, $-\pi$}
+            ]
+                \addplot[orange, thick] {atan2(-(x/0.577), (1-x^2))*pi/180};
+                \node[anchor=south west] at (axis cs:0.1, -60) {\tiny Più lineare};
+            \end{semilogxaxis}
+        \end{tikzpicture}
+    \end{minipage}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Risposta al gradino}
+
+La risposta al gradino di un filtro passa-basso del secondo ordine dipende dai valori di $\omega_n$ e $Q$. In generale, la risposta al gradino può essere espressa come una combinazione di esponenziali e sinusoidi, a seconda del tipo di smorzamento del sistema (sovrasmorzato, criticamente smorzato o sottosmorzato).
+
+Per determinare la risposta al gradino, si può calcolare la trasformata di Laplace dell'ingresso a gradino unitario, che è $\frac{1}{s}$, e moltiplicarla per la funzione di trasferimento non normalizzata $H(s)$ del filtro. 
+
+\begin{equation}
+    Y(s) = H(s) \cdot \frac{1}{s} = \frac{\omega_n^2}{s\left(s^2 + \frac{\omega_n}{Q}s + \omega_n^2\right)}
+    \label{eq: risposta gradino LP}
+\end{equation}
+
+Scomponendo la funzione di trasferimento in frazioni parziali, si ottiene:
+\begin{equation}
+    \frac{\omega_n}{s\left(s^2 + \frac{\omega_n}{Q}s + \omega_n^2\right)} = \frac{1}{s} + \frac{-\left(s + \frac{\omega_n}{Q}\right)}{s^2 + \left(\frac{\omega_n}{Q}\right)s + \omega_n^2}
+    \label{eq: frazioni parziali LP}
+\end{equation}
+
+A questo punto, ricordando che l'antitrasformata di Laplace è un operatore lineare, si può calcolare l'antitrasformata di Laplace per ottenere la risposta al gradino nel dominio del tempo: 
+
+\begin{equation}
+    y(t) = \mathcal{L}^{-1}\left\{\frac{1}{s}\right\} + \mathcal{L}^{-1}\left\{\frac{-\left(s + \frac{\omega_n}{Q}\right)}{s^2 + \left(\frac{\omega_n}{Q}\right)s + \omega_n^2}\right\}
+    \label{eq: antitrasformata frazioni LP}
+\end{equation}
+
+Mentre l'antitrasformata di $\frac{1}{s}$ è semplicemente un gradino unitario $u(t)$, l'antitrasformata della seconda frazione dipende dal tipo di smorzamento del sistema, che a sua volta dipende dal valore di $Q$. Per questo motivo completiamo il quadrato a denominatore per ricondurci a funzioni di trasferimento standard:
+
+\begin{equation}
+    s^2 + \frac{\omega_n}{Q}s + \omega_n^2 = \left(s + \frac{\omega_n}{2Q}\right)^2 + \omega_n^2 - \frac{\omega_n^2}{4Q^2} = \left(s + \frac{\omega_n}{2Q}\right)^2 + \omega_d^2
+    \label{eq: somma tra quadrati LP}
+\end{equation}
+
+dove abbiamo definito la \textbf{pulsazione smorzata}:
+
+\begin{equation}
+    \omega_d = \omega_n \sqrt{1 - \frac{1}{4Q^2}}.
+    \label{eq: pulsazione smorzata LP}
+\end{equation}
+
+Ponendo $s' = s + \frac{\omega_n}{2Q}$, la frazione diventa:
+
+\begin{equation}
+    \frac{-\left(\left(s'\right) - \frac{\omega_n}{2Q}\right) + \frac{\omega_n}{Q}}{\left(s'\right)^2 + \omega_d^2} = \frac{-\left(\left(s'\right) + \frac{\omega_n}{2Q}\right)}{\left(s'\right)^2 + \omega_d^2} = - \frac{s'}{\left(s'\right)^2 + \omega_d^2} - \frac{\frac{\omega_n}{2Q}}{s'^2 + \omega_d^2}
+    \label{eq: quasi L sin e cos LP}
+\end{equation}
+
+Tenendo a mente l'equazione \ref{eq: pulsazione smorzata LP}, con un ultimo passaggio algebrico, si ottiene l'espressione finale della frazione:
+\begin{equation}
+- \frac{s'}{\left(s'\right)^2 + \omega_d^2} - \frac{1}{\sqrt{4Q^2-1}} \cdot \frac{\omega_d}{s'^2 + \omega_d^2}
+\label{eq: L sin e cos LP}
+\end{equation}
+
+
+A questo punto notiamo che la prima frazione corrisponde alla trasformata di $\cos(\omega_d t)$, mentre la seconda frazione corrisponde alla trasformata di $\sin(\omega_d t)$, entrambe moltiplicate per i rispettivi coefficienti.  
+
+Ricordandoci che la trasformata di Laplace gode della proprietà di traslazione, ovvero $\mathcal{L}^{-1}\{F(s + a)\} = e^{-at} f(t)$, otteniamo:
+
+\begin{equation}
+    y(t) = u(t) - e^{-\frac{\omega_n}{2Q} t} \left[\cos(\omega_d t) + \frac{1}{\sqrt{4Q^2-1}} \sin(\omega_d t)\right]
+    \label{eq: y_t con pulsazione smorzata LP}
+\end{equation}
+
+O in forma estesa:
+\begin{equation}
+    y(t) = u(t) - e^{-\frac{\omega_n}{2Q} t} \left[\cos\left(\omega_n \sqrt{1 - \frac{1}{4Q^2}} t\right) + \frac{1}{\sqrt{4Q^2-1}} \sin\left(\omega_n \sqrt{1 - \frac{1}{4Q^2}} t\right)\right]
+    \label{eq: y_t completa LP}
+\end{equation}
+
+Il risultato è conforme con la teoria: ci si aspettava una risposta al gradino sia con un termine esponenziale, che rappresenta lo smorzamento del sistema, che con un termine che rappresenta la risposta oscillatoria del sistema. 
+
+Se il termine $Q \leq 0.5$, il denominatore della funzione di trasferimento non presenta radici complesse coniugate, quindi la risposta al gradino non presenta oscillazioni e si riduce ad una combinazione di esponenziali decrescenti. 
+
+Avendo definito quindi la risposta al gradino, è possibile tracciare il grafico di $y(t)$ per diversi valori di $Q$ e osservare come il fattore di merito influenzi la risposta del sistema al gradino.
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    width=14cm,
+    height=8cm,
+    grid=both,
+    xlabel={$t$ [s]},
+    ylabel={$y(t)$},
+    xmin=0, xmax=40,
+    ymin=-0.2, ymax=2,
+    legend pos=south east
+]
+
+% Parametro naturale
+\def\omegan{1}
+
+% Valori di Q
+\def\Qone{0.5}
+\def\Qtwo{0.707}
+\def\Qthree{1.0}
+\def\Qfour{4.0}
+\def\Qfive{10.0}
+
+% Funzione y(t) usando la pulsazione smorzata
+\addplot[purple, thick, domain=0:40, samples=\plotsamples] 
+{1 - exp(-x*\omegan/(2*\Qone))*(cos(deg(\omegan*sqrt(1-1/(4*\Qone^2))*x)) + sin(deg(\omegan*sqrt(1-1/(4*\Qone^2))*x))/sqrt(4*\Qone^2-1))};
+\addlegendentry{$Q=0.5$}
+
+\addplot[blue, thick, domain=0:40, samples=\plotsamples] 
+{1 - exp(-x*\omegan/(2*\Qtwo))*(cos(deg(\omegan*sqrt(1-1/(4*\Qtwo^2))*x)) + sin(deg(\omegan*sqrt(1-1/(4*\Qtwo^2))*x))/sqrt(4*\Qtwo^2-1))};
+\addlegendentry{$Q=0.707$}
+
+\addplot[red, thick, domain=0:40, samples=\plotsamples] 
+{1 - exp(-x*\omegan/(2*\Qthree))*(cos(deg(\omegan*sqrt(1-1/(4*\Qthree^2))*x)) + sin(deg(\omegan*sqrt(1-1/(4*\Qthree^2))*x))/sqrt(4*\Qthree^2-1))};
+\addlegendentry{$Q=1.0$}
+
+\addplot[green!70!black, thick, domain=0:40, samples=\plotsamples] 
+{1 - exp(-x*\omegan/(2*\Qfour))*(cos(deg(\omegan*sqrt(1-1/(4*\Qfour^2))*x)) + sin(deg(\omegan*sqrt(1-1/(4*\Qfour^2))*x))/sqrt(4*\Qfour^2-1))};
+\addlegendentry{$Q=4.0$}
+
+\addplot[yellow!70!black, thick, domain=0:40, samples=\plotsamples] 
+{1 - exp(-x*\omegan/(2*\Qfive))*(cos(deg(\omegan*sqrt(1-1/(4*\Qfive^2))*x)) + sin(deg(\omegan*sqrt(1-1/(4*\Qfive^2))*x))/sqrt(4*\Qfive^2-1))};
+\addlegendentry{$Q=10.0$}
+
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+Ovviamente, essendo un sistema del secondo ordine, la risposta al gradino mostra un comportamento che dipende fortemente dal valore di $Q$. Possiamo osservare che per valori di $Q$ più bassi, la risposta al gradino è più smorzata e non presenta oscillazioni, mentre per valori di $Q$ più elevati, la risposta al gradino mostra un comportamento oscillatorio con un picco iniziale che supera il valore finale di 1 (overshoot) prima di stabilizzarsi.
+
+Interessante notare che per $Q = 0.5$, la risposta al gradino è fortemente smorzata e non presenta oscillazioni, infatti la F.d.T. non avrebbe poli complessi coniugati. Mentre per $Q = 0.707$ (filtro di Butterworth) la risposta al gradino mostra un leggero overshoot, ma è ancora relativamente smorzata. Per valori di $Q$ più elevati, come $Q = 1.0$, $Q = 4.0$ e $Q = 10.0$, la risposta al gradino mostra un comportamento sempre più oscillatorio con overshoot più pronunciati e tempi di assestamento più lunghi. 
+
+Ricoridamo infine il compromesso tra tempo di assestamento e overshoot: valori di $Q$ più elevati portano ad un overshoot maggiore ma ad un tempo di assestamento più lungo, mentre valori di $Q$ più bassi portano ad un overshoot minore ma ad un tempo di assestamento più breve.
+
+
+
+\subsubsection{Effetto della risposta in frequenza dell'operazionale: poli aggiuntivi}
+
+Quando si abbandona l'ipotesi di operazionale ideale, la funzione di trasferimento complessiva del filtro non è più puramente del secondo ordine. Il polo introdotto dall'operazionale (modellato con l'eq. \ref{eq:opamp_polo_dominante}) si combina con la rete passiva, innalzando l'ordine del sistema. Per comprendere qualitativamente l'effetto, consideriamo il caso più semplice: filtro Sallen-Key con guadagno unitario, resistenze uguali \(R\) e condensatori uguali \(C\) (per semplicità), e operazionale con guadagno \(A(s) = A_0/(1+s/\omega_p)\).
+
+Una analisi completa richiederebbe di riscrivere le equazioni ai nodi tenendo conto che la tensione all'ingresso non invertente non è più uguale a quella d'uscita, ma è legata dalla relazione \(V_{out} = A(s)(V_{+} - V_{-})\) con \(V_{-}\) connesso a \(V_{out}\) (inseguire). Ne risulta una funzione di trasferimento del terzo ordine. Trascurando i termini di ordine superiore e nell'ipotesi che \(\omega_p \gg \omega_n\) (banda dell'operazionale molto maggiore della frequenza di taglio del filtro), si può dimostrare che l'effetto principale è una \textbf{modifica del fattore di merito effettivo} \(Q_{\text{eff}}\):
+
+\begin{equation}
+Q_{\text{eff}} \approx Q \left(1 + 2Q \frac{\omega_n}{\omega_p}\right),
+\label{eq:Q_eff}
+\end{equation}
+
+dove \(Q\) è il valore ideale calcolato con le formule viste in precedenza. L'aumento è tanto più marcato quanto più \(Q\) è elevato e quanto più \(\omega_n\) si avvicina a \(\omega_p\). Questo fenomeno è noto come \textbf{Q-enhancement} e può portare il filtro all'oscillazione se \(Q_{\text{eff}}\) diventa molto grande.
+
+Inoltre, la frequenza naturale effettiva \(\omega_{n,\text{eff}}\) subisce una leggera modifica:
+
+\begin{equation}
+\omega_{n,\text{eff}} \approx \omega_n \left(1 - \frac{1}{2Q} \frac{\omega_n}{\omega_p} \right).
+\label{eq:wn_eff}
+\end{equation}
+
+Le formule precedenti sono approssimate e valgono per \(Q > 0.5\) e \(\omega_n \ll \omega_p\). Per una valutazione più accurata occorre risolvere il sistema completo o utilizzare simulatori circuitali.
+
+\paragraph{Modello a due poli}
+Se l'operazionale ha una risposta in frequenza più complessa (ad esempio un secondo polo a frequenza \(\omega_{p2}\)), il sistema diventa del quarto ordine e le interazioni possono essere ancora più critiche. In particolare, il secondo polo dell'operazionale può ridurre il margine di fase e peggiorare la stabilità. Per questo motivo, molti operazionali progettati per applicazioni audio o per filtri attivi hanno una risposta compensata internamente in modo da presentare un andamento a polo dominante fino a frequenze molto alte, ritardando l'insorgenza di poli aggiuntivi.
+
+\paragraph{Criteri di progetto per minimizzare l'effetto}
+Per evitare che la risposta dell'operazionale degradi le prestazioni del filtro, si seguono queste linee guida:
+\begin{enumerate}
+    \item \textbf{Scelta del GBWP}: come detto, \(\text{GBWP} \gg \omega_n/(2\pi)\) (almeno 10–100 volte). Per filtri con \(Q\) elevato (es. \(Q>5\)) il rapporto deve essere ancora più grande.
+    \item \textbf{Limitazione del \(Q\) massimo}: valori di \(Q\) superiori a 10 sono difficili da realizzare con operazionali reali perché la sensibilità all'effetto di Q-enhancement diventa estrema; si ricorre allora a topologie diverse (ad esempio a variabili di stato).
+    \item \textbf{Compensazione}: in alcuni casi si può aggiungere una piccola capacità in parallelo a una resistenza per compensare lo sfasamento introdotto dall'operazionale, ma si tratta di tecniche avanzate.
+\end{enumerate}
+
+\paragraph{Esempio numerico}
+Supponiamo di aver progettato un filtro Butterworth con \(f_n = 100\ \text{kHz}\) (\(Q=0.707\)) utilizzando un operazionale con GBWP = 10 MHz, quindi \(\omega_p \approx 2\pi\cdot 10\ \text{MHz} \approx 62,8\ \text{Mrad/s}\). Poiché \(\omega_n = 2\pi\cdot100\ \text{kHz} \approx 0,628\ \text{Mrad/s}\), il rapporto \(\omega_n/\omega_p \approx 0,01\). Applicando la formula \ref{eq:Q_eff}:
+
+\[
+Q_{\text{eff}} \approx 0,707 \left(1 + 2\cdot 0,707 \cdot 0,01\right) = 0,707 \cdot (1 + 0,01414) \approx 0,717.
+\]
+
+L'aumento è solo del 1,4\%, trascurabile. Se invece si fosse usato un operazionale con GBWP = 1 MHz (\(\omega_p \approx 6,28\ \text{Mrad/s}\), rapporto 0,1), si avrebbe:
+
+\[
+Q_{\text{eff}} \approx 0,707 \left(1 + 2\cdot 0,707 \cdot 0,1\right) = 0,707 \cdot 1,1414 \approx 0,807,
+\]
+
+con un aumento del 14\% che potrebbe essere già significativo. Per \(Q=5\) (filtro Chebyshev con ripple) l'effetto sarebbe drammatico: con GBWP = 1 MHz, \(Q_{\text{eff}} \approx 5(1+2\cdot5\cdot0,1)=5\cdot2=10\), raddoppiando il valore e probabilmente portando il filtro in oscillazione.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{LP a Guadagno Non Unitario}
+
+La configurazione Sallen-Key vista finora utilizza l'amplificatore operazionale come inseguitore di tensione (guadagno unitario). È possibile generalizzare lo schema introducendo un guadagno \(K>1\) nella rete di reazione, tipicamente realizzato con un partitore resistivo \(R_3,R_4\) come mostrato. Questa variante offre maggiore flessibilità: permette di ottenere un guadagno in banda passante diverso da 1 e, soprattutto, consente di realizzare valori del fattore di merito \(Q\) più elevati senza ricorrere a rapporti estremi tra i componenti passivi.
+
+\SallenKeyKLP
+
+\subsection{Funzione di trasferimento}
+La dimostrazione per il seguente filtro segue la dimostrazione fatta nel capitolo precedente, quindi possiamo utilizzare l'ultima formula e sostituire i valori di impedenza con $R$ per i resistori e con $\frac{1}{j\omega C}$ per i condensatori. Consideriamo il guadagno dell'amplificatore operazionale in configurazione non invertente pari a $K = 1 + \frac{R_4}{R_3}$:
+
+\begin{equation}
+        H(j\omega) = \frac{\frac{1}{j\omega C_1}\cdot \frac{1}{j\omega C_2}}{R_1R_2+\frac{1}{j\omega C_1}\cdot(R_1+R_2)+\frac{1}{j\omega C_1}\frac{1}{j\omega C_2}\cdot K} 
+        \label{eq: FdT jw LPK}
+\end{equation}
+
+Effettuando la sostituzione $s = j\omega$, si ottiene l'espressione nel dominio di Laplace:
+\begin{equation}
+        H(s) = \frac{\frac{1}{s C_1}\cdot \frac{1}{s C_2}}{R_1R_2+\frac{1}{sC_1}\cdot(R_1+R_2)+\frac{1}{s C_1}\frac{1}{s C_2}\cdot K} 
+        \label{eq: FdT s LPK K}
+\end{equation}
+
+Moltiplicando numeratore e denominatore per $s^2 C_1 C_2$, si ottiene una forma razionale compatta:
+\begin{equation}
+        H(s) = \frac{1}{R_1R_2 C_1 C_2 s^2 + (R_1+R_2)C_2 s + K} 
+        \label{eq: FdT s LPK compatta}
+\end{equation}
+
+Per ricondurci alla forma canonica di un sistema del secondo ordine, è opportuno normalizzare il denominatore rendendo monomio il coefficiente di $s^2$. Dividendo pertanto numeratore e denominatore per $R_1R_2 C_1 C_2$, si ottiene:
+
+\begin{equation}
+        H(s) = \frac{\frac{1}{R_1R_2 C_1 C_2}}{s^2 + \frac{(R_1+R_2)C_2}{R_1R_2 C_1 C_2}s + \frac{K}{R_1R_2 C_1 C_2}} 
+        \label{eq: FdT s LPK normalizzata}
+\end{equation}
+
+La forma standard di un filtro passa-basso del secondo ordine è:
+\begin{equation}
+    H(s) = \frac{A}{\frac{s^2}{\omega_n^2} + \frac{s}{Q\omega_n} + 1}
+    \label{eq: FdT standard LP}
+\end{equation}
+dove $\omega_n$ rappresenta la pulsazione naturale (o frequenza di taglio) e $Q$ il fattore di qualità.
+
+Confrontando l'equazione \ref{eq: FdT s LPK normalizzata} con la \ref{eq: FdT standard LP}, si identificano i seguenti parametri:
+\begin{itemize}
+    \item Il guadagno risulta $A = \frac{1}{K}$.
+    \item La pulsazione naturale $\omega_0$ si ricava dal termine noto del denominatore normalizzato:
+    \begin{equation}
+        \omega_n^2 = \frac{K}{R_1R_2 C_1 C_2} \quad \Rightarrow \quad \omega_n = \sqrt{\frac{K}{R_1R_2 C_1 C_2}}
+        \label{eq: omega0 LPK}
+    \end{equation}
+    \item Il fattore di qualità $Q$ si ottiene confrontando il coefficiente del termine in $s$:
+    \begin{equation}
+        \frac{1}{Q\omega_n} = \frac{(R_1+R_2)C_2}{K} \quad \Rightarrow \quad Q = \frac{R_1R_2 C_1 C_2}{(R_1+R_2)C_2}
+    \end{equation}
+    Sostituendo l'espressione di $\omega_0$ ricavata precedentemente, si ottiene la forma esplicita:
+    \begin{equation}
+        Q = \frac{\sqrt{K R_1R_2 C_1 C_2}}{(R_1+R_2)C_2}
+        \label{eq: Q LPK}
+    \end{equation}
+\end{itemize}

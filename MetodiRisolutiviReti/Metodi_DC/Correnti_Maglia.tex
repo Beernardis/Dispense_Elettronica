@@ -1,0 +1,79 @@
+\chapter{Metodo delle correnti di maglia}
+
+\section{Cenni teorici}
+
+Il metodo delle correnti di maglia è una tecnica di analisi dei circuiti elettrici lineari in regime stazionario che si basa sull'applicazione della \textbf{Legge di Kirchhoff delle tensioni (LKT)}.  
+L'idea fondamentale consiste nell'associare a ciascuna maglia del circuito una corrente fittizia, detta \textbf{corrente di maglia}, e utilizzare tali correnti come incognite del problema.\\
+
+Si definisce \textbf{maglia} un percorso all'interno del circuito con le seguenti caratteristiche:
+\begin{itemize}
+    \item \textbf{Chiuso}: il percorso deve partire e terminare nello stesso punto.
+    \item \textbf{Non intrecciato}: il percorso non deve attraversare uno stesso nodo o uno stesso ramo più di una volta.
+\end{itemize}
+
+A ogni maglia viene assegnata una \textbf{corrente di maglia}, il cui verso può essere scelto arbitrariamente; per comodità, si adotta spesso un verso orario per tutte le maglie. È importante sottolineare che le correnti di maglia non coincidono necessariamente con le correnti reali nei rami del circuito: esse rappresentano uno strumento matematico utile per semplificare l'analisi.
+
+Il metodo si fonda sulla \textbf{Legge di Kirchhoff delle tensioni}, secondo la quale la somma algebrica delle tensioni lungo un percorso chiuso è nulla. Tale legge, espressione del principio di conservazione dell'energia, si scrive:
+
+\begin{equation}
+\sum_{i} V_i = 0
+\label{eq:LKT}
+\end{equation}
+
+Per esprimere le tensioni ai capi dei componenti resistivi si utilizza la \textbf{legge di Ohm}, che lega tensione, corrente e resistenza:
+
+\begin{equation}
+V = R \cdot I
+\label{eq:ohm}
+\end{equation}
+
+Nel contesto del metodo delle correnti di maglia, la corrente $I$ che compare nella legge di Ohm può coincidere con una singola corrente di maglia oppure, nel caso di elementi condivisi tra due maglie, con una combinazione algebrica di più correnti.
+
+Un aspetto particolarmente importante riguarda le \textbf{resistenze condivise tra due maglie}. In questo caso, la corrente che attraversa la resistenza non è una sola corrente di maglia, ma la differenza tra le correnti associate alle due maglie adiacenti. Se, ad esempio, una resistenza è attraversata dalle correnti di maglia $I_1$ e $I_2$, la corrente effettiva nel ramo si può esprimere come:
+
+\begin{equation}
+I_R = I_1 \pm I_2
+\label{eq:res_condivisa}
+\end{equation}
+
+Di conseguenza, la tensione ai capi della resistenza risulta:
+
+\begin{equation}
+V_R = R \cdot (I_1 \pm I_2)
+\label{eq:tensione_condivisa}
+\end{equation}
+
+Il segno tra le due correnti dipende dai versi assegnati alle correnti di maglia e dal verso di percorrenza scelto durante l'applicazione della KVL.
+
+Il metodo delle correnti di maglia è applicabile a circuiti \textbf{lineari e planari} in regime stazionario. Nel caso di circuiti in corrente continua, il regime stazionario implica che le grandezze elettriche non variano nel tempo. In tali condizioni, eventuali condensatori si comportano come circuiti aperti, mentre gli induttori si comportano come cortocircuiti, permettendo di ridurre il circuito a una rete puramente resistiva.
+
+\begin{center}
+\fbox{
+\parbox{0.9\textwidth}{
+\textbf{Osservazione:} le correnti di maglia sono grandezze fittizie introdotte per semplificare la scrittura delle equazioni del circuito.  
+
+Le correnti reali nei rami devono essere determinate a partire dalle correnti di maglia, tenendo conto delle interazioni tra le diverse maglie e dei versi scelti.
+}
+}
+\end{center}
+
+
+
+% region capitoli
+\section{Procedura di risoluzione}
+1. Individuazione delle maglie indipendenti.  
+2. Assegnazione delle correnti di maglia (verso arbitrario).  
+3. Applicazione della KVL a ciascuna maglia.  
+4. Scrittura delle equazioni con la legge di Ohm.  
+5. Risoluzione del sistema lineare.
+
+\section{Problema del Generatore di Corrente}
+
+\section{Esempi svolti}
+
+\subsection{Esempio 1}
+Circuito con soli generatori di tensione e resistenze.
+
+\subsection{Esempio 2}
+Circuito con generatore di corrente e più maglie.
+% endregion
