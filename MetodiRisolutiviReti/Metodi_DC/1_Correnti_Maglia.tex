@@ -70,10 +70,55 @@ M = R - N + 1
 \end{equation}
 dove \(R\) è il numero di rami e \(N\) il numero di nodi. Queste \(M\) maglie costituiscono un insieme sufficiente e necessario per scrivere un sistema di equazioni linearmente indipendenti. Dal punto di vista geometrico, in un circuito planare queste maglie indipendenti corrispondono alle \textbf{maglie elementari}, ossia ai "buchi" che si osservano nel disegno del circuito. Ciascuna maglia elementare rappresenta una regione chiusa del piano che non contiene altre maglie al suo interno; il loro numero è quindi immediatamente visibile dall'aspetto del circuito.
 
-Ad ogni maglia indipendente si attribuisce una variabile, detta \textbf{corrente di maglia}, generalmente indicata con \(I_1, I_2, \dots, I_M\). Il verso di percorrenza di queste correnti è, per convenzione, arbitrario; tuttavia, per garantire uniformità e ridurre la probabilità di errori algebrici, si adotta sistematicamente il \textbf{verso orario} per tutte le maglie. Questa scelta, seppur non obbligatoria, semplifica la determinazione dei segni nelle resistenze condivise.
+Ad ogni maglia indipendente si attribuisce una variabile, detta \textbf{corrente di maglia}, generalmente indicata con \(I_1, I_2, \dots, I_M\). Il verso di percorrenza di queste correnti è arbitrario; tuttavia, per garantire uniformità e ridurre la probabilità di errori algebrici, si adotta sistematicamente il \textbf{verso orario} per tutte le maglie. Questa scelta, seppur non obbligatoria, semplifica la determinazione dei segni nelle resistenze condivise.
 
 \subsection*{Esempio applicativo}
 Per illustrare la procedura, si consideri il circuito di Figura 1, caratterizzato da tre maglie elementari. In questo circuito sono presenti resistori e generatori di tensione indipendenti.
+
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}[scale=1.2, every node/.style={font=\small}]
+    % Paths, nodes and wires:
+    \draw (0.75, 2) to[american resistor, l_={$R_2$}] (0.75, 4);
+    \draw (2.25, 2) to[american resistor, l={$R_3$}] (4, 2);
+    \draw (4, 4) to[american resistor, l={$R_4$}] (4, 2);
+    \draw (0.75, -0) to[american resistor, l={$R_1$}] (4, -0);
+    \draw (0.75, 2) -- (0.75, -0);
+    \draw (6, 2) to[american resistor, l_={$R_5$}] (6, 0);
+    \draw (4, -0) -- (6, -0);
+    \draw (4, 4) -- (6, 4);
+    \draw (0.75, 4) to[american voltage source, l={$E_2$}] (4, 4);
+    \draw (2.25, 2) to[american voltage source, l={$E_1$}] (0.75, 2);
+    \draw (4, -0) to[american voltage source, l={$E_3$}] (4, 2);
+    \draw (6, 4) to[american voltage source, l_={$E_4$}] (6, 2);
+    % Etichette dei nodi (opzionali, per chiarezza)
+
+    \node[circ] at (4, 4){};	
+    \node at (4,4) [above] {A};
+	\node[circ] at (4, 0){};
+    \node at (4,0) [below] {B};
+    \node[circ] at (0.75, 2){};
+    \node at (0.75,2) [left] {C};
+    \node[circ] at (4, 2){};
+    \node at (4,2) [right] {D};
+\end{circuitikz}
+\caption{Circuito Esempio}
+\label{fig:circuito_esempio}
+\end{figure}
+
+
+Cerchiamo ora di definire un procendimento sistematico per ricavare il sistema di equazioni che consente di determinare le correnti di maglia.
+
+\begin{enumerate}
+    \item \textbf{Identificare le correnti di maglia:} Assegnare una corrente di maglia a ciascuna maglia indipendente del circuito, scegliendo un verso di percorrenza.
+    \item \textbf{Scrivere le equazioni di maglia:} Per ciascuna maglia elementare, applicare la LKT.
+    \item \textbf{Esplicitare le tensioni:} Utilizzare la legge di Ohm per esprimere le tensioni ai capi dei resistori in funzione delle correnti di maglia, tenendo conto delle resistenze condivise.
+    \item \textbf{BONUS:} Organizzare le equazioni in forma matriciale, identificando la matrice delle resistenze e il vettore dei temrini noti, per applicare metodi risolutivi più efficienti.
+\end{enumerate}
+
+\subsection*{1. Identificare le correnti di maglia}
+Nel circuito in Figura \ref{fig:circuito_esempio} sono presenti tre maglie elementari. Decidiamo quindi di assegnare 3 correnti di maglia, \(I_1\), \(I_2\) e \(I_3\), tutte con verso orario. Oltre a notare ad occhio che sono presenti 3 maglie elementari, possiamo anche verificare tramite la \ref{eq:topologia}: il circuito ha \(R = 6\) rami e \(N = 4\) nodi, quindi \(M = R-N+1 = 3\) maglie indipendenti, confermando la nostra osservazione.
 
 
 \begin{figure}[h]
@@ -107,18 +152,40 @@ Per illustrare la procedura, si consideri il circuito di Figura 1, caratterizzat
     \draw[->, thick, blue] (1.7,3) arc (120:60:1.2) node[midway, above]{$I_2$};
     \draw[->, thick, magenta] (5,1) arc (240:110:1) node[midway, right]{$I_3$};
 \end{circuitikz}
-\caption{Circuito con tre maglie elementari. Le correnti di maglia \(I_1\), \(I_2\) e \(I_3\) sono state assegnate con verso orario. I nodi sono etichettati per riferimento.}
-\label{fig:circuito_esempio}
+\caption{Circuito con tre maglie elementari. Le correnti di maglia \(I_1\), \(I_2\) e \(I_3\) sono in senso orario.}
+\label{fig:circuito_correnti_maglia}
 \end{figure}
 
-Le tre maglie indipendenti sono individuate come segue:
+\subsection*{2. Scrivere le equazioni di maglia}
 
+Prima di applicare la LKT, è utile ricordare come vengono scelti i segni per i vari componenti con una semplice regola:
+\begin{center}
+\fbox{
+\parbox{0.9\textwidth}{
+\textbf{Per i generatori:} il segno della tensione sarà positivo se si attraversa il generatore dal polo negativo al polo positivo, e negativo altrimenti.\\
+\textbf{Per i resistori:} il segno della tensione sarà, per convenzione, sempre negativo, poichè si assume che la corrente di maglia attraversi il resistore nel verso della caduta di tensione.
+}
+}
+\end{center}
 
-Si scrivono ora le equazioni di Kirchhoff delle tensioni per ciascuna maglia, percorrendole nel verso orario assegnato. Per ogni resistore si utilizza la legge di Ohm esprimendo la corrente che lo attraversa come combinazione algebrica delle correnti di maglia; per ogni generatore di tensione si introduce il suo valore con il segno appropriato a seconda che si incontri il terminale negativo o positivo durante la percorrenza.
-
-
-
-Si osservi la struttura della matrice delle resistenze: sulla diagonale principale compaiono le somme delle resistenze di ciascuna maglia (auto-resistenze); fuori diagonale, i termini sono non nulli solo in corrispondenza di maglie che condividono una resistenza, e assumono valore negativo (con la convenzione di correnti di maglia tutte orarie). I termini noti sono le somme algebriche delle tensioni dei generatori presenti in ciascuna maglia, con il segno determinato dal verso di percorrenza.
+Scriviamo quindi la LKT per ogni maglia:
+\begin{itemize}
+    \item \textbf{Maglia 1:} La prima maglia, identificata da \(I_1\), include due resistori e due generatori di tensione. La LKT quindi sarà:
+    \begin{equation}
+        E_1 - V_{R_3} + E_3 - V_{R_1} = 0
+        \label{eq: prima_maglia}
+    \end{equation}
+    \item \textbf{Maglia 2:} La seconda maglia, identificata da \(I_2\), include tre resistori e due generatori di tensione. La LKT quindi sarà:
+    \begin{equation}
+        - E_2 - V_{R_4} - V_{R_3} - E_1 - V_{R_2} = 0
+        \label{eq: seconda_maglia}
+    \end{equation}
+    \item \textbf{Maglia 3:} La terza maglia, identificata da \(I_3\), include due resistori e due generatori di tensione. La LKT quindi sarà:
+    \begin{equation}
+        - E_3 - V_{R_4} - E_4 - V_{R_5} = 0
+        \label{eq: terza_maglia}
+    \end{equation}
+\end{itemize}
 
 
 \section{Problema del Generatore di Corrente}
