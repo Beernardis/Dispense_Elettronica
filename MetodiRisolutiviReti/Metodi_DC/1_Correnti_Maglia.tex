@@ -60,17 +60,20 @@ Le correnti reali nei rami devono essere determinate a partire dalle correnti di
 
 
 \section{Procedura di risoluzione}
+Il metodo delle correnti di maglia costituisce una procedura sistematica per l'analisi dei circuiti elettrici, che consente di ricondurre un circuito complesso alla risoluzione di un sistema lineare di equazioni. La sua efficacia risiede nello sfruttamento delle proprietà topologiche del circuito, permettendo di ridurre significativamente il numero delle incognite rispetto ad altri metodi di analisi.
 
-Il metodo delle correnti di maglia si configura come una procedura algoritmica che consente di ridurre un sistema circuitale complesso a un sistema lineare di equazioni. La sua efficacia risiede nella capacità di sfruttare la struttura topologica del circuito per minimizzare il numero di incognite.
+In primo luogo, è necessario verificare che il circuito sia \emph{planare}, ossia rappresentabile su un piano senza che i rami si intersechino se non nei nodi. In tali condizioni, è possibile individuare un insieme di \textbf{maglie indipendenti}, definite come percorsi chiusi che non possono essere ottenuti come combinazione lineare di altri percorsi chiusi del circuito.
 
-Il primo passo consiste in un'analisi topologica del circuito, verificando che si tratti di un circuito planare, ovvero un circuito i cui rami possono essere disegnati su un piano senza intersecarsi se non nei nodi. Successivamente, si identificano le maglie indipendenti, definendo come \textbf{maglia indipendente} una maglia che non può essere ottenuta come combinazione lineare di altre maglie. Il numero di maglie indipendenti \(M\) è dato dalla relazione di Eulero per i grafi planari:
+Il numero \(M\) di maglie indipendenti è determinato dalla relazione topologica di Eulero per grafi planari:
 \begin{equation}
 M = R - N + 1
 \label{eq:topologia}
 \end{equation}
-dove \(R\) è il numero di rami e \(N\) il numero di nodi. Queste \(M\) maglie costituiscono un insieme sufficiente e necessario per scrivere un sistema di equazioni linearmente indipendenti. Dal punto di vista geometrico, in un circuito planare queste maglie indipendenti corrispondono alle \textbf{maglie elementari}, ossia ai "buchi" che si osservano nel disegno del circuito. Ciascuna maglia elementare rappresenta una regione chiusa del piano che non contiene altre maglie al suo interno; il loro numero è quindi immediatamente visibile dall'aspetto del circuito.
+dove \(R\) rappresenta il numero di rami e \(N\) il numero di nodi del circuito. Tale insieme di maglie costituisce una base indipendente sufficiente per la formulazione di un sistema di equazioni linearmente indipendenti.
 
-Ad ogni maglia indipendente si attribuisce una variabile, detta \textbf{corrente di maglia}, generalmente indicata con \(I_1, I_2, \dots, I_M\). Il verso di percorrenza di queste correnti è arbitrario; tuttavia, per garantire uniformità e ridurre la probabilità di errori algebrici, si adotta sistematicamente il \textbf{verso orario} per tutte le maglie. Questa scelta, seppur non obbligatoria, semplifica la determinazione dei segni nelle resistenze condivise.
+Dal punto di vista geometrico, nel caso di circuiti planari, le maglie indipendenti coincidono con le cosiddette \textbf{maglie elementari}, ovvero le regioni chiuse del piano delimitate dai rami del circuito e prive di ulteriori sottoregioni interne. Il loro numero è pertanto immediatamente deducibile dall'osservazione della rappresentazione grafica del circuito.
+
+A ciascuna maglia indipendente viene associata una variabile incognita, detta \textbf{corrente di maglia}, indicata convenzionalmente con \(I_1, I_2, \dots, I_M\). Il verso di percorrenza di tali correnti può essere scelto arbitrariamente; tuttavia, per garantire coerenza formale e ridurre il rischio di errori nei segni algebrici, si adotta convenzionalmente un orientamento uniforme, tipicamente \emph{orario}, per tutte le maglie. Tale scelta semplifica in particolare la trattazione dei rami condivisi tra maglie adiacenti.
 
 \subsection*{Esempio applicativo}
 Per illustrare la procedura, si consideri il circuito di Figura 1, caratterizzato da tre maglie elementari. In questo circuito sono presenti resistori e generatori di tensione indipendenti.
@@ -186,6 +189,62 @@ Scriviamo quindi la LKT per ogni maglia:
         \label{eq: terza_maglia}
     \end{equation}
 \end{itemize}
+
+
+Sfruttando il fatto che il verso delle correnti di maglia scelto è lo stesso per ogni maglia, possiamo semplicemente affermare che la corrente che passa su un ramo in condivisione tra due maglie è sempre la differenza tra le correnti di maglia.
+
+Possiamo quindi scrivere le LKT per le singole maglie sfruttando la legge di Ohm:
+
+\begin{itemize}
+    \item Per la \textbf{prima maglia} notiamo che il resistore $R_1$ appartiene solo alla prima maglia, mentre il resistore $R_3$ è condiviso tra la prima e la seconda maglia. Perciò l'equazione diventa:
+    
+    \begin{equation}
+    E_1 - R_3\cdot \left(I_1 - I_2\right) + E_3 - R_1\cdot \left(I_1\right) = 0
+    \label{eq: prima_maglia_Ohm}
+\end{equation}
+
+\item Per la \textbf{seconda maglia} notiamo che il resistore $R_2$ appartiene solo alla seconda maglia, mentre i resistori $R_3$ e $R_4$ sono rispettivamente condivisi con la prima e con la terza maglia. Perciò l'equazione diventa:
+
+\begin{equation}
+    - E_2 - R_4 \cdot \left(I_2 - I_3\right) - R_3 \cdot \left(I_2 - I_1\right) - E_1 - R_2 \cdot \left(I_2 \right) = 0
+    \label{eq: seconda_maglia_Ohm}
+\end{equation}
+
+
+\item Per la \textbf{terza maglia} notiamo che il resistore $R_5$ appartiene solo alla terza maglia, mentre il resistore $R_4$ è condiviso tra la terza e la seconda maglia. Perciò l'equazione diventa:
+\begin{equation}
+        - E_3 - R_4\cdot\left( I_3 - I_2 \right) - E_4 - R_5\cdot \left( I_3 \right) = 0
+        \label{eq: terza_maglia_Ohm}
+\end{equation}
+\end{itemize}
+
+
+
+Riorganizzando i termini, possiamo riscrivere il sistema in questa maniera:
+
+\begin{equation}
+    \left\{
+\begin{aligned}
+(R_1 + R_3) \, &\textcolor{red}{I_1} &- R_3\, &\textcolor{blue}{I_2} &+ 0\, &\textcolor{magenta}{I_3} &= E_1 + E_3 \\
+- R_3\, &\textcolor{red}{I_1} &+ (R_2 + R_3 + R_4)\, &\textcolor{blue}{I_2} &- R_4\, &\textcolor{magenta}{I_3} &= - E_1 - E_2 \\
+0\, &\textcolor{red}{I_1} &- R_4\, &\textcolor{blue}{I_2} &+ (R_4 + R_5)\, &\textcolor{magenta}{I_3} &= - E_3 - E_4
+\end{aligned}
+\right.
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Problema del Generatore di Corrente}
