@@ -268,9 +268,60 @@ La matrice $A$ gode delle seguenti proprietà:
 \end{itemize}
 
 \subsubsection*{Vettore incognita}
+
+Il vettore incognita è semplicemente una tupla contenente tutte le incognite. Per definizione, il vettore incognita è un vettore verticale e, per il nostro esempio, viene rappresentato in questa maniera:
+\begin{equation}
+    I = 
+    \begin{bmatrix}
+    I_1      \\
+    I_2    \\
+    I_3      
+    \end{bmatrix}
+\end{equation}
+
 \subsubsection*{Vettore dei termini noti}
 
+All'interno del vettore dei termini noti, anch'esso verticale, ci sono tutte le tensioni che si trovano sulle maglie, con un metodo preciso:
+\begin{itemize}
+    \item \textbf{Identifico generatori:} Identifico quali sono i generatori che agiscono sull'$i$-esima maglia.
+    \item \textbf{Convenzione del generatore:} Poniamo come termine noto la somma dei generatori che agiscono sulla maglia, con segno dipendente da come la corrente di maglia li attraversa. 
+\end{itemize}
 
+Nel nostro esempio il vettore dei termini noti risulterà:
+\begin{equation}
+    b = 
+    \begin{bmatrix}
+        + E_1 + E_3 \\
+        - E_1 - E_2 \\
+        - E_3 - E_4
+    \end{bmatrix}
+\end{equation}
+
+Possiamo quindi ridefinire il nostro sistema di equazioni in forma matriciale come segue, prima in forma contratta:
+\begin{equation}
+    AI = b
+\end{equation}
+E poi in forma espansa:
+\begin{equation}
+    \begin{bmatrix}
+        R_1+R_3 && -R_3   && 0      \\
+        -R_3    && R_2+R_3+R_4 && -R_4 \\
+        0       && -R_4   && R_4+R_5
+    \end{bmatrix}
+    \begin{bmatrix}
+        I_1      \\
+        I_2    \\
+        I_3      
+   \end{bmatrix}
+            = 
+    \begin{bmatrix}
+        + E_1 + E_3 \\
+        - E_1 - E_2 \\
+        - E_3 - E_4
+    \end{bmatrix}
+\end{equation}
+
+A questo punto si possono usare metodi risolutivi più efficienti dei soliti metodi insegnati alle scuole superiori, come il metodo di Cramer per sistemi fino al 3 ordine, oppure il metodo di riduzione a gradini di Gauss - Jordan per sistemi di ordini più alti.
 
 
 
