@@ -323,6 +323,183 @@ E poi in forma espansa:
 
 A questo punto si possono usare metodi risolutivi più efficienti dei soliti metodi insegnati alle scuole superiori, come il metodo di Cramer per sistemi fino al 3 ordine, oppure il metodo di riduzione a gradini di Gauss - Jordan per sistemi di ordini più alti.
 
-
-
 \section{Problema del Generatore di Corrente}
+
+Il metodo delle correnti di maglia si basa sull’applicazione della Legge di Kirchhoff delle tensioni (LKT), che richiede di conoscere la tensione ai capi di ogni componente. Quando nel circuito sono presenti generatori ideali di corrente si presenta una difficoltà: un generatore di corrente impone una corrente nota nel ramo in cui è inserito, ma la tensione ai suoi capi è incognita e dipende dal resto del circuito. Non è quindi possibile scrivere direttamente una relazione tensione–corrente per quel ramo utilizzando la legge di Ohm.
+
+Per risolvere il problema si introduce una procedura sistematica che:
+\begin{itemize}
+    \item mantiene le correnti di maglia come incognite;
+    \item aggiunge una variabile per ogni generatore di corrente: la tensione ai suoi capi (indicata con \(V_J\));
+    \item scrive le equazioni di maglia includendo queste tensioni incognite;
+    \item aggiunge un’equazione di vincolo per ogni generatore, che lega le correnti di maglia alla corrente imposta.
+\end{itemize}
+
+
+\subsection{Esempio applicativo}
+
+Applichiamo la procedura al circuito di Figura \ref{fig:circuito_gen_corrente}, che contiene tre maglie e due generatori di corrente. Le correnti di maglia \(I_1,I_2,I_3\) sono state scelte tutte in verso orario. Il procedimento è molto simile a quello spiegato nel capitolo precedente, soltanto che bisogna aggiungere il punto 3.1:
+\begin{enumerate}
+    \item[1.] \textcolor{gray}{\textbf{Identificare le correnti di maglia:} Assegnare una corrente di maglia a ciascuna maglia indipendente del circuito, scegliendo un verso di percorrenza.}
+    \item[2.] \textcolor{gray}{\textbf{Scrivere le equazioni di maglia:} Per ciascuna maglia elementare, applicare la LKT.}
+    \item[3.] \textcolor{gray}{\textbf{Applicare Ohm:} Utilizzare la legge di Ohm per esprimere le tensioni ai capi dei resistori in funzione delle correnti di maglia, tenendo conto delle resistenze condivise.}
+    \item[3.1.] \textbf{Equazioni delle correnti:} Per ogni generatore di corrente bisogna aggiungere una equazione che lega il valore dell'intensità di corrente del generatore alle correnti di maglia che insistono sul ramo del generatore di corrente. 
+    \item[4.] \textcolor{gray}{\textbf{BONUS: Matrici!} Organizzare le equazioni in forma matriciale, identificando la matrice delle resistenze e il vettore dei temrini noti, per applicare metodi risolutivi più efficienti.}
+\end{enumerate}
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}[scale=1.2, every node/.style={font=\small}]
+    % Paths, nodes and wires:
+    \draw (0.75, 2) to[american resistor, l_={$R_2$}] (0.75, 4);
+    \draw (2.25, 2) to[american resistor, l={$R_3$}] (4, 2);
+    \draw (4, 4) to[american resistor, l={$R_4$}] (4, 2);
+    \draw (0.75, -0) to[american resistor, l={$R_1$}] (4, -0);
+    \draw (0.75, 2) -- (0.75, -0);
+    \draw (6, 2) to[american resistor, l_={$R_5$}] (6, 0);
+    \draw (4, -0) -- (6, -0);
+    \draw (4, 4) -- (6, 4);
+    \draw (0.75, 4) to[american current source, l={$J_1$}] (4, 4);
+    \draw (2.25, 2) to[american voltage source, l={$E_1$}] (0.75, 2);
+    \draw (4, -0) to[american current source, l={$J_2$}] (4, 2);
+    \draw (6, 4) to[american voltage source, l_={$E_4$}] (6, 2);
+    % Nodi
+    \node[circ] at (4, 4){};	
+    \node at (4,4) [above] {A};
+	\node[circ] at (4, 0){};
+    \node at (4,0) [below] {B};
+    \node[circ] at (0.75, 2){};
+    \node at (0.75,2) [left] {C};
+    \node[circ] at (4, 2){};
+    \node at (4,2) [right] {D};
+    % Frecce delle correnti di maglia
+\end{circuitikz}
+\caption{Circuito con tre maglie e due generatori di corrente. Le correnti di maglia sono tutte in senso orario.}
+\label{fig:circuito_gen_corrente}
+\end{figure}
+
+\subsubsection{Identificazione delle correnti di maglia e delle tensioni incognite}
+
+Nel circuito in Figura \ref{fig:circuito_gen_corrente}
+sono presenti tre maglie elementari. Decidiamo quindi di assegnare 3 correnti di maglia, \(I_1\), \(I_2\) e \(I_3\), tutte con verso orario. Oltre a notare ad occhio che sono presenti 3 maglie elementari, possiamo anche verificare tramite la \ref{eq:topologia}: il circuito ha \(R = 6\) rami e \(N = 4\) nodi, quindi \(M = R-N+1 = 3\) maglie indipendenti, confermando la nostra osservazione.
+
+A queste però dobbiamo aggiungere 2 equazioni relative ai generatori di corrente.
+
+\begin{figure}[h]
+\centering
+\begin{circuitikz}[scale=1.2, every node/.style={font=\small}]
+    % Paths, nodes and wires:
+    \draw (0.75, 2) to[american resistor, l_={$R_2$}] (0.75, 4);
+    \draw (2.25, 2) to[american resistor, l={$R_3$}] (4, 2);
+    \draw (4, 4) to[american resistor, l={$R_4$}] (4, 2);
+    \draw (0.75, -0) to[american resistor, l={$R_1$}] (4, -0);
+    \draw (0.75, 2) -- (0.75, -0);
+    \draw (6, 2) to[american resistor, l_={$R_5$}] (6, 0);
+    \draw (4, -0) -- (6, -0);
+    \draw (4, 4) -- (6, 4);
+    \draw (0.75, 4) to[american current source, l={$J_1$}] (4, 4);
+    \draw (2.25, 2) to[american voltage source, l={$E_1$}] (0.75, 2);
+    \draw (4, -0) to[american current source, l={$J_2$}] (4, 2);
+    \draw (6, 4) to[american voltage source, l_={$E_4$}] (6, 2);
+    % Nodi
+    \node[circ] at (4, 4){};	
+    \node at (4,4) [above] {A};
+	\node[circ] at (4, 0){};
+    \node at (4,0) [below] {B};
+    \node[circ] at (0.75, 2){};
+    \node at (0.75,2) [left] {C};
+    \node[circ] at (4, 2){};
+    \node at (4,2) [right] {D};
+    \draw[->, thick, red] (1.7,1) arc (120:60:1.2) node[midway, above]{$I_1$};
+    \draw[->, thick, blue] (1.7,3) arc (120:60:1.2) node[midway, above]{$I_2$};
+    \draw[->, thick, magenta] (5,1) arc (240:110:1) node[midway, right]{$I_3$};
+    % Frecce delle correnti di maglia
+
+\end{circuitikz}
+    \caption{Circuito con tre maglie e due generatori di corrente. Le correnti di maglia sono tutte in senso orario.}
+    \label{fig: circuito_gen_corrente_maglie}
+\end{figure}
+
+\subsubsection{Equazioni di maglia (LKT)}
+
+Percorriamo ciascuna maglia in senso orario e scriviamo la somma algebrica delle tensioni uguagliata a zero, esprimendo le tensioni sui resistori tramite la legge di Ohm e lasciando come incognite le tensioni sui generatori di corrente.
+
+\textbf{Maglia 1 (rossa):} parte dal nodo B, va verso destra su \(R_1\), sale su \(J_2\), va a sinistra su \(R_3\), passa per \(E_1\) (con il positivo a sinistra) e torna a B.
+\[
+- R_1 I_1 - V_{J_2} - R_3(I_1 + I_2) + E_1 = 0
+\]
+Riordinando:
+\begin{equation}
+(R_1 + R_3) I_1 + R_3 I_2 + V_{J_2} = E_1
+\label{eq:maglia1}
+\end{equation}
+
+\textbf{Maglia 2 (blu):} parte da C, sale su \(R_2\), va a destra su \(J_1\), scende su \(R_4\), va a sinistra su \(R_3\) e \(E_1\) (positivo a sinistra) e torna a C.
+\[
+- R_2 I_2 - V_{J_1} - R_4(I_2 - I_3) - R_3(I_1 + I_2) + E_1 = 0
+\]
+Riordinando:
+\begin{equation}
+R_3 I_1 + (R_2 + R_3 + R_4) I_2 - R_4 I_3 + V_{J_1} = E_1
+\label{eq:maglia2}
+\end{equation}
+
+\textbf{Maglia 3 (magenta):} parte da D, sale su \(R_4\), va a destra su \(E_4\) (positivo in alto), scende su \(R_5\), torna a sinistra e risale su \(J_2\).
+\[
++ R_4(I_2 - I_3) - E_4 - R_5 I_3 - V_{J_2} = 0
+\]
+Riordinando:
+\begin{equation}
+R_4 I_2 - (R_4 + R_5) I_3 - V_{J_2} = E_4
+\label{eq:maglia3}
+\end{equation}
+
+\subsubsection{Equazioni di vincolo dei generatori di corrente}
+
+Ora scriviamo le relazioni imposte dai generatori.
+
+\begin{itemize}
+    \item Generatore \(J_1\): è sul ramo orizzontale superiore. La corrente in quel ramo, con il verso da sinistra a destra, è data dalla sola corrente di maglia \(I_2\) (perché \(I_2\) attraversa il ramo in quel verso, mentre \(I_1\) e \(I_3\) non lo percorrono). Quindi:
+    \begin{equation}
+    I_2 = J_1
+    \label{eq:vincoloJ1}
+    \end{equation}
+    \item Generatore \(J_2\): è sul ramo verticale centrale. La corrente in quel ramo, con il verso dal basso verso l’alto, è data dalla somma di \(I_1\) e \(I_3\) (entrambe vanno verso l’alto in quel ramo). Quindi:
+    \begin{equation}
+    - I_1 + I_3 = J_2
+    \label{eq:vincoloJ2}
+    \end{equation}
+\end{itemize}
+
+\subsubsection{Sistema completo e forma matriciale}
+
+Abbiamo ora cinque equazioni lineari nelle cinque incognite \(I_1,I_2,I_3,V_{J_1},V_{J_2}\). Scriviamole in ordine:
+
+\begin{align}
+(R_1 + R_3) I_1 + R_3 I_2 + 0 \cdot I_3 + 0 \cdot V_{J_1} + 1 \cdot V_{J_2} &= E_1 \tag{\ref{eq:maglia1}} \\
+R_3 I_1 + (R_2 + R_3 + R_4) I_2 - R_4 I_3 + 1 \cdot V_{J_1} + 0 \cdot V_{J_2} &= E_1 \tag{\ref{eq:maglia2}} \\
+0 \cdot I_1 + R_4 I_2 - (R_4 + R_5) I_3 + 0 \cdot V_{J_1} - 1 \cdot V_{J_2} &= E_4 \tag{\ref{eq:maglia3}} \\
+0 \cdot I_1 + 1 \cdot I_2 + 0 \cdot I_3 + 0 \cdot V_{J_1} + 0 \cdot V_{J_2} &= J_1 \tag{\ref{eq:vincoloJ1}} \\
+1 \cdot I_1 + 0 \cdot I_2 + 1 \cdot I_3 + 0 \cdot V_{J_1} + 0 \cdot V_{J_2} &= J_2 \tag{\ref{eq:vincoloJ2}}
+\end{align}
+
+In forma matriciale \(\mathbf{A} \mathbf{x} = \mathbf{b}\):
+
+\[
+\begin{bmatrix}
+R_1+R_3 & R_3 & 0 & 0 & 1 \\
+R_3 & R_2+R_3+R_4 & -R_4 & 1 & 0 \\
+0 & R_4 & -(R_4+R_5) & 0 & -1 \\
+0 & 1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+I_1 \\ I_2 \\ I_3 \\ V_{J_1} \\ V_{J_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+E_1 \\ E_1 \\ E_4 \\ J_1 \\ J_2
+\end{bmatrix}
+\]
+
+Il sistema può essere risolto con qualsiasi metodo (Cramer, eliminazione di Gauss, calcolo dell’inversa, ecc.) per ottenere le correnti di maglia e, se interessano, le tensioni sui generatori di corrente.
