@@ -1,0 +1,68 @@
+\newcommand{\CircuitoCorrentiMaglia}[1]{%
+\begin{figure}[h]
+    \centering
+    \begin{circuitikz}[scale=1.2, every node/.style={font=\small}]
+        % Parte fissa (resistori e collegamenti)
+        \draw (0.75,2) to[american resistor, l_={$R_2$}] (0.75,4);
+        \draw (2.25,2) to[american resistor, l={$R_3$}] (4,2);
+        \draw (4,4) to[american resistor, l={$R_4$}] (4,2);
+        \draw (0.75,0) to[american resistor, l={$R_1$}] (4,0);
+        \draw (0.75,2) -- (0.75,0);
+        \draw (6,2) to[american resistor, l_={$R_5$}] (6,0);
+        \draw (4,0) -- (6,0);
+        \draw (4,4) -- (6,4);
+
+        % Parte variabile: generatori
+        \ifcase#1
+            % caso 0 (non usato)
+        \or % #1 = 1: soli generatori di tensione, senza frecce
+            \draw (0.75,4) to[american voltage source, l={$E_2$}] (4,4);
+            \draw (2.25,2) to[american voltage source, l={$E_1$}] (0.75,2);
+            \draw (4,0) to[american voltage source, l={$E_3$}] (4,2);
+            \draw (6,4) to[american voltage source, l_={$E_4$}] (6,2);
+        \or % #1 = 2: soli generatori di tensione, con frecce
+            \draw (0.75,4) to[american voltage source, l={$E_2$}] (4,4);
+            \draw (2.25,2) to[american voltage source, l={$E_1$}] (0.75,2);
+            \draw (4,0) to[american voltage source, l={$E_3$}] (4,2);
+            \draw (6,4) to[american voltage source, l_={$E_4$}] (6,2);
+            % Frecce correnti di maglia
+            \draw[->, thick, red] (1.7,1) arc (120:60:1.2) node[midway, above]{$I_1$};
+            \draw[->, thick, blue] (1.7,3) arc (120:60:1.2) node[midway, above]{$I_2$};
+            \draw[->, thick, magenta] (5,1) arc (240:110:1) node[midway, right]{$I_3$};
+        \or % #1 = 3: due generatori di corrente (J1,J2), senza frecce
+            \draw (0.75,4) to[american current source, l={$J_1$}] (4,4);
+            \draw (2.25,2) to[american voltage source, l={$E_1$}] (0.75,2);
+            \draw (4,0) to[american current source, l={$J_2$}] (4,2);
+            \draw (6,4) to[american voltage source, l_={$E_4$}] (6,2);
+        \or % #1 = 4: due generatori di corrente (J1,J2), con frecce
+            \draw (0.75,4) to[american current source, l={$J_1$}] (4,4);
+            \draw (2.25,2) to[american voltage source, l={$E_1$}] (0.75,2);
+            \draw (4,0) to[american current source, l={$J_2$}] (4,2);
+            \draw (6,4) to[american voltage source, l_={$E_4$}] (6,2);
+            % Frecce correnti di maglia
+            \draw[->, thick, red] (1.7,1) arc (120:60:1.2) node[midway, above]{$I_1$};
+            \draw[->, thick, blue] (1.7,3) arc (120:60:1.2) node[midway, above]{$I_2$};
+            \draw[->, thick, magenta] (5,1) arc (240:110:1) node[midway, right]{$I_3$};
+        \fi
+
+        % Nodi (comuni a tutte le figure)
+        \node[circ] at (4,4){};
+        \node at (4,4) [above] {A};
+        \node[circ] at (4,0){};
+        \node at (4,0) [below] {B};
+        \node[circ] at (0.75,2){};
+        \node at (0.75,2) [left] {C};
+        \node[circ] at (4,2){};
+        \node at (4,2) [right] {D};
+    \end{circuitikz}
+    \caption{%
+        \ifcase#1
+        \or Circuito Esempio
+        \or Circuito con tre maglie elementari. Le correnti di maglia \(I_1\), \(I_2\) e \(I_3\) sono in senso orario.
+        \or Circuito con tre maglie e due generatori di corrente
+        \or Circuito con tre maglie e due generatori di corrente. Le correnti di maglia sono in senso orario.
+        \fi
+    }
+    \label{fig:circuito_#1}
+\end{figure}
+}

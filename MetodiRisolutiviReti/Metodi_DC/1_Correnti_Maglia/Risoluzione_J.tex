@@ -1,0 +1,271 @@
+\section{Problema del Generatore di Corrente}
+
+Il metodo delle correnti di maglia si basa sull’applicazione della Legge di Kirchhoff delle tensioni (LKT), che richiede di conoscere la tensione ai capi di ogni componente. Quando nel circuito sono presenti generatori ideali di corrente si presenta una difficoltà: un generatore di corrente impone una corrente nota nel ramo in cui è inserito, ma la tensione ai suoi capi è incognita e dipende dal resto del circuito. Non è quindi possibile scrivere direttamente una relazione tensione–corrente per quel ramo utilizzando la legge di Ohm.
+
+Per risolvere il problema si introduce una procedura sistematica che:
+\begin{itemize}
+    \item mantiene le correnti di maglia come incognite;
+    \item aggiunge una variabile per ogni generatore di corrente: la tensione ai suoi capi (indicata con \(V_J\));
+    \item scrive le equazioni di maglia includendo queste tensioni incognite;
+    \item aggiunge un’equazione di vincolo per ogni generatore, che lega le correnti di maglia alla corrente imposta.
+\end{itemize}
+
+
+\subsection{Esempio applicativo}
+
+Applichiamo la procedura al circuito di Figura \ref{fig:circuito_gen_corrente}, che contiene tre maglie e due generatori di corrente. Le correnti di maglia \(I_1,I_2,I_3\) sono state scelte tutte in verso orario.
+
+
+\CircuitoCorrentiMaglia{3}
+
+\newpage
+Il procedimento è molto simile a quello spiegato nel capitolo precedente, soltanto che bisogna aggiungere il punto 3.1:
+\begin{enumerate}
+    \item[1.] \textcolor{gray}{\textbf{Identificare le correnti di maglia:} Assegnare una corrente di maglia a ciascuna maglia indipendente del circuito, scegliendo un verso di percorrenza.}
+    \item[2.] \textcolor{gray}{\textbf{Scrivere le equazioni di maglia:} Per ciascuna maglia elementare, applicare la LKT.}
+    \item[3.] \textcolor{gray}{\textbf{Applicare Ohm:} Utilizzare la legge di Ohm per esprimere le tensioni ai capi dei resistori in funzione delle correnti di maglia, tenendo conto delle resistenze condivise.}
+    \item[3.1.] \textbf{Equazioni di vincolo dei generatori di corrente:} Per ogni generatore di corrente bisogna aggiungere una equazione che lega il valore dell'intensità di corrente del generatore alle correnti di maglia che insistono sul ramo del generatore di corrente.
+    \item[4.] \textcolor{gray}{\textbf{BONUS: Matrici!} Organizzare le equazioni in forma matriciale, identificando la matrice delle resistenze e il vettore dei temrini noti, per applicare metodi risolutivi più efficienti.}
+\end{enumerate}
+
+\subsection*{1. Identificare le correnti di maglia}
+
+Nel circuito in Figura \ref{fig:circuito_gen_corrente}
+sono presenti tre maglie elementari. Decidiamo quindi di assegnare 3 correnti di maglia, \(I_1\), \(I_2\) e \(I_3\), tutte con verso orario. Oltre a notare ad occhio che sono presenti 3 maglie elementari, possiamo anche verificare tramite la \ref{eq:topologia}: il circuito ha \(R = 6\) rami e \(N = 4\) nodi, quindi \(M = R-N+1 = 3\) maglie indipendenti, confermando la nostra osservazione.
+
+
+\CircuitoCorrentiMaglia{4}
+
+\hrule
+\subsection*{2. Scrivere le equazioni di maglia}
+
+Ricordiamo che la \textbf{Convenzione del generatore} vuole che il segno della tensione ai capi del generatore viene presa col segno positivo se la corrente entra dal morsetto negativo e viceversa. Questa regola vale per tutti i generatori, sia quelli di tensione che quelli di corrente.
+
+
+Scriviamo quindi la LKT per ogni maglia:
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Maglia 1:}} La prima maglia, identificata da \(I_1\), include due resistori, un generatore di tensione e un generatore di corrente. La LKT quindi sarà:
+          \begin{equation}
+              E_1 - V_{R_3} - V_{J_2} - V_{R_1} = 0
+              \label{eq: prima_maglia_corrente}
+          \end{equation}
+    \item \textcolor{blue}{\textbf{Maglia 2:}} La seconda maglia, identificata da \(I_2\), include tre resistori, un generatore di tensione e un generatore di corrente. La LKT quindi sarà:
+          \begin{equation}
+              - V_{J_1} - V_{R_4} - V_{R_3} - E_1 - V_{R_2} = 0
+              \label{eq: seconda_maglia_corrente}
+          \end{equation}
+    \item \textcolor{magenta}{\textbf{Maglia 3:}} La terza maglia, identificata da \(I_3\), include due resistori, un generatore di tensione e un generatore di corrente. La LKT quindi sarà:
+          \begin{equation}
+              V_{J_2} - V_{R_4} - E_2 - V_{R_5} = 0
+              \label{eq: terza_maglia_corrente}
+          \end{equation}
+\end{itemize}
+
+
+\hrule
+\subsection*{3. Applicare Ohm}
+
+
+Sfruttando il fatto che il verso delle correnti di maglia scelto è lo stesso per ogni maglia, possiamo semplicemente affermare che la corrente che passa su un ramo in condivisione tra due maglie è sempre la differenza tra le correnti di maglia.
+
+Possiamo quindi scrivere le LKT per le singole maglie sfruttando la legge di Ohm:
+
+\begin{itemize}
+    \item Per la \textcolor{red}{\textbf{prima maglia}} notiamo che il resistore $R_1$ appartiene solo alla prima maglia, mentre il resistore $R_3$ è condiviso tra la prima e la seconda maglia. Perciò l'equazione diventa:
+
+          \begin{equation}
+              E_1 - R_3\cdot \left(I_1 - I_2\right) - V_{J_2} - R_1\cdot \left(I_1\right) = 0
+              \label{eq: prima_maglia_Ohm_corrente}
+          \end{equation}
+
+    \item Per la \textcolor{blue}{\textbf{seconda maglia}} notiamo che il resistore $R_2$ appartiene solo alla seconda maglia, mentre i resistori $R_3$ e $R_4$ sono rispettivamente condivisi con la prima e con la terza maglia. Perciò l'equazione diventa:
+
+          \begin{equation}
+              - V_{J_1} - R_4 \cdot \left(I_2 - I_3\right) - R_3 \cdot \left(I_2 - I_1\right) - E_1 - R_2 \cdot \left(I_2 \right) = 0
+              \label{eq: seconda_maglia_Ohm_corrente}
+          \end{equation}
+
+
+    \item Per la \textcolor{magenta}{\textbf{terza maglia}} notiamo che il resistore $R_5$ appartiene solo alla terza maglia, mentre il resistore $R_4$ è condiviso tra la terza e la seconda maglia. Perciò l'equazione diventa:
+          \begin{equation}
+              V_{J_2} - R_4\cdot\left( I_3 - I_2 \right) - E_4 - R_5\cdot \left( I_3 \right) = 0
+              \label{eq: terza_maglia_Ohm_corrente}
+          \end{equation}
+\end{itemize}
+
+
+\hrule
+
+\subsection*{3.1. Equazioni di vincolo dei generatori di corrente:}
+
+Ora scriviamo le relazioni imposte dai generatori.
+
+\begin{itemize}
+    \item Generatore \(J_1\): è sul ramo orizzontale superiore. La corrente in quel ramo, con il verso da sinistra a destra, è data dalla sola corrente di maglia \(I_2\) (perché \(I_2\) attraversa il ramo in quel verso, mentre \(I_1\) e \(I_3\) non lo percorrono). Quindi:
+          \begin{equation}
+              I_2 = J_1
+              \label{eq:vincoloJ1}
+          \end{equation}
+    \item Generatore \(J_2\): è sul ramo verticale centrale. La corrente in quel ramo, con il verso dal basso verso l’alto, è data dalla differenza tra \(I_1\) e \(I_3\), visto che $I_1$ è discorde a $J_2$. Quindi:
+          \begin{equation}
+              - I_1 + I_3 = J_2
+              \label{eq:vincoloJ2}
+          \end{equation}
+\end{itemize}
+
+
+Per una migliore comprensione, possiamo mettere a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite. Per svolgere questo esempio si è scelto di invertire i segni di ogni termine.
+Quindi il nostro sistema si potrà riscrivere in questa maniera:
+
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        (R_1 + R_3)\, & \textcolor{red}{I_1} & + R_3\,               & \textcolor{blue}{I_2} & + 0\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 1\, & \textcolor{orange}{V_{J_2}} & = & E_1   \\
+        R_3\,         & \textcolor{red}{I_1} & + (R_2 + R_3 + R_4)\, & \textcolor{blue}{I_2} & - R_4\,         & \textcolor{magenta}{I_3} & + 1\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & - E_1 \\
+        0\,           & \textcolor{red}{I_1} & + R_4\,               & \textcolor{blue}{I_2} & + (R_4 + R_5)\, & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & - 1\, & \textcolor{orange}{V_{J_2}} & = & - E_2 \\
+        0\,           & \textcolor{red}{I_1} & + 1\,                 & \textcolor{blue}{I_2} & + 0\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & J_1   \\
+        - 1\,         & \textcolor{red}{I_1} & + 0\,                 & \textcolor{blue}{I_2} & + 1\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & J_2
+    \end{aligned}
+    \right.
+\end{equation}
+
+
+\hrule
+\subsection*{4. BONUS: Matrici!}
+
+Anche in questo caso ha senso ragionare con le matrici.
+
+\subsubsection*{Matrice dei coefficienti}
+
+La matrice dei coefficienti $A$ gode di alcune proprietà molto interessanti e utili al fine di costruirla senza perdere troppo tempo a ricavarci manualmente tutte le equazioni di maglia.
+
+Scriviamo quindi la matrice del nostro esempio in questa maniera:
+\begin{equation}
+    \begin{tikzpicture}[baseline=(m.center)]
+        \node (m) [matrix of math nodes,left delimiter={[},right delimiter={]}]
+            {
+                R_1+R_3 & R_3 & 0 & 0 & 1 \\
+                R_3 & R_2+R_3+R_4 & -R_4 & 1 & 0 \\
+                0 & R_4 & R_4+R_5 & 0 & -1 \\
+                0 & 1 & 0 & 0 & 0 \\
+                -1 & 0 & 1 & 0 & 0 \\
+            };
+
+        \draw[red, thick, rounded corners]
+        ([xshift=-1mm,yshift=0 mm]m-1-1.north west) rectangle
+        ([xshift=0mm,yshift=0.3mm]m-3-3.south east);
+
+        \draw[green, thick, rounded corners]
+        ([xshift=0.6mm,yshift=-.3 mm]m-4-4.north west) rectangle
+        ([xshift=0.6mm,yshift=0mm]m-5-5.south east);
+
+        \draw[blue, thick, rounded corners]
+        ([xshift=-6.5mm,yshift=-0.3 mm]m-4-1.north west) rectangle
+        ([xshift=5.5mm,yshift=0mm]m-5-3.south east);
+
+        \draw[brown, thick, rounded corners]
+        ([xshift=0.5mm,yshift=0 mm]m-1-4.north west) rectangle
+        ([xshift=-0.8mm,yshift=0mm]m-3-5.south east);
+    \end{tikzpicture}
+\end{equation}
+
+
+La matrice $A$ gode delle seguenti proprietà:
+\begin{itemize}
+    \item \textbf{Sottomatrice rossa:} Questa sottomatrice si costruisce esattamente come la matrice dei coefficienti nel caso senza generatore di tensione, ed è quindi la parte principale che combina le resistenze tra le maglie del circuito. La diagonale contiene la somma dei resistori di ciascuna maglia, mentre le entrate fuori diagonale contengono il valore negativo dei resistori condivisi tra due maglie.
+
+    \item \textbf{Sottomatrice verde:} Questa sottomatrice è sempre composta da soli zeri, perché rappresenta l’interazione tra le equazioni di maglia e le variabili dei generatori di tensione, che non influiscono direttamente sulle equazioni delle maglie principali.
+    \item \textbf{Sottomatrice blu:} Questa sottomatrice collega le correnti di maglia ai generatori di corrente. Le righe corrispondono ai generatori di corrente e le colonne alle maglie. Per ciascun elemento \(b_{kj}\) vale:
+          \[
+              b_{kj} =
+              \begin{cases}
+                  +1 & \text{se la maglia } j \text{ attraversa il generatore } J_k \text{ nello stesso verso della corrente}, \\
+                  -1 & \text{se la maglia } j \text{ attraversa il generatore } J_k \text{ in verso opposto},                  \\
+                  0  & \text{se la maglia } j \text{ non attraversa il generatore } J_k.
+              \end{cases}
+          \]
+
+          \textbf{Esempio chiarificatore:} consideriamo l'elemento \(a_{5,1} = -1\).
+          \begin{itemize}
+              \item L'ultima riga si riferisce al generatore di corrente \(J_2\), mentre la prima colonna si riferisce alla prima corrente di maglia \(I_1\).
+              \item Prima domanda: il generatore \(J_2\) insiste sulla prima maglia? La risposta è sì, quindi l’elemento non sarà zero.
+              \item Seconda domanda: la direzione della maglia \(I_1\) è concorde con la corrente imposta da \(J_2\)? La risposta è no, quindi i versi sono discordi e si scrive \(-1\).
+          \end{itemize}
+
+          Questo procedimento può essere applicato sistematicamente a tutti gli elementi della sottomatrice blu.
+
+    \item \textbf{Sottomatrice marrone:} Questa sottomatrice serve a includere nei calcoli il vincolo imposto dalla differenza di potenziale dei generatori di tensione:
+          \[
+              c_{kj} =
+              \begin{cases}
+                  +1 & \text{se la corrente della maglia } j \text{ entra in } J_k \text{dal morsetto negativo}, \\
+                  -1 & \text{se la attraversa in verso opposto},                                                 \\
+                  0  & \text{se la maglia non attraversa il generatore } J_k.
+              \end{cases}
+          \]
+
+          \textbf{Esempio chiarificatore:} consideriamo l'elemento \(a_{2,4} = 1\).
+          \begin{itemize}
+              \item La seconda riga si riferisce alla seconda maglia, mentre la quarta colonna si riferisce al generatore di corrente  \(J_1\).
+              \item Prima domanda: il generatore \(J_1\) insiste sulla seconda maglia? La risposta è sì, quindi l’elemento non sarà zero.
+              \item Seconda domanda: la direzione della corrente \(I_2\) è concorde con la corrente imposta da \(J_1\)? La risposta è si, quindi si scrive \(1\).
+          \end{itemize}
+\end{itemize}
+
+
+
+\subsubsection*{Vettore incognita}
+
+Il vettore incognita è semplicemente una tupla contenente tutte le incognite. In questo caso però, le incognite non sono semplicemente le correnti di maglia del circuito, ma bisogna aggiungere in coda anche tutte le tensioni dei generatori di corrente. Per definizione, il vettore incognita è un vettore verticale e, per il nostro esempio, viene rappresentato in questa maniera:
+\begin{equation}
+    x =
+    \begin{bmatrix}
+        I_1     \\
+        I_2     \\
+        I_3     \\
+        V_{J_1} \\
+        V_{J_2}
+    \end{bmatrix}
+\end{equation}
+
+\subsubsection*{Vettore dei termini noti}
+
+All'interno del vettore dei termini noti, anch'esso verticale, ci sono sia tutti i generatori di tensione che i generatori di correnti che insistono sulle maglie, con un metodo preciso:
+\begin{itemize}
+    \item \textbf{Identifico generatori:} Identifico quali sono i generatori che agiscono sull'$i$-esima maglia.
+    \item \textbf{Convenzione del generatore:} Poniamo come termine noto la somma dei generatori che agiscono sulla maglia, con segno dipendente da come la corrente di maglia li attraversa.\\ \textbf{NOTA BENE:} Nelle righe che riguardano le LKT vanno inseriti solo i generatori di tensione, mentre nelle righe che riguardano le relazioni tra correnti di maglia e generatori di corrente vanno inseriti solamente i generatori di corrente. Ricoda che è importante tenere sempre a mente le unità di misura
+\end{itemize}
+
+Nel nostro esempio il vettore dei termini noti risulterà:
+\begin{equation}
+    b =
+    \begin{bmatrix}
+        + E_1 \\
+        - E_1 \\
+        - E_2 \\
+        J_1   \\
+        J_2
+    \end{bmatrix}
+\end{equation}
+
+In forma matriciale \(\mathbf{A} \mathbf{x} = \mathbf{b}\):
+
+\begin{equation}
+    \begin{bmatrix}
+        R_1+R_3 & R_3         & 0          & 0 & 1  \\
+        R_3     & R_2+R_3+R_4 & -R_4       & 1 & 0  \\
+        0       & R_4         & +(R_4+R_5) & 0 & -1 \\
+        0       & 1           & 0          & 0 & 0  \\
+        - 1     & 0           & 1          & 0 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        I_1 \\ I_2 \\ I_3 \\ V_{J_1} \\ V_{J_2}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        E_1 \\ - E_1 \\ - E_2 \\ J_1 \\ J_2
+    \end{bmatrix}
+\end{equation}
+
+Ricordiamo che impostare il problema utilizzando le matrici permette di risparmiare tempo nel calcolo di tutte le equazioni necessarie, ma soprattutto permette di utilizzare strumenti più efficienti per il calcolo dei risultati.
+
