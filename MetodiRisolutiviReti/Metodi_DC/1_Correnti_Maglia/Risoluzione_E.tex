@@ -1,18 +1,26 @@
 \section{Procedura di risoluzione}
-Il metodo delle correnti di maglia costituisce una procedura sistematica per l'analisi dei circuiti elettrici, che consente di ricondurre un circuito complesso alla risoluzione di un sistema lineare di equazioni. La sua efficacia risiede nello sfruttamento delle proprietà topologiche del circuito, permettendo di ridurre significativamente il numero delle incognite rispetto ad altri metodi di analisi.
+Il metodo delle correnti di maglia costituisce una procedura sistematica per l'analisi dei circuiti elettrici, che consente di ricondurre un circuito complesso alla risoluzione di un sistema lineare di equazioni. La sua efficacia risiede nello sfruttamento delle proprietà topologiche del circuito, permettendo di ridurre significativamente il numero delle incognite rispetto ad altri metodi di analisi.\\
 
-In primo luogo, è necessario verificare che il circuito sia \emph{planare}, ossia rappresentabile su un piano senza che i rami si intersechino se non nei nodi. In tali condizioni, è possibile individuare un insieme di \textbf{maglie indipendenti}, definite come percorsi chiusi che non possono essere ottenuti come combinazione lineare di altri percorsi chiusi del circuito.
+In primo luogo, è necessario verificare che il circuito sia \emph{planare}, ossia rappresentabile su un piano senza che i rami si intersechino se non nei nodi. In tali condizioni, è possibile individuare un insieme di \textbf{maglie indipendenti}, definite come percorsi chiusi che non possono essere ottenuti come combinazione lineare di altri percorsi chiusi del circuito.\\
 
 Il numero \(M\) di maglie indipendenti è determinato dalla relazione topologica di Eulero per grafi planari:
 \begin{equation}
     M = R - N + 1
     \label{eq:topologia}
 \end{equation}
-dove \(R\) rappresenta il numero di rami e \(N\) il numero di nodi del circuito. Tale insieme di maglie costituisce una base indipendente sufficiente per la formulazione di un sistema di equazioni linearmente indipendenti.
+dove \(R\) rappresenta il numero di rami e \(N\) il numero di nodi del circuito. Tale insieme di maglie costituisce una base indipendente sufficiente per la formulazione di un sistema di equazioni linearmente indipendenti.\\
 
 Dal punto di vista geometrico, nel caso di circuiti planari, le maglie indipendenti coincidono con le cosiddette \textbf{maglie elementari}, ovvero le regioni chiuse del piano delimitate dai rami del circuito e prive di ulteriori sottoregioni interne. Il loro numero è pertanto immediatamente deducibile dall'osservazione della rappresentazione grafica del circuito.
 
+
+
+\begin{center}
+    \fbox{
+        \parbox{0.9\textwidth}{
 A ciascuna maglia indipendente viene associata una variabile incognita, detta \textbf{corrente di maglia}, indicata convenzionalmente con \(I_1, I_2, \dots, I_M\). Il verso di percorrenza di tali correnti può essere scelto arbitrariamente; tuttavia, per garantire coerenza formale e ridurre il rischio di errori nei segni algebrici, si adotta convenzionalmente un orientamento uniforme, tipicamente \emph{orario}, per tutte le maglie. Tale scelta semplifica in particolare la trattazione dei rami condivisi tra maglie adiacenti.
+}
+}
+\end{center}
 
 \subsection*{\Large{Esempio applicativo}}
 Per illustrare la procedura, si consideri il circuito di Figura 1, caratterizzato da tre maglie elementari. In questo circuito sono presenti resistori e generatori di tensione indipendenti.
@@ -23,15 +31,28 @@ Per illustrare la procedura, si consideri il circuito di Figura 1, caratterizzat
 Cerchiamo ora di definire un procendimento sistematico per ricavare il sistema di equazioni che consente di determinare le correnti di maglia.
 
 \begin{enumerate}
-    \item \textbf{Identificare le correnti di maglia:} Assegnare una corrente di maglia a ciascuna maglia indipendente del circuito, scegliendo un verso di percorrenza.
-    \item \textbf{Scrivere le equazioni di maglia:} Per ciascuna maglia elementare, applicare la LKT.
-    \item \textbf{Applicare Ohm:} Utilizzare la legge di Ohm per esprimere le tensioni ai capi dei resistori in funzione delle correnti di maglia, tenendo conto delle resistenze condivise.
-    \item \textbf{BONUS: Matrici!} Organizzare le equazioni in forma matriciale, identificando la matrice delle resistenze e il vettore dei temrini noti, per applicare metodi risolutivi più efficienti.
+    \item \textbf{Identificare le correnti di maglia:} 
+    Si individua ciascuna maglia indipendente del circuito, cioè un percorso chiuso che non contiene altre maglie al suo interno. A ogni maglia si assegna una corrente di maglia, rappresentata da una variabile (es. $I_1, I_2, \dots$). Si sceglie arbitrariamente un verso di percorrenza (orario o antiorario): la coerenza nel segno sarà gestita nelle equazioni successive.
+
+    \item \textbf{Scrivere le equazioni di maglia (LKT):} 
+    Per ogni maglia elementare si applica la Legge di Kirchhoff delle tensioni: la somma algebrica delle cadute di tensione lungo la maglia è nulla. Si percorre la maglia nel verso scelto, sommando le tensioni sui componenti incontrati. I generatori di tensione danno contributo positivo se il verso di percorrenza va dal potenziale minore a quello maggiore (cioè se si attraversa il generatore dal $-$ al $+$), negativo altrimenti.
+
+    \item \textbf{Applicare la legge di Ohm:} 
+    La tensione ai capi di un resistore si esprime come prodotto della sua resistenza per la corrente che lo attraversa. Per un resistore che appartiene a una sola maglia, la corrente è semplicemente la corrente di quella maglia (con il segno dipendente dal verso di percorrenza). Per un resistore condiviso tra due maglie, la corrente effettiva è data dalla differenza algebrica delle correnti delle due maglie, tenendo conto dei versi scelti. Sostituendo queste espressioni nelle equazioni di maglia si ottengono equazioni lineari nelle sole incognite $I_1, I_2, \dots$.
+
+    \item \textbf{BONUS: forma matriciale:} 
+    Il sistema di equazioni ottenuto può essere riscritto in forma compatta come $\mathbf{A} \mathbf{x} = \mathbf{b}$, dove:
+    \begin{itemize}
+        \item $\mathbf{A}$ è la matrice di coefficienti. 
+        \item $\mathbf{x}$ è il vettore colonna delle correnti di maglia incognite.
+        \item $\mathbf{b}$ è il vettore colonna dei termini noti.
+    \end{itemize}
+    Questa rappresentazione permette di risolvere il sistema con metodi diretti (es. regola di Cramer, eliminazione di Gauss) o con strumenti di calcolo automatico, ed evidenzia la struttura lineare del problema.
 \end{enumerate}
 \hrule
 
 \subsection*{1. Identificare le correnti di maglia}
-Nel circuito in Figura \ref{fig:circuito_1} sono presenti tre maglie elementari. Decidiamo quindi di assegnare 3 correnti di maglia, \(I_1\), \(I_2\) e \(I_3\), tutte con verso orario. Oltre a notare ad occhio che sono presenti 3 maglie elementari, possiamo anche verificare tramite la \ref{eq:topologia}: il circuito ha \(R = 6\) rami e \(N = 4\) nodi, quindi \(M = R-N+1 = 3\) maglie indipendenti, confermando la nostra osservazione.
+Nel circuito in Figura \ref{fig:circuito_1} sono presenti tre maglie elementari. Decidiamo quindi di assegnare 3 correnti di maglia, \(I_1\), \(I_2\) e \(I_3\), tutte con verso orario. Oltre a notare ad occhio che sono presenti 3 maglie elementari, possiamo anche verificare tramite la \ref{eq:topologia}: il circuito ha \(R = 6\) rami e \(N = 4\) nodi, quindi \(M = R-N+1 = 3\) maglie indipendenti, confermando la nostra osservazione.\\
 
 
 
@@ -72,7 +93,7 @@ Scriviamo quindi la LKT per ogni maglia:
 
 \hrule
 \subsection*{3. Applicare Ohm}
-Sfruttando il fatto che il verso delle correnti di maglia scelto è lo stesso per ogni maglia, possiamo semplicemente affermare che la corrente che passa su un ramo in condivisione tra due maglie è sempre la differenza tra le correnti di maglia.
+Sfruttando il fatto che il verso delle correnti di maglia scelto è lo stesso per ogni maglia, possiamo semplicemente affermare che la corrente che passa su un ramo in condivisione tra due maglie è sempre la differenza tra le correnti di maglia.\\
 
 Possiamo quindi scrivere le LKT per le singole maglie sfruttando la legge di Ohm:
 
@@ -99,8 +120,9 @@ Possiamo quindi scrivere le LKT per le singole maglie sfruttando la legge di Ohm
           \end{equation}
 \end{itemize}
 
+Mettiamo quindi a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite. Per una migliore comprensione, ha senso allineare tutte le incognite e colorarle di colori differenti per aiutare a capire a colpo d'occhio a che maglia stiamo facendo ricerimento.\\
 
-Per una migliore comprensione, possiamo mettere a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite. Per svolgere questo esempio si è scelto di invertire i segni di ogni termine.
+Per svolgere questo esempio si è scelto di invertire i segni di ogni termine, in maniera da ottenere l'elemento sulla diagonale principale sempre positivo.
 Quindi il nostro sistema si potrà riscrivere in questa maniera:
 \begin{equation}
     \left\{
@@ -119,15 +141,15 @@ Il sistema ora può essere risolto con un qualsiasi metodo risolutivo.
 
 I sistemi lineari possono essere analizzati dal punto di vista matriciale, perchè ci sono molti metodi risolutivi che si basano proprio sulle matrici.
 
-Il nostro sistema è come una grandissima equazione, che lega un coefficiente $a$, un'incognita $x$ (per noi sarebbe la corrente) e un termine noto $b$: $ax = b$. Possiamo dire che il nostro coefficiente in realtà è una matrice, chiamata matrice dei coefficienti $A$, la nostra incognita è in realtà un vettore, chiamato vettore incognita $I$, e il termine noto diventa il vettore dei termini noti $b$.
+Il nostro sistema è come una grandissima equazione, che lega un coefficiente $a$, un'incognita $x$ (per noi sarebbe la corrente) e un termine noto $b$: $ax = b$. Possiamo dire che il nostro coefficiente in realtà è una matrice, chiamata matrice dei coefficienti $\mathbf{A}$, la nostra incognita è in realtà un vettore, chiamato vettore incognita $\mathbf{x}$, e il termine noto diventa il vettore dei termini noti $\mathbf{b}$.
 
 \subsubsection*{Matrice dei coefficienti}
 
-La matrice dei coefficienti $A$ gode di alcune proprietà molto interessanti e utili al fine di costruirla senza perdere troppo tempo a ricavarci manualmente tutte le equazioni di maglia.
+La matrice dei coefficienti $\mathbf{A}$ gode di alcune proprietà molto interessanti e utili al fine di costruirla senza perdere troppo tempo a ricavarci manualmente tutte le equazioni di maglia.
 
 Scriviamo quindi la matrice del nostro esempio in questa maniera:
 \begin{equation}
-    \mathbf{A}
+    \mathbf{A} = 
     \begin{bmatrix}
         R_1+R_3 &  & -R_3        &  & 0       \\
         -R_3    &  & R_2+R_3+R_4 &  & -R_4    \\
@@ -140,7 +162,7 @@ La matrice $A$ gode delle seguenti proprietà:
     \item \textbf{Diagonale positiva:} L'elemento $a_{ii}$ è la somma positiva di tutte le resistenze che appartengono alla maglia $i$-esima.
     \item \textbf{Elementi extra-diagonale:} L'elemento $a_{ij}$ che sono al di fuori della diagonale principale, quindi con $i \neq j$, hanno sempre segno negativo e sono le resistenze che fanno parte di un ramo in comune tra l'$i$-esima maglia e la $j$-esima maglia.
     \item \textbf{Simmetria:} La matrice è simmetrica, $a_{ij}=a_{ji}$, perché la resistenza che collega due maglie è la stessa in entrambe le direzioni: l'influenza di $I_j$ sulla maglia $i$ è identica a quella di $I_i$ sulla maglia $j$.
-    \item \textbf{Struttura:} La matrice è spesso sparsa, con molti zeri, specialmente in circuiti dove le maglie non sono tutte direttamente accoppiate.
+    \item \textbf{Struttura:} La matrice è spesso sparsa, cioè con molti zeri, specialmente in circuiti dove le maglie non sono tutte direttamente accoppiate.
 \end{itemize}
 
 \subsubsection*{Vettore incognita}

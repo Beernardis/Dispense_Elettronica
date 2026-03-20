@@ -9,7 +9,11 @@ Si definisce \textbf{maglia} un percorso all'interno del circuito con le seguent
     \item \textbf{Non intrecciato}: il percorso non deve attraversare uno stesso nodo o uno stesso ramo più di una volta.
 \end{itemize}
 
-A ogni maglia viene assegnata una \textbf{corrente di maglia}, il cui verso può essere scelto arbitrariamente; per comodità, si adotta spesso un verso orario per tutte le maglie. È importante sottolineare che le correnti di maglia non coincidono necessariamente con le correnti reali nei rami del circuito: esse rappresentano uno strumento matematico utile per semplificare l'analisi.
+Definiamo anche la \textbf{maglia elementare} come una maglia che non presenta sottomaglie.\\
+
+A ogni maglia viene assegnata una \textbf{corrente di maglia}, il cui verso può essere scelto arbitrariamente; per comodità, si adotta spesso un verso orario per tutte le maglie. È importante sottolineare che le correnti di maglia non coincidono necessariamente con le correnti reali nei rami del circuito: esse rappresentano uno strumento matematico utile per semplificare l'analisi.\\
+\hrule
+\vspace{0.3cm}
 
 Il metodo si fonda sulla \textbf{Legge di Kirchhoff delle tensioni}, secondo la quale la somma algebrica delle tensioni lungo un percorso chiuso è nulla. Tale legge, espressione del principio di conservazione dell'energia, si scrive:
 
@@ -18,16 +22,18 @@ Il metodo si fonda sulla \textbf{Legge di Kirchhoff delle tensioni}, secondo la 
     \label{eq:LKT}
 \end{equation}
 
-Per esprimere le tensioni ai capi dei componenti resistivi si utilizza la \textbf{legge di Ohm}, che lega tensione, corrente e resistenza:
+Per esprimere le tensioni sui resistori si utilizza la \textbf{legge di Ohm}, che lega tensione, corrente e resistenza:
 
 \begin{equation}
     V = R \cdot I
     \label{eq:ohm}
 \end{equation}
 
-Nel contesto del metodo delle correnti di maglia, la corrente $I$ che compare nella legge di Ohm può coincidere con una singola corrente di maglia oppure, nel caso di elementi condivisi tra due maglie, con una combinazione algebrica di più correnti.
+Nel contesto del metodo delle correnti di maglia, la corrente $I$ che compare nella legge di Ohm può coincidere con una singola corrente di maglia oppure, nel caso di elementi condivisi tra due maglie, con una combinazione algebrica di più correnti.\\
 
-Un aspetto particolarmente importante riguarda le \textbf{resistenze condivise tra due maglie}. In questo caso, la corrente che attraversa la resistenza non è una sola corrente di maglia, ma la somma o la differenza tra le correnti associate alle due maglie adiacenti. Se, ad esempio, una resistenza è attraversata dalle correnti di maglia $I_1$ e $I_2$, la corrente effettiva nel ramo si può esprimere come:
+Un aspetto particolarmente importante riguarda le \textbf{resistenze condivise tra due maglie}. In questo caso, la corrente che attraversa la resistenza non è una sola corrente di maglia, ma la somma o la differenza tra le correnti associate alle due maglie adiacenti. \\
+
+Se, ad esempio, una resistenza è attraversata dalle correnti di maglia $I_1$ e $I_2$, la corrente effettiva nel ramo si può esprimere come:
 
 \begin{equation}
     I_R = I_1 \pm I_2
@@ -41,7 +47,7 @@ Di conseguenza, la tensione ai capi della resistenza risulta:
     \label{eq:tensione_condivisa}
 \end{equation}
 
-Il segno tra le due correnti dipende dai versi assegnati alle correnti di maglia e dal verso di percorrenza scelto durante l'applicazione della KVL.
+Il segno tra le due correnti dipende dai versi assegnati alle correnti di maglia e dal verso di percorrenza scelto durante l'applicazione della KVL.\\
 
 Il metodo delle correnti di maglia è applicabile a circuiti \textbf{lineari e planari} in regime stazionario. Nel caso di circuiti in corrente continua, il regime stazionario implica che le grandezze elettriche non variano nel tempo. In tali condizioni, eventuali condensatori si comportano come circuiti aperti, mentre gli induttori si comportano come cortocircuiti, permettendo di ridurre il circuito a una rete puramente resistiva.
 
