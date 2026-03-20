@@ -1,0 +1,32 @@
+\section{Cenni teorici}
+Il metodo del potenziale ai nodi (o metodo dei nodi) è una tecnica di analisi dei circuiti elettrici lineari in regime stazionario che si basa sull’applicazione della Legge di Kirchhoff delle correnti (LKC). L’idea fondamentale consiste nello scegliere un nodo di riferimento (detto anche massa) e nell’utilizzare i potenziali elettrici degli altri nodi come incognite del problema.
+
+Si definisce nodo un punto del circuito in cui convergono almeno due rami. Per scrivere le equazioni in modo indipendente si fissa arbitrariamente a zero il potenziale di uno dei nodi (nodo di riferimento). I potenziali degli altri \(N-1\) nodi (con \(N\) numero totale di nodi) diventano le incognite.
+
+Il metodo si fonda sulla Legge di Kirchhoff delle correnti, secondo la quale la somma algebrica delle correnti uscenti (o entranti) da un nodo è nulla. Tale legge, espressione del principio di conservazione della carica elettrica, si scrive:
+\begin{equation}
+    \sum_{k} I_k = 0
+\end{equation}
+
+Per esprimere le correnti nei resistori si utilizza la legge di Ohm, che lega tensione, corrente e resistenza. Se un resistore di resistenza \(R\) è collegato tra due nodi \(i\) e \(j\) con potenziali \(V_i\) e \(V_j\), la corrente che attraversa il resistore dal nodo \(i\) al nodo \(j\) è:
+\begin{equation}
+    I_{ij} = \frac{V_i - V_j}{R}.
+\end{equation}
+Nel contesto del metodo dei potenziali ai nodi, questa espressione consente di scrivere direttamente le correnti in funzione delle incognite \(V_i\).
+
+Un aspetto particolarmente importante riguarda le \textbf{conduttanze} (inverse delle resistenze) e il loro ruolo nella formazione delle equazioni. Spesso è conveniente introdurre la conduttanza \(G = \frac{1}{R}\) e scrivere:
+\begin{equation}
+    I_{ij} = G\,(V_i - V_j).
+\end{equation}
+Quando più resistori sono collegati allo stesso nodo, la corrente totale uscente è la somma dei termini \(G_k (V_i - V_{j_k})\).
+
+Il metodo del potenziale ai nodi è applicabile a circuiti lineari in regime stazionario, sia in corrente continua che in corrente alternata (con l’uso dei fasori). Nel caso di circuiti in corrente continua, eventuali condensatori si comportano come circuiti aperti, mentre gli induttori si comportano come cortocircuiti, permettendo di ridurre il circuito a una rete puramente resistiva.
+
+
+\begin{center}
+    \fbox{
+        \parbox{0.9\textwidth}{
+            \textbf{Osservazione:} i potenziali nodali sono grandezze fisiche reali, ma il loro valore assoluto dipende dalla scelta del nodo di riferimento. Le tensioni tra nodi, che sono le grandezze fisicamente rilevanti, risultano indipendenti da tale scelta.
+        }
+    }
+\end{center}

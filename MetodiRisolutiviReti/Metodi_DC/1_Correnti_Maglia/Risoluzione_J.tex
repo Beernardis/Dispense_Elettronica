@@ -87,7 +87,7 @@ Possiamo quindi scrivere le LKT per le singole maglie sfruttando la legge di Ohm
 
     \item Per la \textcolor{magenta}{\textbf{terza maglia}} notiamo che il resistore $R_5$ appartiene solo alla terza maglia, mentre il resistore $R_4$ è condiviso tra la terza e la seconda maglia. Perciò l'equazione diventa:
           \begin{equation}
-              V_{J_2} - R_4\cdot\left( I_3 - I_2 \right) - E_4 - R_5\cdot \left( I_3 \right) = 0
+              V_{J_2} - R_4\cdot\left( I_3 - I_2 \right) - E_2 - R_5\cdot \left( I_3 \right) = 0
               \label{eq: terza_maglia_Ohm_corrente}
           \end{equation}
 \end{itemize}
@@ -119,9 +119,9 @@ Quindi il nostro sistema si potrà riscrivere in questa maniera:
 \begin{equation}
     \left\{
     \begin{aligned}
-        (R_1 + R_3)\, & \textcolor{red}{I_1} & + R_3\,               & \textcolor{blue}{I_2} & + 0\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 1\, & \textcolor{orange}{V_{J_2}} & = & E_1   \\
-        R_3\,         & \textcolor{red}{I_1} & + (R_2 + R_3 + R_4)\, & \textcolor{blue}{I_2} & - R_4\,         & \textcolor{magenta}{I_3} & + 1\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & - E_1 \\
-        0\,           & \textcolor{red}{I_1} & + R_4\,               & \textcolor{blue}{I_2} & + (R_4 + R_5)\, & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & - 1\, & \textcolor{orange}{V_{J_2}} & = & - E_2 \\
+        (R_1 + R_3)\, & \textcolor{red}{I_1} & - R_3\,               & \textcolor{blue}{I_2} & + 0\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 1\, & \textcolor{orange}{V_{J_2}} & = & E_1   \\
+        -R_3\,         & \textcolor{red}{I_1} & + (R_2 + R_3 + R_4)\, & \textcolor{blue}{I_2} & - R_4\,         & \textcolor{magenta}{I_3} & + 1\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & - E_1 \\
+        0\,           & \textcolor{red}{I_1} & - R_4\,               & \textcolor{blue}{I_2} & + (R_4 + R_5)\, & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & - 1\, & \textcolor{orange}{V_{J_2}} & = & - E_2 \\
         0\,           & \textcolor{red}{I_1} & + 1\,                 & \textcolor{blue}{I_2} & + 0\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & J_1   \\
         - 1\,         & \textcolor{red}{I_1} & + 0\,                 & \textcolor{blue}{I_2} & + 1\,           & \textcolor{magenta}{I_3} & + 0\, & \textcolor{brown}{V_{J_1}} & + 0\, & \textcolor{orange}{V_{J_2}} & = & J_2
     \end{aligned}

@@ -66,3 +66,59 @@
     \label{fig:circuito_#1}
 \end{figure}
 }
+
+
+
+
+
+\newcommand{\CircuitoPotenzialeNodi}[1]{%
+\begin{figure}[h]
+    \centering
+    \begin{circuitikz}[scale=1.2, every node/.style={font=\small}]
+        % Parte fissa (resistori e collegamenti)
+        \draw (0.75,2) to[american resistor, l_={$R_2$}] (0.75,4);
+        \draw (2.25,2) to[american resistor, l={$R_3$}] (4,2);
+        \draw (4,4) to[american resistor, l={$R_4$}] (4,2);
+        \draw (0.75,0) to[american resistor, l={$R_1$}] (4,0);
+        \draw (0.75,2) -- (0.75,0);
+        \draw (6,2) to[american resistor, l_={$R_5$}] (6,0);
+        \draw (4,0) -- (6,0);
+        \draw (4,4) -- (6,4);
+        
+        % Ground (massa) sul nodo B (4,0)
+        \node[ground] at (4,0) {};
+        
+        % Generatori secondo il caso
+        \ifcase#1
+            % caso 0 non usato
+        \or % #1 = 1: tutti generatori di corrente (sostituiti ai gen di tensione)
+            \draw (0.75,4) to[american current source, l={$J_1$}] (4,4);
+            \draw (2.25,2) to[american current source, l={$J_2$}] (0.75,2);
+            \draw (4,0) to[american current source, l={$J_3$}] (4,2);
+            \draw (6,4) to[american current source, l_={$J_4$}] (6,2);
+        \or % #1 = 2: generatori misti (due di corrente e due di tensione)
+            \draw (0.75,4) to[american current source, l={$J_1$}] (4,4);
+            \draw (2.25,2) to[american voltage source, l={$E_1$}] (0.75,2);
+            \draw (4,0) to[american current source, l={$J_2$}] (4,2);
+            \draw (6,4) to[american voltage source, l_={$E_4$}] (6,2);
+        \fi
+        
+        % Nodi (etichette)
+        \node[circ] at (4,4){};
+        \node at (4,4) [above] {A};
+        \node[circ] at (0.75,2){};
+        \node at (0.75,2) [left] {C};
+        \node[circ] at (4,2){};
+        \node at (4,2) [right] {D};
+        \node[circ] at (4,0){};
+        \node at (4,0.2 ) [right] {B};
+    \end{circuitikz}
+    \caption{%
+        \ifcase#1
+        \or Circuito per il metodo dei potenziali ai nodi (solo generatori di corrente)
+        \or Circuito per il metodo dei potenziali ai nodi (generatori di corrente e tensione)
+        \fi
+    }
+    \label{fig:potenziale_#1}
+\end{figure}
+}
