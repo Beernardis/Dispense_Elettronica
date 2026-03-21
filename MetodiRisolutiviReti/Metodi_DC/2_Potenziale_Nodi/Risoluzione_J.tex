@@ -1,1 +1,145 @@
 \section{Procedura di risoluzione}
+
+Il metodo del potenziale ai nodi costituisce una procedura sistematica per l'analisi dei circuiti elettrici, che consente di ricondurre un circuito complesso alla risoluzione di un sistema lineare di equazioni. La sua efficacia risiede nello sfruttamento delle proprietà topologiche del circuito, permettendo di ridurre significativamente il numero delle incognite rispetto ad altri metodi di analisi.
+
+In primo luogo, è necessario individuare tutti i nodi del circuito. Dopo aver scelto un nodo di riferimento (detto anche \emph{massa}), si assegnano potenziali incogniti agli \(N-1\) nodi rimanenti, dove \(N\) rappresenta il numero totale di nodi.
+
+Il numero \(N-1\) di equazioni indipendenti è determinato dalla relazione topologica:
+\begin{equation}
+    N_{\text{eq}} = N - 1
+    \label{eq:nodi_indipendenti}
+\end{equation}
+Tale insieme di equazioni, ottenute applicando la Legge di Kirchhoff delle correnti a ciascun nodo indipendente, costituisce un sistema linearmente indipendente.
+
+\begin{center}
+    \fbox{
+        \parbox{0.9\textwidth}{
+            A ciascun nodo (escluso il riferimento) viene associata una variabile incognita, detta \textbf{potenziale nodale}, indicata convenzionalmente con \(V_1, V_2, \dots, V_{N-1}\). La scelta del nodo di riferimento è arbitraria, ma per comodità si sceglie spesso un nodo a cui convergono molti rami o un nodo già collegato a massa.
+        }
+    }
+\end{center}
+
+\section*{Esempio applicativo}
+
+Per illustrare la procedura, si consideri il circuito di \ref{fig:potenziale_1}, caratterizzato da 3 maglie elementari. In questo circuito sono presenti resistori e generatori di corrente indipendenti.
+
+\CircuitoPotenzialeNodi{1}
+
+Cerchiamo ora di definire un procendimento sistematico per ricavare il sistema di equazioni che consente di determinare i potenziali nodali.
+
+\begin{enumerate}
+    \item \textbf{Identificare i nodi e scegliere il nodo di riferimento:} 
+    Si individua il nodo di riferimento (massa), a cui si assegna potenziale nullo ($\SI{0}{V}$). I restanti nodi del circuito vengono numerati e a ciascuno di essi si associa una variabile di potenziale nodale (es. $V_1, V_2, \dots$).
+
+    \item \textbf{Scrivere le equazioni nodali (LKC):} 
+    Per ogni nodo diverso dal riferimento si applica la Legge di Kirchhoff delle correnti: la somma algebrica delle correnti al nodo è nulla. Si sceglie una convenzione uniforme (ad esempio correnti uscenti positive).
+
+    \item \textbf{Applicare la legge di Ohm:} 
+    La corrente attraverso un resistore collegato tra il nodo $i$ e il nodo $j$ si esprime come $I_{ij} = \frac{V_i - V_j}{R}$ (se si considera uscente dal nodo $i$). Per resistori collegati tra un nodo e il riferimento, la corrente diventa $\frac{V_i}{R}$ (con segno opportuno). Sostituendo queste espressioni nelle equazioni di LKC si ottengono equazioni lineari nelle sole incognite $V_1, V_2, \dots$.
+
+    \item \textbf{BONUS: forma matriciale:} 
+    Il sistema può essere riscritto in forma compatta come $\mathbf{A} \mathbf{x} = \mathbf{b}$, dove:
+    \begin{itemize}
+        \item $\mathbf{A}$ è la matrice delle conduttanze.
+        \item $\mathbf{x}$ è il vettore colonna dei potenziali nodali incogniti.
+        \item $\mathbf{b}$ è il vettore colonna delle correnti impresse dai generatori indipendenti.
+    \end{itemize}
+    Questa rappresentazione facilita la soluzione con metodi numerici o analitici (es. eliminazione di Gauss, regola di Cramer) ed evidenzia la struttura lineare del problema.
+\end{enumerate}
+
+\hrule
+
+\subsection*{1. Identificare i nodi e scegliere il nodo di riferimento}
+
+Come vediamo nella \ref{fig:potenziale_2}, scegliamo arbitrariamente il nodo $B$ come nodo a potenziale nullo. Infatti come si può vedere abbiamo connesso il nodo $B$ direttamente al GND.
+
+\CircuitoPotenzialeNodi{2}
+
+\subsection*{2. Scrivere le equazioni nodali (LKC)}
+
+Per ogni nodo diverso dal riferimento (nodi $A$, $C$ e $D$) si impone che la somma algebrica delle correnti al nodo sia nulla. Di seguito si elencano i contributi per ciascun nodo, utilizzando la simbologia riportata in figura. Se su un ramo è presente un generatore di corrente, il verso viene deciso dal generatore stesso, mentre se sul ramo non è presente nessun generatore, si sceglie arbitrariamente il verso della corrente ma, per comoditò, definiamo questa corrente sempre uscente dal nodo preso in considerazione.
+
+\paragraph{Nodo $A$}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $A$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
+J_1 - J_4 - I_{R_4} = 0
+\label{eq:nodoA}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{A}
+\end{minipage}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\paragraph{Nodo $C$}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $C$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
+- J_1 + J_2 - I_{R_1} = 0
+\label{eq:nodoC}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{C}
+\end{minipage}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\paragraph{Nodo $D$}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $D$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
+- J_2 + J_3 - I_{R_4} = 0
+\label{eq:nodoD}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{D}
+\end{minipage}
+
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+
+
+\subsection*{3. Applicare la legge di Ohm}
+
+Per ogni equazione bisogna definire ogni corrente come rapporto tra resistenza complessiva sul ramo e tensione tra i nodi.
+
+\paragraph{Nodo A}
+L'unica corrente incognita è la corrente che attraversa il resistore $R_4$, resistore che si collega ai morsetti $A$ e $D$. Perciò l'equazione diventa:
+\begin{equation}
+J_1 - J_4 - \frac{V_A - V_D}{R_4} = 0 \qquad \Rightarrow \qquad J_1 - J_4 - G_4\left(V_A - V_D\right) = 0
+\label{eq:nodoA_Ohm}
+\end{equation}
+
+\paragraph{Nodo C}
+L'unica corrente incognita è la corrente che attraversa il resistore $R_1$, resistore che si collega ai morsetti $C$ e $B$. Notiamo però che la tensione sul morsetto $B$ è pari a 0, visto che è collegato al GND. Perciò l'equazione diventa:
+\begin{equation}
+- J_1 + J_2 - \frac{V_C - V_B}{R_1} = 0 \qquad \Rightarrow \qquad - J_1 + J_2 - G_1\left(V_C\right) = 0
+\label{eq:nodoC_Ohm}
+\end{equation}
+
