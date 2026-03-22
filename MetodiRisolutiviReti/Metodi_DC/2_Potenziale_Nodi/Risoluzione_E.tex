@@ -1,1 +1,198 @@
-\section{Problema del generatore di tensione}
+\section{Problema del Generatore di Tensione}
+
+Il metodo dei potenziali ai nodi si basa sull’applicazione della Legge di Kirchhoff delle correnti (LKC) a ciascun nodo del circuito, escluso il riferimento. Quando sono presenti generatori ideali di tensione si presenta una difficoltà: un generatore di tensione impone una differenza di potenziale nota tra due nodi, ma la corrente che lo attraversa è incognita e dipende dal resto del circuito. Non è quindi possibile esprimere direttamente la corrente nel ramo del generatore tramite la legge di Ohm.
+
+Per risolvere il problema si introduce una procedura sistematica che:
+\begin{itemize}
+    \item mantiene i potenziali nodali come incognite principali;
+    \item aggiunge una variabile per ogni generatore di tensione: la corrente che lo attraversa (indicata con \(I_E\));
+    \item scrive le equazioni di KLC a ciascun nodo includendo queste correnti incognite;
+    \item aggiunge un’equazione di vincolo per ogni generatore, che lega i potenziali nodali alla tensione imposta.
+\end{itemize}
+
+\subsection*{Esempio applicativo}
+
+Applichiamo la procedura al circuito di Figura \ref{fig:circuito_nodi_1}, che contiene tre nodi indipendenti e due generatori di tensione. I potenziali nodali \(V_A, V_B, V_C\) sono stati definiti rispetto al nodo di riferimento \(D\) (massa).
+
+\CircuitoPotenzialeNodi{3}  
+
+Il procedimento è molto simile a quello spiegato nel capitolo precedente, con l’aggiunta del punto 3.1:
+
+\begin{enumerate}
+    \item[1.] \textcolor{gray}{\textbf{Identificare i nodi e scegliere il nodo di riferimento:} Si individua il nodo di riferimento (massa) e si assegnano potenziali incogniti agli \(N-1\) nodi rimanenti.}
+    \item[2.] \textcolor{gray}{\textbf{Scrivere le equazioni nodali (LKC):} Per ogni nodo diverso dal riferimento si impone la somma algebrica delle correnti nulla.}
+    \item[3.] \textcolor{gray}{\textbf{Applicare Ohm:} Utilizzare la legge di Ohm per esprimere le correnti nei resistori in funzione dei potenziali nodali.}
+    \item[3.1.] \textbf{Equazioni di vincolo dei generatori di tensione:} Per ogni generatore di tensione si aggiunge una equazione che lega la differenza di potenziale tra i due nodi a cui è collegato al valore della tensione impressa; inoltre si introduce la corrente incognita del generatore nelle equazioni di KCL dei nodi interessati.
+    \item[4.] \textcolor{gray}{\textbf{BONUS: Matrici!} Organizzare le equazioni in forma matriciale, identificando la matrice delle conduttanze e il vettore dei termini noti.}
+\end{enumerate}
+
+\subsection*{1. Identificare i nodi e scegliere il nodo di riferimento}
+
+Nel circuito di Figura \ref{fig:potenziale_3} sono presenti \(N=4\) nodi. Scegliamo come riferimento il nodo \(B\) (massa). Assegniamo quindi i potenziali incogniti \(V_A\), \(V_C\) e \(V_D\) ai nodi rimanenti.
+
+\CircuitoPotenzialeNodi{4}  % figura da definire
+
+\hrule
+\subsection*{2. Scrivere le equazioni nodali (LKC)}
+
+Per ogni nodo diverso dal riferimento (nodi \(A\), \(C\) e \(D\)) imponiamo la somma algebrica delle correnti entranti nulla. Nelle equazioni compare anche la corrente incognita dei generatori di tensione, che indichiamo con \(I_{E_1}\) per il generatore \(E_1\) e \(I_{E_2}\) per \(E_2\).
+
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Nodo A:}} 
+    \begin{equation}
+        J_1 - I_{R_1} - I_{R_3} + I_{E_1} = 0
+        \label{eq:nodoA_vincolo}
+    \end{equation}
+    \item \textcolor{blue}{\textbf{Nodo B:}} 
+    \begin{equation}
+        -J_2 + I_{R_2} - I_{E_1} + I_{E_2} = 0
+        \label{eq:nodoB_vincolo}
+    \end{equation}
+    \item \textcolor{magenta}{\textbf{Nodo C:}} 
+    \begin{equation}
+        -I_{R_2} + I_{R_3} - I_{E_2} = 0
+        \label{eq:nodoC_vincolo}
+    \end{equation}
+\end{itemize}
+
+Qui \(I_{R_1}, I_{R_2}, I_{R_3}\) sono le correnti nei resistori, espresse in funzione dei potenziali nodali.
+
+\hrule
+\subsection*{3. Applicare la legge di Ohm}
+
+Esprimiamo le correnti nei resistori con la legge di Ohm, utilizzando le conduttanze \(G_i = 1/R_i\):
+
+\begin{align}
+    I_{R_1} &= G_1 (V_A - 0) = G_1 V_A, \\
+    I_{R_2} &= G_2 (V_C - V_B), \\
+    I_{R_3} &= G_3 (V_A - V_C).
+\end{align}
+
+Sostituendo nelle equazioni di KCL otteniamo:
+
+\begin{align}
+    \text{Nodo A:}&\quad J_1 - G_1 V_A - G_3 (V_A - V_C) + I_{E_1} = 0, \label{eq:nodoA_ohm}\\
+    \text{Nodo B:}&\quad -J_2 + G_2 (V_C - V_B) - I_{E_1} + I_{E_2} = 0, \label{eq:nodoB_ohm}\\
+    \text{Nodo C:}&\quad -G_2 (V_C - V_B) + G_3 (V_A - V_C) - I_{E_2} = 0. \label{eq:nodoC_ohm}
+\end{align}
+
+\hrule
+\subsection*{3.1. Equazioni di vincolo dei generatori di tensione}
+
+Ogni generatore di tensione impone una relazione tra i potenziali dei nodi a cui è collegato.
+
+\begin{itemize}
+    \item Generatore \(E_1\): è collegato tra il nodo \(A\) e il nodo \(B\). La tensione impressa, con la polarità indicata in figura, è:
+          \begin{equation}
+              V_A - V_B = E_1
+              \label{eq:vincoloE1}
+          \end{equation}
+    \item Generatore \(E_2\): è collegato tra il nodo \(B\) e il nodo \(C\). La tensione impressa è:
+          \begin{equation}
+              V_B - V_C = E_2
+              \label{eq:vincoloE2}
+          \end{equation}
+\end{itemize}
+
+Queste due equazioni, insieme alle tre equazioni di KCL, formano un sistema di 5 equazioni nelle 5 incognite \(V_A, V_B, V_C, I_{E_1}, I_{E_2}\).
+
+Riorganizziamo il sistema in forma canonica, portando tutti i termini incogniti a sinistra e i termini noti a destra:
+
+\begin{equation}
+    \left\{
+    \begin{aligned}
+        -(G_1 + G_3)\, V_A & + 0\, V_B & + G_3\, V_C & + 1\, I_{E_1} & + 0\, I_{E_2} & = -J_1 \\
+        0\, V_A            & - G_2\, V_B & + G_2\, V_C & - 1\, I_{E_1} & + 1\, I_{E_2} & =  J_2 \\
+        G_3\, V_A          & + G_2\, V_B & -(G_2 + G_3)\, V_C & + 0\, I_{E_1} & - 1\, I_{E_2} & =  0   \\
+        1\, V_A            & -1\, V_B    & + 0\, V_C & + 0\, I_{E_1} & + 0\, I_{E_2} & =  E_1 \\
+        0\, V_A            & +1\, V_B    & -1\, V_C & + 0\, I_{E_1} & + 0\, I_{E_2} & =  E_2
+    \end{aligned}
+    \right.
+\end{equation}
+
+\hrule
+\subsection*{4. BONUS: Matrici!}
+
+Anche in questo caso la rappresentazione matriciale semplifica la gestione del sistema.
+
+\subsubsection*{Matrice dei coefficienti}
+
+La matrice dei coefficienti \(\mathbf{A}\) può essere suddivisa in blocchi che riflettono la struttura del problema:
+
+\begin{equation}
+    \mathbf{A} = 
+    \begin{bmatrix}
+        \mathbf{G} & \mathbf{C} \\
+        \mathbf{E} & \mathbf{0}
+    \end{bmatrix}
+\end{equation}
+
+dove:
+\begin{itemize}
+    \item \(\mathbf{G}\) è la matrice delle conduttanze nodali (3×3 nel nostro esempio), costruita con la regola classica: \(G_{ii}\) somma delle conduttanze incidenti al nodo \(i\), \(G_{ij} = -G_{ij}\) (con segno negativo) per i rami resistivi tra nodi \(i\) e \(j\).
+    \item \(\mathbf{C}\) (3×2) descrive come le correnti dei generatori di tensione compaiono nelle equazioni di KCL: \(C_{ik} = +1\) se la corrente \(I_{E_k}\) entra nel nodo \(i\), \(-1\) se ne esce, \(0\) altrimenti.
+    \item \(\mathbf{E}\) (2×3) è la matrice dei vincoli di tensione: \(E_{kj} = +1\) se il potenziale \(V_j\) compare con segno positivo nella relazione del generatore \(k\), \(-1\) se con segno negativo, \(0\) altrimenti.
+    \item Lo zero in basso a destra indica che i generatori di tensione non hanno equazioni che legano tra loro le loro correnti.
+\end{itemize}
+
+Nel nostro esempio:
+
+\begin{equation}
+    \mathbf{G} = \begin{bmatrix}
+        -(G_1+G_3) & 0 & G_3 \\
+        0 & -G_2 & G_2 \\
+        G_3 & G_2 & -(G_2+G_3)
+    \end{bmatrix},\qquad
+    \mathbf{C} = \begin{bmatrix}
+        1 & 0 \\
+        -1 & 1 \\
+        0 & -1
+    \end{bmatrix},\qquad
+    \mathbf{E} = \begin{bmatrix}
+        1 & -1 & 0 \\
+        0 & 1 & -1
+    \end{bmatrix}.
+\end{equation}
+
+La matrice completa è quindi:
+
+\begin{equation}
+    \mathbf{A} = 
+    \begin{bmatrix}
+        -(G_1+G_3) & 0 & G_3 & 1 & 0 \\
+        0 & -G_2 & G_2 & -1 & 1 \\
+        G_3 & G_2 & -(G_2+G_3) & 0 & -1 \\
+        1 & -1 & 0 & 0 & 0 \\
+        0 & 1 & -1 & 0 & 0
+    \end{bmatrix}.
+\end{equation}
+
+\subsubsection*{Vettore incognita}
+
+Il vettore incognita contiene tutti i potenziali nodali e tutte le correnti dei generatori di tensione:
+
+\begin{equation}
+    \mathbf{x} = 
+    \begin{bmatrix}
+        V_A \\ V_B \\ V_C \\ I_{E_1} \\ I_{E_2}
+    \end{bmatrix}.
+\end{equation}
+
+\subsubsection*{Vettore dei termini noti}
+
+Il vettore \(\mathbf{b}\) raccoglie i contributi dei generatori indipendenti di corrente e delle tensioni impresse:
+
+\begin{equation}
+    \mathbf{b} = 
+    \begin{bmatrix}
+        -J_1 \\ J_2 \\ 0 \\ E_1 \\ E_2
+    \end{bmatrix}.
+\end{equation}
+
+In forma compatta:
+
+\begin{equation}
+    \mathbf{A} \, \mathbf{x} = \mathbf{b}.
+\end{equation}
+
+La struttura a blocchi evidenzia come la presenza dei generatori di tensione estenda il sistema originale delle conduttanze con nuove variabili e nuove equazioni. Questo approccio permette di applicare metodi risolutivi standard (eliminazione di Gauss, fattorizzazione LU) anche in presenza di generatori di tensione ideali, senza dover ricorrere al concetto di supernodo.
