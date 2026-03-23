@@ -35,46 +35,81 @@ Nel circuito di Figura \ref{fig:potenziale_3} sono presenti \(N=4\) nodi. Scegli
 \hrule
 \subsection*{2. Scrivere le equazioni nodali (LKC)}
 
-Per ogni nodo diverso dal riferimento (nodi \(A\), \(C\) e \(D\)) imponiamo la somma algebrica delle correnti entranti nulla. Nelle equazioni compare anche la corrente incognita dei generatori di tensione, che indichiamo con \(I_{E_1}\) per il generatore \(E_1\) e \(I_{E_2}\) per \(E_2\).
+Per ogni nodo diverso dal riferimento (nodi \(A\), \(C\) e \(D\)) imponiamo la somma algebrica delle correnti entranti nulla. Nelle equazioni compare anche la corrente incognita dei generatori di tensione, che indichiamo con \(I_{E_1}\) per il generatore \(E_1\) e \(I_{E_2}\) per \(E_2\). Consideriamo il verso della corrente nei rami con i generatori di tensione uscente dal morsetto positivo degli stessi.
 
 \begin{itemize}
-    \item \textcolor{red}{\textbf{Nodo A:}} 
+    \item \textcolor{red}{\textbf{Nodo A:}}  Il nodo $A$ è influenzato dal generatore di tensione $E_1$, quindi dobbiamo tenere conto della corrente che circola su quel ramo.
     \begin{equation}
-        J_1 - I_{R_1} - I_{R_3} + I_{E_1} = 0
+        J_1 - I_{R_1} + I_{E_1} = 0
         \label{eq:nodoA_vincolo}
     \end{equation}
-    \item \textcolor{blue}{\textbf{Nodo B:}} 
+    \item \textcolor{blue}{\textbf{Nodo C:}} Il nodo $C$ è influenzato dal generatore di tensione $E_1$.
     \begin{equation}
-        -J_2 + I_{R_2} - I_{E_1} + I_{E_2} = 0
-        \label{eq:nodoB_vincolo}
-    \end{equation}
-    \item \textcolor{magenta}{\textbf{Nodo C:}} 
-    \begin{equation}
-        -I_{R_2} + I_{R_3} - I_{E_2} = 0
+        -J_1 - I_{R_1} - I_{E_1} = 0
         \label{eq:nodoC_vincolo}
+    \end{equation}
+    \item \textcolor{magenta}{\textbf{Nodo D:}} Il nodo $D$ è influenzato dal generatore di tensione $E_1$.
+    \begin{equation}
+        J_2 + I_{E_1} - I_{R_4} = 0
+        \label{eq:nodoD_vincolo}
     \end{equation}
 \end{itemize}
 
-Qui \(I_{R_1}, I_{R_2}, I_{R_3}\) sono le correnti nei resistori, espresse in funzione dei potenziali nodali.
+\vspace*{0.3cm}
 
 \hrule
+
+
+
+
 \subsection*{3. Applicare la legge di Ohm}
 
-Esprimiamo le correnti nei resistori con la legge di Ohm, utilizzando le conduttanze \(G_i = 1/R_i\):
+Per ogni equazione bisogna definire ogni corrente come rapporto tra resistenza complessiva sul ramo e tensione tra i nodi. Inoltre riscriviamo sempre l'equazione utilizzando il concetto di \textbf{conduttanza}.
 
-\begin{align}
-    I_{R_1} &= G_1 (V_A - 0) = G_1 V_A, \\
-    I_{R_2} &= G_2 (V_C - V_B), \\
-    I_{R_3} &= G_3 (V_A - V_C).
-\end{align}
+\paragraph{Nodo A}
+L'unica corrente incognita è la corrente che attraversa il resistore $R_4$, resistore che si collega ai morsetti $A$ e $D$. Perciò l'equazione diventa:
+\begin{equation}
+J_1 - J_4 - \frac{V_A - V_D}{R_4} = 0 \qquad \Rightarrow \qquad J_1 - J_4 - G_4\left(V_A - V_D\right) = 0
+\label{eq:nodoA_Ohm}
+\end{equation}
 
-Sostituendo nelle equazioni di KCL otteniamo:
+\paragraph{Nodo C}
+L'unica corrente incognita è la corrente che attraversa il resistore $R_1$, resistore che si collega ai morsetti $C$ e $B$. Notiamo però che la tensione sul morsetto $B$ è pari a 0, visto che è collegato al GND. Perciò l'equazione diventa:
+\begin{equation}
+- J_1 + J_2 - \frac{V_C - V_B}{R_1} = 0 \qquad \Rightarrow \qquad - J_1 + J_2 - G_1\left(V_C\right) = 0
+\label{eq:nodoC_Ohm}
+\end{equation}
 
-\begin{align}
-    \text{Nodo A:}&\quad J_1 - G_1 V_A - G_3 (V_A - V_C) + I_{E_1} = 0, \label{eq:nodoA_ohm}\\
-    \text{Nodo B:}&\quad -J_2 + G_2 (V_C - V_B) - I_{E_1} + I_{E_2} = 0, \label{eq:nodoB_ohm}\\
-    \text{Nodo C:}&\quad -G_2 (V_C - V_B) + G_3 (V_A - V_C) - I_{E_2} = 0. \label{eq:nodoC_ohm}
-\end{align}
+
+\paragraph{Nodo D}
+L'unica corrente incognita è la corrente che attraversa il resistore $R_4$, resistore che si collega ai morsetti $A$ e $D$. Perciò l'equazione diventa:
+\begin{equation}
+- J_2 + J_3 - \frac{V_D - V_A}{R_4} = 0 \qquad \Rightarrow \qquad - J_2 + J_3 - G_4\left(V_D-V_A\right) = 0
+\label{eq:nodoD_Ohm}
+\end{equation}
+
+
+
+
+Per una migliore comprensione, possiamo mettere a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite.
+Quindi il nostro sistema si potrà riscrivere in questa maniera:
+
+\begin{equation}
+\left\{
+\begin{aligned}
+G_4\, & \textcolor{red}{V_A} & +\; 0\, & \textcolor{blue}{V_C} & -\; G_4\, & \textcolor{magenta}{V_D} & = & J_1 - J_4 \\
+0\, & \textcolor{red}{V_A} & +\; G_1\, & \textcolor{blue}{V_C} & +\; 0\, & \textcolor{magenta}{V_D} & = & J_2 - J_1 \\
+-G_4\, & \textcolor{red}{V_A} & +\; 0\, & \textcolor{blue}{V_C} & +\; G_4\, & \textcolor{magenta}{V_D} & = & -J_2 + J_3
+\end{aligned}
+\right.
+\end{equation}
+
+
+
+
+
+
+
 
 \hrule
 \subsection*{3.1. Equazioni di vincolo dei generatori di tensione}
