@@ -37,72 +37,95 @@ Nel circuito di Figura \ref{fig:potenziale_3} sono presenti \(N=4\) nodi. Scegli
 
 Per ogni nodo diverso dal riferimento (nodi \(A\), \(C\) e \(D\)) imponiamo la somma algebrica delle correnti entranti nulla. Nelle equazioni compare anche la corrente incognita dei generatori di tensione, che indichiamo con \(I_{E_1}\) per il generatore \(E_1\) e \(I_{E_2}\) per \(E_2\). Consideriamo il verso della corrente nei rami con i generatori di tensione uscente dal morsetto positivo degli stessi.
 
-\begin{itemize}
-    \item \textcolor{red}{\textbf{Nodo A:}}  Il nodo $A$ è influenzato dal generatore di tensione $E_1$, quindi dobbiamo tenere conto della corrente che circola su quel ramo.
-    \begin{equation}
-        J_1 - I_{R_1} + I_{E_1} = 0
+
+\paragraph{\textcolor{red}{\textbf{Nodo $A$:}}}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $A$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
+        J_1 - I_{R_4} + I_{E_2} = 0
         \label{eq:nodoA_vincolo}
-    \end{equation}
-    \item \textcolor{blue}{\textbf{Nodo C:}} Il nodo $C$ è influenzato dal generatore di tensione $E_1$.
-    \begin{equation}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{A}
+\end{minipage}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\paragraph{\textcolor{blue}{\textbf{Nodo $C$:}}}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $C$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
         -J_1 - I_{R_1} - I_{E_1} = 0
         \label{eq:nodoC_vincolo}
-    \end{equation}
-    \item \textcolor{magenta}{\textbf{Nodo D:}} Il nodo $D$ è influenzato dal generatore di tensione $E_1$.
-    \begin{equation}
-        J_2 + I_{E_1} - I_{R_4} = 0
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{C}
+\end{minipage}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+\paragraph{\textcolor{magenta}{\textbf{Nodo $D$:}}}
+\begin{minipage}[t]{0.6\textwidth}
+\vspace{0pt}
+Dal nodo $D$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
+
+\begin{equation}
+        - J_2 + I_{E_1} - I_{R_4} = 0
         \label{eq:nodoD_vincolo}
-    \end{equation}
-\end{itemize}
+\end{equation}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+\vspace{0pt}
+\centering
+\ZoomNodo{D}
+\end{minipage}
+
 
 \vspace*{0.3cm}
-
 \hrule
 
-
-
-
 \subsection*{3. Applicare la legge di Ohm}
-
 Per ogni equazione bisogna definire ogni corrente come rapporto tra resistenza complessiva sul ramo e tensione tra i nodi. Inoltre riscriviamo sempre l'equazione utilizzando il concetto di \textbf{conduttanza}.
 
 \paragraph{Nodo A}
-L'unica corrente incognita è la corrente che attraversa il resistore $R_4$, resistore che si collega ai morsetti $A$ e $D$. Perciò l'equazione diventa:
+Oltre alla corrente incognita sul ramo di $R_4$ c'è anche la corrente incognita del generatore $E_2$. Perciò l'equazione diventa:
 \begin{equation}
-J_1 - J_4 - \frac{V_A - V_D}{R_4} = 0 \qquad \Rightarrow \qquad J_1 - J_4 - G_4\left(V_A - V_D\right) = 0
-\label{eq:nodoA_Ohm}
+J_1 - \frac{V_A - V_D}{R_4} + I_{E_2}= 0 \qquad \Rightarrow \qquad J_1 - G_4\left(V_A - V_D\right) + I_{E_2}= 0
+\label{eq:nodoA_Ohm_E}
 \end{equation}
 
 \paragraph{Nodo C}
-L'unica corrente incognita è la corrente che attraversa il resistore $R_1$, resistore che si collega ai morsetti $C$ e $B$. Notiamo però che la tensione sul morsetto $B$ è pari a 0, visto che è collegato al GND. Perciò l'equazione diventa:
+Oltre alla corrente incognita sul ramo di $R_1$ c'è anche la corrente incognita del generatore $E_1$. Perciò l'equazione diventa:
 \begin{equation}
-- J_1 + J_2 - \frac{V_C - V_B}{R_1} = 0 \qquad \Rightarrow \qquad - J_1 + J_2 - G_1\left(V_C\right) = 0
-\label{eq:nodoC_Ohm}
+- J_1 - \frac{V_C - V_B}{R_1} - I_{E_1} = 0 \qquad \Rightarrow \qquad - J_1 - G_1\left(V_C\right) - I_{E_1}= 0
+\label{eq:nodoC_Ohm_E}
 \end{equation}
 
 
 \paragraph{Nodo D}
-L'unica corrente incognita è la corrente che attraversa il resistore $R_4$, resistore che si collega ai morsetti $A$ e $D$. Perciò l'equazione diventa:
+Oltre alla corrente incognita sul ramo di $R_4$ c'è anche la corrente incognita del generatore $E_2$. Perciò l'equazione diventa:
 \begin{equation}
-- J_2 + J_3 - \frac{V_D - V_A}{R_4} = 0 \qquad \Rightarrow \qquad - J_2 + J_3 - G_4\left(V_D-V_A\right) = 0
-\label{eq:nodoD_Ohm}
+J_2 - \frac{V_D - V_A}{R_4} + I_{E_1}= 0 \qquad \Rightarrow \qquad J_2 - G_4\left(V_D-V_A\right) + I_{E_1} = 0
+\label{eq:nodoD_Ohm_E}
 \end{equation}
 
-
-
-
-Per una migliore comprensione, possiamo mettere a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite.
-Quindi il nostro sistema si potrà riscrivere in questa maniera:
-
-\begin{equation}
-\left\{
-\begin{aligned}
-G_4\, & \textcolor{red}{V_A} & +\; 0\, & \textcolor{blue}{V_C} & -\; G_4\, & \textcolor{magenta}{V_D} & = & J_1 - J_4 \\
-0\, & \textcolor{red}{V_A} & +\; G_1\, & \textcolor{blue}{V_C} & +\; 0\, & \textcolor{magenta}{V_D} & = & J_2 - J_1 \\
--G_4\, & \textcolor{red}{V_A} & +\; 0\, & \textcolor{blue}{V_C} & +\; G_4\, & \textcolor{magenta}{V_D} & = & -J_2 + J_3
-\end{aligned}
-\right.
-\end{equation}
 
 
 
@@ -117,9 +140,9 @@ G_4\, & \textcolor{red}{V_A} & +\; 0\, & \textcolor{blue}{V_C} & -\; G_4\, & \te
 Ogni generatore di tensione impone una relazione tra i potenziali dei nodi a cui è collegato.
 
 \begin{itemize}
-    \item Generatore \(E_1\): è collegato tra il nodo \(A\) e il nodo \(B\). La tensione impressa, con la polarità indicata in figura, è:
+    \item Generatore \(E_1\): è collegato tra il nodo \(C\) e il nodo \(D\). La tensione impressa, con la polarità indicata in figura, è:
           \begin{equation}
-              V_A - V_B = E_1
+              V_D - V_C = E_1 + R_3I_3
               \label{eq:vincoloE1}
           \end{equation}
     \item Generatore \(E_2\): è collegato tra il nodo \(B\) e il nodo \(C\). La tensione impressa è:
@@ -131,19 +154,23 @@ Ogni generatore di tensione impone una relazione tra i potenziali dei nodi a cui
 
 Queste due equazioni, insieme alle tre equazioni di KCL, formano un sistema di 5 equazioni nelle 5 incognite \(V_A, V_B, V_C, I_{E_1}, I_{E_2}\).
 
-Riorganizziamo il sistema in forma canonica, portando tutti i termini incogniti a sinistra e i termini noti a destra:
+
+Per una migliore comprensione, possiamo mettere a sistema le equazioni trovate e riorganizziamo i termini per esplicitare le varie incognite.
+Quindi il nostro sistema si potrà riscrivere in questa maniera:
 
 \begin{equation}
     \left\{
-    \begin{aligned}
-        -(G_1 + G_3)\, V_A & + 0\, V_B & + G_3\, V_C & + 1\, I_{E_1} & + 0\, I_{E_2} & = -J_1 \\
-        0\, V_A            & - G_2\, V_B & + G_2\, V_C & - 1\, I_{E_1} & + 1\, I_{E_2} & =  J_2 \\
-        G_3\, V_A          & + G_2\, V_B & -(G_2 + G_3)\, V_C & + 0\, I_{E_1} & - 1\, I_{E_2} & =  0   \\
-        1\, V_A            & -1\, V_B    & + 0\, V_C & + 0\, I_{E_1} & + 0\, I_{E_2} & =  E_1 \\
-        0\, V_A            & +1\, V_B    & -1\, V_C & + 0\, I_{E_1} & + 0\, I_{E_2} & =  E_2
-    \end{aligned}
-    \right.
+\begin{aligned}
+G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & - G_4&\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_1 \\
+0&\textcolor{red}{V_A} & + G_1&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & J_1 \\
+-G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & + G_4&\textcolor{magenta}{V_D} & +0& \textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_2 \\
+0&\textcolor{red}{V_A} & + G_3&\textcolor{blue}{V_C} & - G_3&\textcolor{magenta}{V_D} & - 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & G_3E_1 \\
+G_5&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & G_5E_2
+\end{aligned}
+\right.
 \end{equation}
+
+
 
 \hrule
 \subsection*{4. BONUS: Matrici!}
