@@ -140,17 +140,28 @@ J_2 - \frac{V_D - V_A}{R_4} + I_{E_1}= 0 \qquad \Rightarrow \qquad J_2 - G_4\lef
 Ogni generatore di tensione impone una relazione tra i potenziali dei nodi a cui è collegato.
 
 \begin{itemize}
-    \item Generatore \(E_1\): è collegato tra il nodo \(C\) e il nodo \(D\). La tensione impressa, con la polarità indicata in figura, è:
+    \item Generatore \(E_1\): è collegato tra il nodo \(D\) e il nodo \(C\). La tensione impressa, con la polarità indicata in figura, è:
           \begin{equation}
-              V_D - V_C = E_1 + R_3I_3
+              V_D - V_C = E_1 + R_3I_{A \rightarrow B} = E_1 - R_3I_{E_1} \qquad \Rightarrow \qquad V_D - V_C + R_3I_{E_1} = E_1
               \label{eq:vincoloE1}
           \end{equation}
-    \item Generatore \(E_2\): è collegato tra il nodo \(B\) e il nodo \(C\). La tensione impressa è:
+    Ha molto senso riscrivere l'equazione in maniera da usare solo conduttanze, quindi possiamo dividere per $R_3$, o moltiplicare per $G_3$ visto che è la stessa operazione, entrambi i membri per ottenere:
+    \begin{equation}
+        G_3V_D - G_3V_C + I_{E_1} = G_3E_1
+        \label{eq:vincoloE1Conduttanze}
+    \end{equation}
+    \item Generatore \(E_2\): è collegato tra il nodo \(A\) e il nodo \(B\). La tensione impressa è:
           \begin{equation}
-              V_B - V_C = E_2
+              V_A - V_B = E_2 + R_5I_{A \rightarrow B} = E_2 - R_5I_{E_2} \qquad \Rightarrow \qquad V_A - V_B + R_5I_{E_2} = E_2
               \label{eq:vincoloE2}
           \end{equation}
+    Ci ricordiamo che il nodo $B$ è connesso a massa, quindi il suo potenziale è nullo. Ha poi molto senso riscrivere l'equazione in maniera da usare solo conduttanze, quindi possiamo dividere per $R_5$, o moltiplicare per $G_5$ visto che è la stessa operazione, entrambi i membri per ottenere:
+    \begin{equation}
+        G_5V_A + I_{E_2} = G_3E_2
+        \label{eq:vincoloE2Conduttanze}
+    \end{equation}
 \end{itemize}
+
 
 Queste due equazioni, insieme alle tre equazioni di KCL, formano un sistema di 5 equazioni nelle 5 incognite \(V_A, V_B, V_C, I_{E_1}, I_{E_2}\).
 
@@ -164,8 +175,8 @@ Quindi il nostro sistema si potrà riscrivere in questa maniera:
 G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & - G_4&\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_1 \\
 0&\textcolor{red}{V_A} & + G_1&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & J_1 \\
 -G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & + G_4&\textcolor{magenta}{V_D} & +0& \textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_2 \\
-0&\textcolor{red}{V_A} & + G_3&\textcolor{blue}{V_C} & - G_3&\textcolor{magenta}{V_D} & - 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & G_3E_1 \\
-G_5&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & G_5E_2
+0&\textcolor{red}{V_A} & - G_3&\textcolor{blue}{V_C} & + G_3&\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & G_3E_1 \\
+G_5&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & + 1&\textcolor{orange}{I_{E_2}} & = & G_5E_2
 \end{aligned}
 \right.
 \end{equation}
