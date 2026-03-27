@@ -5,18 +5,15 @@ Il metodo delle correnti di maglia si basa sull’applicazione della Legge di Ki
 Per risolvere il problema si introduce una procedura sistematica che:
 \begin{itemize}
     \item mantiene le correnti di maglia come incognite;
-    \item aggiunge una variabile per ogni generatore di corrente: la tensione ai suoi capi (indicata con \(V_J\));
+    \item aggiunge una variabile per ogni generatore di corrente: la tensione ai suoi capi;
     \item scrive le equazioni di maglia includendo queste tensioni incognite;
-    \item aggiunge un’equazione di vincolo per ogni generatore, che lega le correnti di maglia alla corrente imposta.
+    \item aggiunge un’equazione di vincolo per ogni generatore.
 \end{itemize}
 
 
 \subsection*{Esempio applicativo}
 
-Applichiamo la procedura al circuito di Figura \ref{fig:circuito_3}, che contiene tre maglie e due generatori di corrente. Le correnti di maglia \(I_1,I_2,I_3\) sono state scelte tutte in verso orario.
-
-
-\CircuitoCorrentiMaglia{3}
+Applichiamo la procedura al circuito di Figura \ref{fig:circuito_3}, che contiene tre maglie e due generatori di corrente.
 
 Il procedimento è molto simile a quello spiegato nel capitolo precedente, soltanto che bisogna aggiungere il punto 3.1:
 \begin{enumerate}
@@ -26,6 +23,8 @@ Il procedimento è molto simile a quello spiegato nel capitolo precedente, solta
     \item[3.1.] \textbf{Equazioni di vincolo dei generatori di corrente:} Per ogni generatore di corrente bisogna aggiungere una equazione che lega il valore dell'intensità di corrente del generatore alle correnti di maglia che insistono sul ramo del generatore di corrente.
     \item[4.] \textcolor{gray}{\textbf{BONUS: Matrici!} Organizzare le equazioni in forma matriciale, identificando la matrice delle resistenze e il vettore dei temrini noti, per applicare metodi risolutivi più efficienti.}
 \end{enumerate}
+
+\CircuitoCorrentiMaglia{3}
 
 \subsection*{1. Identificare le correnti di maglia}
 
