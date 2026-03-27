@@ -1,13 +1,14 @@
-% =========================================================
-%                        CONFIGURAZIONE
-% =========================================================
-\documentclass[a4paper, 11pt]{book}
 % region Pacchetti base
 \usepackage[utf8]{inputenc}      % codifica UTF-8
 \usepackage[italian]{babel}      % lingua italiana
 \usepackage[T1]{fontenc}         % font T1
 \usepackage[most]{tcolorbox}     % box colorati
 \usepackage{enumitem}            % controllo liste
+
+\usepackage{listings}
+\tcbuselibrary{listings, skins, breakable}
+\usepackage{fancyvrb} % pacchetto avanzato per verbatim
+
 
 \usepackage{amsmath, amsfonts, amssymb}  % pacchetti matematici
 \usepackage{nicematrix}
@@ -94,3 +95,5 @@
     \end{eqbox}
 }
 % endregion
+
+
