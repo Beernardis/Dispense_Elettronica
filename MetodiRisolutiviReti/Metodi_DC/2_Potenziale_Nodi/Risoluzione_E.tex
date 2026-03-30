@@ -30,7 +30,7 @@ Il procedimento è molto simile a quello spiegato nel capitolo precedente, con l
 
 Nel circuito di Figura \ref{fig:potenziale_3} sono presenti \(N=4\) nodi. Scegliamo come riferimento il nodo \(B\) (massa). Assegniamo quindi i potenziali incogniti \(V_A\), \(V_C\) e \(V_D\) ai nodi rimanenti.
 
-\CircuitoPotenzialeNodi{4}  % figura da definire
+\CircuitoPotenzialeNodi{4}
 
 \hrule
 \subsection*{2. Scrivere le equazioni nodali (LKC)}
@@ -193,56 +193,41 @@ Anche in questo caso la rappresentazione matriciale semplifica la gestione del s
 La matrice dei coefficienti \(\mathbf{A}\) può essere suddivisa in blocchi che riflettono la struttura del problema:
 
 \begin{equation}
-    \mathbf{A} = 
-    \begin{bmatrix}
-        \mathbf{G} & \mathbf{C} \\
-        \mathbf{E} & \mathbf{I}
-    \end{bmatrix}
+    \begin{tikzpicture}[baseline=(m.center)]
+        \node (m) [matrix of math nodes,left delimiter={[},right delimiter={]}]
+            {
+                +G_4 & 0 & -G_4 & 0 & -1 \\
+                0 & +G_1 & 0 & +1 & 0 \\
+                -G_4 & 0 & +G_4 & 0 & -1 \\
+                0 & -G_3 & +G_3 & +1 & 0 \\
+                +G_5 & 0 & 0 & 0 & +1\\
+            };
+
+        \draw[red, thick, rounded corners]
+        ([xshift=-1mm,yshift=0 mm]m-1-1.north west) rectangle
+        ([xshift=0mm,yshift=0.3mm]m-3-3.south east);
+
+        \draw[green, thick, rounded corners]
+        ([xshift=0.7mm,yshift=-.3 mm]m-4-4.north west) rectangle
+        ([xshift=-0.7mm,yshift=0.3mm]m-5-5.south east);
+
+        \draw[blue, thick, rounded corners]
+        ([xshift=-4mm,yshift=-0.3 mm]m-4-1.north west) rectangle
+        ([xshift=3mm,yshift=0mm]m-5-3.south east);
+
+        \draw[brown, thick, rounded corners]
+        ([xshift=-1mm,yshift=0 mm]m-1-4.north west) rectangle
+        ([xshift=-0.8mm,yshift=0mm]m-3-5.south east);
+    \end{tikzpicture}
 \end{equation}
 
 dove:
 \begin{itemize}
-    \item \(\mathbf{G}\) è la matrice delle conduttanze nodali (3×3 nel nostro esempio), costruita con la regola classica: \(G_{ii}\) somma delle conduttanze incidenti al nodo \(i\), \(G_{ij} = -G_{ij}\) (con segno negativo) per i rami resistivi tra nodi \(i\) e \(j\).
-    \item \(\mathbf{C}\) (3×2) descrive come le correnti dei generatori di tensione compaiono nelle equazioni di KCL: \(C_{ik} = +1\) se la corrente \(I_{E_k}\) entra nel nodo \(i\), \(-1\) se ne esce, \(0\) altrimenti.
-    \item \(\mathbf{E}\) (2×3) è la matrice dei vincoli di tensione: \(E_{kj} = +1\) se il potenziale \(V_j\) compare con segno positivo nella relazione del generatore \(k\), \(-1\) se con segno negativo, \(0\) altrimenti.
-    \item 
+    \item \textbf{Sottomatrice rossa:} (3$\times$3)è la matrice delle conduttanze nodali, costruita con la regola classica: \(G_{ii}\) somma delle conduttanze incidenti al nodo \(i\), \(G_{ij}\) con segno negativo per i rami resistivi tra nodi \(i\) e \(j\).
+    \item \textbf{Sottomatrice marrone:} (3$\times$2) descrive come le correnti dei generatori di tensione compaiono nelle equazioni di LKC: \(C_{ik} = +1\) se la corrente \(I_{E_k}\) entra nel nodo \(i\), \(-1\) se ne esce, \(0\) altrimenti.
+    \item \textbf{Sottomatrice blu:} (2$\times$3) è la matrice dei vincoli di tensione: ogni riga rappresenta un generatore di tensione e contiene \(\pm G_{ij}\) per i nodi \(i\) e \(j\) collegati dal generatore, con il segno che riflette la polarità della tensione. Ad esempio, \(E_1\) è collegato tra \(D\) e \(C\) col morsetto positivo su \(D\): per cui i segni delle conduttanze sono positive per l'incognita \(V_D\) e negative per l'incoglinta \(V_C\). La conduttanza usata per moltiplicare le incognite è la conduttanza presente tra i nodi presi in considerazione. 
+    \item \textbf{Sottomatrice verde:} (2$\times$2) è la matrice che tiene conto delle cadute di potenziale ai capi dei resistori in serie ai generatori di tensione. Se la corrente del generatore \(E_k\) attraversa un resistore \(R\) con conduttanza \(G\), allora \(I_{kk} = 1\) e \(E_{k}\) include un termine \(G I_{E_k}\) nella sua equazione di vincolo.
 \end{itemize}
-
-Nel nostro esempio:
-
-\begin{equation}
-    \mathbf{G} = \begin{bmatrix}
-        -(G_1+G_3) & 0 & G_3 \\
-        0 & -G_2 & G_2 \\
-        G_3 & G_2 & -(G_2+G_3)
-    \end{bmatrix},\qquad
-    \mathbf{C} = \begin{bmatrix}
-        1 & 0 \\
-        -1 & 1 \\
-        0 & -1
-    \end{bmatrix},\qquad
-    \mathbf{E} = \begin{bmatrix}
-        1 & -1 & 0 \\
-        0 & 1 & -1
-    \end{bmatrix}\qquad
-    \mathbf{I} = \begin{bmatrix}
-        1 & 0\\
-        0 & 1
-    \end{bmatrix}.
-\end{equation}
-
-La matrice completa è quindi:
-
-\begin{equation}
-    \mathbf{A} = 
-    \begin{bmatrix}
-        -(G_1+G_3) & 0 & G_3 & 1 & 0 \\
-        0 & -G_2 & G_2 & -1 & 1 \\
-        G_3 & G_2 & -(G_2+G_3) & 0 & -1 \\
-        1 & -1 & 0 & 1 & 0 \\
-        0 & 1 & -1 & 0 & 1
-    \end{bmatrix}.
-\end{equation}
 
 \subsubsection*{Vettore incognita}
 
@@ -251,8 +236,8 @@ Il vettore incognita contiene tutti i potenziali nodali e tutte le correnti dei 
 \begin{equation}
     \mathbf{x} = 
     \begin{bmatrix}
-        V_A \\ V_B \\ V_C \\ I_{E_1} \\ I_{E_2}
-    \end{bmatrix}.
+        V_A \\ V_C \\ V_D \\ I_{E_1} \\ I_{E_2}
+    \end{bmatrix}
 \end{equation}
 
 \subsubsection*{Vettore dei termini noti}
@@ -262,8 +247,8 @@ Il vettore \(\mathbf{b}\) raccoglie i contributi dei generatori indipendenti di 
 \begin{equation}
     \mathbf{b} = 
     \begin{bmatrix}
-    aaaa
-    \end{bmatrix}.
+    J_1 \\ J_1 \\ J_2 \\ G_3E_1 \\ G_5E_2
+    \end{bmatrix}
 \end{equation}
 
 In forma compatta:
