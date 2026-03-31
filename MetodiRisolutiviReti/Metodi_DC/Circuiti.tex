@@ -168,6 +168,27 @@
         \draw[postaction={decorate}] (D) -- (0,1.5) node[midway, right] {$I_{R_4}$};
         \draw[postaction={decorate}] (D) -- (-1.5,0) node[midway, above] {$J_2$};
     }{}
+    \ifstrequal{#1}{A_1}{%
+        \node[circ] (A) at (0,0) {};
+        \node[above right] at (A) {A};
+        \draw[postaction={decorate}] (1.5, 0) -- (A) node[midway, above] {$I_{E_2}$};
+        \draw[postaction={decorate}] (-1.5,0) -- (A) node[midway, above] {$J_1$};
+        \draw[postaction={decorate}] (A) -- (0,-1.5) node[midway, right] {$I_{R_4}$};
+    }{}
+    \ifstrequal{#1}{C_1}{%
+        \node[circ] (C) at (0,0) {};
+        \node[above left] at (C) {C};
+        \draw[postaction={decorate}] (C) -- (0,-1.5) node[midway, right] {$I_{R_1}$};
+        \draw[postaction={decorate}] (C) -- (0,1.5) node[midway, right] {$J_1$};
+        \draw[postaction={decorate}] (C) -- (1.5,0) node[midway, above] {$I_{E_1}$};
+    }{}
+    \ifstrequal{#1}{D_1}{%
+        \node[circ] (D) at (0,0) {};
+        \node[above right] at (D) {D};
+        \draw[postaction={decorate}] (0,-1) -- (D) node[midway, right] {$J_2$};
+        \draw[postaction={decorate}] (D) -- (0,1.5) node[midway, right] {$I_{R_4}$};
+        \draw[postaction={decorate}] (-1.5,0) -- (D) node[midway, above] {$I_{E_2}$};
+    }{}
 \end{circuitikz}
 \end{center}
 }

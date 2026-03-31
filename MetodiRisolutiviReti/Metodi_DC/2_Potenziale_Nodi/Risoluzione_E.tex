@@ -52,7 +52,7 @@ Dal nodo $A$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'e
 \begin{minipage}[t]{0.3\textwidth}
 \vspace{0pt}
 \centering
-\ZoomNodo{A}
+\ZoomNodo{A_1}
 \end{minipage}
 
 \vspace{0.5cm}
@@ -73,7 +73,7 @@ Dal nodo $C$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'e
 \begin{minipage}[t]{0.3\textwidth}
 \vspace{0pt}
 \centering
-\ZoomNodo{C}
+\ZoomNodo{C_1}
 \end{minipage}
 
 \vspace{0.5cm}
@@ -86,7 +86,7 @@ Dal nodo $C$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'e
 Dal nodo $D$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'equazione: la corrente imposta dai due generatori di corrente e la corrente sul resistore. Prendiamo come verso positivo le correnti entranti nel nodo:
 
 \begin{equation}
-        - J_2 + I_{E_1} - I_{R_4} = 0
+        J_2 + I_{E_1} - I_{R_4} = 0
         \label{eq:nodoD_vincolo}
 \end{equation}
 \end{minipage}
@@ -94,7 +94,7 @@ Dal nodo $D$ partono tre rami, quindi ci saranno 3 fattori da considerare nell'e
 \begin{minipage}[t]{0.3\textwidth}
 \vspace{0pt}
 \centering
-\ZoomNodo{D}
+\ZoomNodo{D_1}
 \end{minipage}
 
 
@@ -173,7 +173,7 @@ Quindi il nostro sistema si potrà riscrivere in questa maniera:
     \left\{
 \begin{aligned}
 G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & - G_4&\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_1 \\
-0&\textcolor{red}{V_A} & + G_1&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & J_1 \\
+0&\textcolor{red}{V_A} & + G_1&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & - J_1 \\
 -G_4&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & + G_4&\textcolor{magenta}{V_D} & +0& \textcolor{brown}{I_{E_1}} & - 1&\textcolor{orange}{I_{E_2}} & = & J_2 \\
 0&\textcolor{red}{V_A} & - G_3&\textcolor{blue}{V_C} & + G_3&\textcolor{magenta}{V_D} & + 1 &\textcolor{brown}{I_{E_1}} & +0&\textcolor{orange}{I_{E_2}} & = & G_3E_1 \\
 G_5&\textcolor{red}{V_A} & +0&\textcolor{blue}{V_C} & +0 &\textcolor{magenta}{V_D} & +0 &\textcolor{brown}{I_{E_1}} & + 1&\textcolor{orange}{I_{E_2}} & = & G_5E_2
@@ -193,6 +193,7 @@ Anche in questo caso la rappresentazione matriciale semplifica la gestione del s
 La matrice dei coefficienti \(\mathbf{A}\) può essere suddivisa in blocchi che riflettono la struttura del problema:
 
 \begin{equation}
+    \mathbf{A} = 
     \begin{tikzpicture}[baseline=(m.center)]
         \node (m) [matrix of math nodes,left delimiter={[},right delimiter={]}]
             {
@@ -247,9 +248,11 @@ Il vettore \(\mathbf{b}\) raccoglie i contributi dei generatori indipendenti di 
 \begin{equation}
     \mathbf{b} = 
     \begin{bmatrix}
-    J_1 \\ J_1 \\ J_2 \\ G_3E_1 \\ G_5E_2
+    J_1 \\ - J_1 \\ J_2 \\ G_3E_1 \\ G_5E_2
     \end{bmatrix}
 \end{equation}
+
+Si noti come i primi tre elementi del vettore dei termini noti siano le correnti imposte dai generatori di corrente che incidono sui nodi con segno positivo se entranti nel nodo, con segno negativo se uscenti. Mentre gli ultimi due elementi siano i prodotti tra le conduttanze dei resistori in serie ai generatori di tensione e le tensioni impresse dagli stessi generatori, sempre con segno positivo.
 
 In forma compatta:
 
@@ -257,4 +260,4 @@ In forma compatta:
     \mathbf{A} \, \mathbf{x} = \mathbf{b}.
 \end{equation}
 
-La struttura a blocchi evidenzia come la presenza dei generatori di tensione estenda il sistema originale delle conduttanze con nuove variabili e nuove equazioni. Questo approccio permette di applicare metodi risolutivi standard (eliminazione di Gauss, fattorizzazione LU) anche in presenza di generatori di tensione ideali, senza dover ricorrere al concetto di supernodo.
+La struttura a blocchi evidenzia come la presenza dei generatori di tensione estenda il sistema originale delle conduttanze con nuove variabili e nuove equazioni. Questo approccio permette di applicare metodi risolutivi standard (eliminazione di Gauss, decomposizione LU).
