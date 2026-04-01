@@ -1,79 +1,110 @@
+% ================================================================
 % region Pacchetti base
+% ================================================================
 \usepackage[utf8]{inputenc}      % codifica UTF-8
-\usepackage[italian]{babel}      % lingua italiana
 \usepackage[T1]{fontenc}         % font T1
-\usepackage[most]{tcolorbox}     % box colorati
-\usepackage{enumitem}            % controllo liste
+\usepackage[italian]{babel}      % lingua italiana
 
-\usepackage{listings}
-\tcbuselibrary{listings, skins, breakable}
-\usepackage{fancyvrb} % pacchetto avanzato per verbatim
-
-
-\usepackage{amsmath, amsfonts, amssymb}  % pacchetti matematici
+% ================================================================
+% region Matematica
+% ================================================================
+\usepackage{amsmath, amsfonts, amssymb}
 \usepackage{nicematrix}
-\usepackage{geometry}                   % margini
-\usepackage{hyperref}
-\usepackage{array}  % per colonne di larghezza controllata
-\usepackage{booktabs} % per linee orizzontali più eleganti (opzionale)
-\geometry{margin=2.5cm}
 
-\setlength{\headheight}{14.49998pt}    % altezza header
-% endregion
-
+% ================================================================
 % region Grafica e diagrammi
-\usepackage{pgfplots}
-\usepackage{circuitikz}   % per schemi elettrici
-\usepackage{tikz}
-\usetikzlibrary{calc,matrix}
-
-\usepackage{nicematrix}
+% ================================================================
 \usepackage{xcolor}
-
+\usepackage{tikz}
+\usetikzlibrary{calc, matrix}
+\usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
-% endregion
+\usepackage{circuitikz}
+\usepackage{graphicx}
 
-% region Unità e collegamenti ipertestuali
-\usepackage{siunitx}      % unità di misura
-\usepackage{hyperref}     % link ipertestuali
-% endregion
+% ================================================================
+% region Tabelle
+% ================================================================
+\usepackage{array}
+\usepackage{booktabs}
 
-% region Header e piè di pagina personalizzati
-\usepackage{fancyhdr}     % intestazioni personalizzate
+% ================================================================
+% region Codice sorgente
+% ================================================================
+\usepackage{listings}
+\usepackage{fancyvrb}
 
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue!80!black}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{orange!80!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    showstringspaces=false,
+    literate=
+        {à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1
+        {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+        {À}{{\`A}}1 {È}{{\`E}}1 {Ì}{{\`I}}1
+        {Ò}{{\`O}}1 {Ù}{{\`U}}1
+}
+
+% ================================================================
+% region Box colorati
+% ================================================================
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings, skins, breakable}
+
+% ================================================================
+% region Layout pagina
+% ================================================================
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\setlength{\parindent}{0cm}
+\setlength{\headheight}{14.49998pt}
+
+% ================================================================
+% region Varie
+% ================================================================
+\usepackage{enumitem}
+\usepackage{comment}
+\usepackage{siunitx}
+\usepackage{hyperref}
+
+% ================================================================
+% region Header e piè di pagina
+% ================================================================
+\usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\textit{prof. Bernardis Pierluigi} \qquad \qquad \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
 
-\fancyhead[L]{\nouppercase{\leftmark}} % nome capitolo
-\fancyhead[R]{\textit{prof. Bernardis Pierluigi} \,\,\,\,\,\,\,\,\,\,\, \,\,\,\,\,\,\, \thepage}                % numero pagina
-\renewcommand{\headrulewidth}{0.4pt}   % linea sotto header
-
-% anche nelle pagine di inizio capitolo
 \fancypagestyle{plain}{
     \fancyhf{}
     \fancyhead[L]{\nouppercase{\leftmark}}
     \fancyhead[R]{\thepage}
     \renewcommand{\headrulewidth}{0.4pt}
 }
-% endregion
 
+% ================================================================
 % region Info autore
+% ================================================================
 \author{Prof. Bernardis Pierluigi}
 \date{}
-% endregion
 
-% region Paragrafo e indentazione
-\setlength{\parindent}{0cm}
-% endregion
-
+% ================================================================
 % region Box per equazioni
+% ================================================================
 \tcbset{
     myequationstyle/.style={
-        colback=blue!3,        
-        colframe=blue!100,      
-        arc=4pt,               
-        boxrule=0.8pt,         
-        left=6pt, right=6pt, top=4pt, bottom=4pt, 
+        colback=blue!3,
+        colframe=blue!100,
+        arc=4pt,
+        boxrule=0.8pt,
+        left=6pt, right=6pt, top=4pt, bottom=4pt,
         boxsep=0pt,
         enhanced
     }
@@ -94,6 +125,3 @@
     \end{oldequation}
     \end{eqbox}
 }
-% endregion
-
-
