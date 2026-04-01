@@ -74,6 +74,16 @@ Come tutti i diodi, il LED è un componente \textbf{polarizzato}: ha un terminal
     Se colleghiamo il LED con la polarità invertita (provando a far entrare la corrente dal catodo), il LED \textbf{non si accende} e blocca il passaggio della corrente. In questa condizione il LED non si danneggia, ma semplicemente non funziona. Tuttavia, se la tensione inversa applicata supera il valore massimo specificato nel datasheet (tipicamente \SI{5}{\volt} per LED standard), il componente si danneggia irreversibilmente.
 \end{tcolorbox}
 
+
+
+
+
+
+
+
+
+
+
 % ----------------------------------------------------------------
 \section{Parametri elettrici fondamentali}
 % ----------------------------------------------------------------
@@ -108,6 +118,21 @@ Non si deve mai avvicinarsi a questo valore: in pratica, per un uso sicuro con A
 \begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Nota pratica}]
     I pin digitali di Arduino Uno possono erogare al massimo \SI{40}{\milli\ampere} per poco tempo, ma la scheda nel suo complesso non dovrebbe superare \SI{200}{\milli\ampere} totali. Per sicurezza, è buona norma progettare i circuiti per non superare i \SI{10}{\milli\ampere} per LED.
 \end{tcolorbox}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 % ----------------------------------------------------------------
 \section{La resistenza di limitazione}
@@ -261,7 +286,11 @@ Per portare un pin digitale a \SI{5}{\volt} (LED acceso) o a \SI{0}{\volt}
 (LED spento) si usa \texttt{digitalWrite()}:
 
 \begin{center}
+    \hrule
+    \vspace{0.2cm}
 \texttt{digitalWrite(numeroPIN, valore);}
+    \vspace{0.2cm}
+    \hrule
 \end{center}
 
 \begin{itemize}
@@ -380,3 +409,46 @@ Il numero massimo di 255 è dovuto al fatto che il duty cycle viene rappresentat
     negli esempi che usano il PWM, sposteremo il LED al pin 9.
 \end{tcolorbox}
 
+
+
+
+
+
+
+
+\begin{tcblisting}{
+    listing only,
+    listing engine=listings,
+    colback=gray!5,
+    colframe=gray!50,
+    title=\textbf{Esempio 2 - Variazione luminosità},
+    breakable,
+    listing options={
+        language=C++,
+        basicstyle=\ttfamily\small,
+        keywordstyle=\color{blue!80!black}\bfseries,
+        commentstyle=\color{green!50!black}\itshape,
+        stringstyle=\color{orange!80!black},
+        numbers=left,
+        numberstyle=\tiny\color{gray},
+        breaklines=true,
+        showstringspaces=false,
+        morekeywords={pinMode, digitalWrite, delay, OUTPUT, HIGH, LOW, void, const, int}
+    }
+}
+// Definiamo una costante per il numero del pin.
+const int PIN_LED = 13;
+
+void setup() {
+  // Configuriamo PIN_LED come uscita digitale.
+  // Questo dice ad Arduino: "da questo pin immetto tensione".
+  pinMode(PIN_LED, OUTPUT);
+}
+
+void loop() {
+  analogWrite(PIN_LED, 50);     // Accende LED con duty cycle ~20\%
+  delay(1000);                  // Aspetta 1000 millisecondi 
+  analogWrite(PIN_LED, 200);    // Accende LED con duty cycle ~80\%
+  delay(1000);                  // Aspetta 1 secondo
+}
+\end{tcblisting}
