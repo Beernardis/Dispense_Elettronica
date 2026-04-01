@@ -1,0 +1,697 @@
+\documentclass[a4paper, 11pt]{book}
+\input{../config/config}
+
+\title{\Huge{Arduino - Componenti di Base}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+% ================================================================
+%  CAPITOLO 1 — LED
+% ================================================================
+\chapter{LED}
+
+% ----------------------------------------------------------------
+\section{Introduzione}
+% ----------------------------------------------------------------
+
+Il \textbf{LED} (\textit{Light Emitting Diode}, ovvero Diodo ad Emissione di Luce) è 
+uno dei componenti elettronici più utilizzati al mondo. Lo troviamo ovunque nella vita 
+quotidiana: nei semafori stradali, nelle lampade a risparmio energetico, negli schermi 
+degli smartphone, nei display dei televisori, nelle luci dei cruscotti delle automobili 
+e persino nelle fibre ottiche che trasmettono dati su internet.
+
+Il motivo del suo enorme successo è semplice: rispetto alle tradizionali lampadine a 
+incandescenza, il LED consuma molto meno energia, dura molto più a lungo (fino a 
+50.000 ore di funzionamento) e si accende istantaneamente senza surriscaldarsi.
+
+In questo capitolo impareremo cos'è un LED dal punto di vista fisico ed elettrico, 
+come calcolarne correttamente il circuito di collegamento e come controllarlo con Arduino 
+sia in modo digitale (acceso/spento) che analogico (variando la luminosità).
+
+% ----------------------------------------------------------------
+\section{Struttura fisica e principio di funzionamento}
+% ----------------------------------------------------------------
+
+\subsection{Cos'è un diodo}
+
+Per capire un LED, dobbiamo prima capire cos'è un \textbf{diodo}. Un diodo è un 
+componente elettronico che permette alla corrente elettrica di scorrere \textbf{in 
+una sola direzione}, bloccandola nell'altra. Si comporta come una valvola a senso 
+unico per la corrente.
+
+Questa proprietà è dovuta alla struttura interna del diodo, realizzata con materiali 
+\textbf{semiconduttori} (tipicamente il silicio o il germanio), ovvero materiali che 
+si trovano a metà strada tra i conduttori (come il rame) e gli isolanti (come il vetro).
+
+\subsection{Perché un LED emette luce}
+
+Un LED è un tipo particolare di diodo che, quando la corrente lo attraversa nel verso 
+corretto, emette luce. Senza entrare nei dettagli della fisica quantistica, possiamo 
+capirne il funzionamento con un'analogia intuitiva.
+
+Immaginiamo gli elettroni come palline che si muovono all'interno del materiale 
+semiconduttore. Quando una pallina \textit{cade} da un livello energetico alto a uno 
+basso all'interno del materiale, rilascia energia. Nei normali resistori questa energia 
+si trasforma in calore. In un LED, grazie alla scelta particolare dei materiali 
+semiconduttori utilizzati (arseniuro di gallio, nitruro di gallio, ecc.), questa 
+energia viene rilasciata sotto forma di \textbf{fotoni}, ovvero particelle di luce.
+
+Il colore della luce emessa dipende direttamente dal materiale semiconduttore scelto: 
+materiali diversi corrispondono a livelli energetici diversi, e quindi a colori diversi.
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l l}
+    \toprule
+    Colore & Materiale & Tensione tipica $V_f$ \\
+    \midrule
+    Rosso    & Arseniuro di gallio-alluminio (AlGaAs) & \SIrange{1.8}{2.1}{\volt} \\
+    Arancione & Arseniuro di gallio-fosfuro (GaAsP)   & \SIrange{2.0}{2.2}{\volt} \\
+    Giallo   & Fosfuro di gallio (GaP)                & \SIrange{2.1}{2.4}{\volt} \\
+    Verde    & Nitruro di gallio-indio (InGaN)         & \SIrange{2.2}{3.5}{\volt} \\
+    Blu      & Nitruro di gallio (GaN)                & \SIrange{3.0}{3.5}{\volt} \\
+    Bianco   & LED blu + fosforo giallo               & \SIrange{3.0}{3.5}{\volt} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Curiosità: il LED bianco}]
+    La luce bianca non esiste come singolo colore: è la sovrapposizione di tutti i 
+    colori dello spettro. I LED bianchi vengono costruiti combinando un LED blu ad 
+    alta efficienza con uno strato di materiale fosforescente giallo. La luce blu 
+    eccita il fosforo che emette luce gialla; la combinazione di blu e giallo produce 
+    la percezione del bianco da parte dell'occhio umano.
+\end{tcolorbox}
+
+\subsection{Polarità del LED: anodo e catodo}
+
+Come tutti i diodi, il LED è un componente \textbf{polarizzato}: ha un terminale 
+positivo e uno negativo, e deve essere collegato nel verso giusto per funzionare.
+
+\begin{itemize}
+    \item \textbf{Anodo} (A): il terminale positivo. Si riconosce perché è la 
+          \textbf{gamba più lunga} del LED.
+    \item \textbf{Catodo} (K): il terminale negativo. Si riconosce perché è la 
+          \textbf{gamba più corta} e perché il corpo del LED presenta una piccola 
+          \textbf{piattina} sul lato del catodo.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+    % corpo LED
+    \draw[thick, fill=gray!15] (1.5,0) -- (1.5,1.2) -- (3,0.6) -- cycle;
+    \draw[thick] (3,0.2) -- (3,1.0);
+    % gamba anodo (lunga)
+    \draw[thick] (1.5,0.6) -- (0,0.6);
+    \node[above] at (0.7,0.6) {\small Anodo (+)};
+    \node[below] at (0.7,0.6) {\small gamba lunga};
+    % gamba catodo (corta)
+    \draw[thick] (3,0.6) -- (4.2,0.6);
+    \node[above] at (3.7,0.6) {\small Catodo (-)};
+    \node[below] at (3.7,0.6) {\small gamba corta};
+    % piattina catodo
+    \draw[thick] (3.0,0.15) -- (3.0,-0.1);
+    \node[below] at (3.0,-0.1) {\tiny piattina};
+    % frecce luce
+    \draw[->, thick, orange!80] (2.5,1.0) -- (2.9,1.5);
+    \draw[->, thick, orange!80] (2.1,1.1) -- (2.3,1.6);
+    \draw[->, thick, orange!80] (1.8,0.9) -- (1.8,1.5);
+\end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione — Polarità invertita}]
+    Se colleghiamo il LED con la polarità invertita (anodo al negativo e catodo al 
+    positivo), il LED \textbf{non si accende} e blocca il passaggio della corrente. 
+    In questa condizione il LED non si danneggia, ma semplicemente non funziona. 
+    Tuttavia, se la tensione inversa applicata supera il valore massimo specificato 
+    nel datasheet (tipicamente \SI{5}{\volt} per LED standard), il componente 
+    si danneggia irreversibilmente.
+\end{tcolorbox}
+
+% ----------------------------------------------------------------
+\section{Parametri elettrici fondamentali}
+% ----------------------------------------------------------------
+
+Prima di collegare un LED a qualsiasi circuito, è indispensabile conoscere i suoi 
+parametri elettrici. Questi valori si trovano nel \textbf{datasheet} del componente, 
+ovvero la scheda tecnica fornita dal produttore.
+
+\subsection{Tensione di polarizzazione diretta \texorpdfstring{$V_f$}{Vf}}
+
+La \textbf{tensione di polarizzazione diretta} (\textit{forward voltage}, $V_f$) è 
+la caduta di tensione che si misura ai capi del LED quando è acceso e la corrente 
+scorre nel verso corretto. Come abbiamo visto nella tabella precedente, questo valore 
+dipende dal colore del LED e si aggira tipicamente tra \SI{1.8}{\volt} e \SI{3.5}{\volt}.
+
+È fondamentale ricordare che $V_f$ è una \textbf{proprietà fisica del componente}: 
+non possiamo cambiarla. Qualunque sia la tensione di alimentazione del nostro circuito, 
+il LED \textit{prenderà sempre e solo} la sua $V_f$ e nulla di più.
+
+\subsection{Corrente diretta nominale \texorpdfstring{$I_f$}{If}}
+
+La \textbf{corrente diretta nominale} (\textit{forward current}, $I_f$) è il valore 
+di corrente per cui il LED è stato progettato per funzionare in modo ottimale e sicuro. 
+Per i LED standard da 5 mm (quelli che useremo con Arduino), questo valore è 
+tipicamente \SI{20}{\milli\ampere}.
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Perché la corrente è così critica?}]
+    A differenza di una resistenza, il LED \textbf{non limita autonomamente la corrente 
+    che lo attraversa}. Se lo colleghiamo direttamente a una sorgente di tensione, la 
+    corrente tenderebbe ad aumentare senza controllo fino a distruggere il componente 
+    in pochi millisecondi. Per questo motivo è \textbf{sempre obbligatorio} inserire 
+    una resistenza di limitazione in serie al LED.
+\end{tcolorbox}
+
+\subsection{Corrente massima assoluta}
+
+La \textbf{corrente massima assoluta} è il valore oltre il quale il LED si danneggia 
+in modo permanente e istantaneo. Per i LED standard è circa \SI{30}{\milli\ampere}. 
+Non si deve mai avvicinarsi a questo valore: in pratica, per un uso sicuro con Arduino, 
+è consigliabile lavorare con correnti tra \SI{5}{\milli\ampere} e \SI{15}{\milli\ampere}.
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Nota pratica}]
+    I pin digitali di Arduino Uno possono erogare al massimo \SI{40}{\milli\ampere}, 
+    ma la scheda nel suo complesso non dovrebbe superare \SI{200}{\milli\ampere} totali. 
+    Per sicurezza, è buona norma progettare i circuiti per non superare i 
+    \SI{10}{\milli\ampere} per LED.
+\end{tcolorbox}
+
+% ----------------------------------------------------------------
+\section{La resistenza di limitazione}
+% ----------------------------------------------------------------
+
+\subsection{Perché è necessaria}
+
+Abbiamo visto che il LED non può essere collegato direttamente alla tensione di 
+alimentazione perché la corrente diventerebbe eccessiva. La soluzione è inserire 
+in \textbf{serie} al LED una \textbf{resistenza di limitazione} $R$, il cui compito 
+è quello di \textit{assorbire} la differenza di tensione tra l'alimentazione e la 
+$V_f$ del LED, limitando di conseguenza la corrente.
+
+\subsection{Calcolo con la legge di Kirchhoff e la legge di Ohm}
+
+Consideriamo il circuito in serie composto da: sorgente di tensione $V_{cc}$, 
+resistenza $R$ e LED con tensione $V_f$.
+
+Applicando la \textbf{legge di Kirchhoff alle tensioni} (la somma delle tensioni in 
+un anello chiuso è zero), otteniamo:
+
+\begin{equation}
+    V_{cc} = V_R + V_f
+\end{equation}
+
+Dove $V_R$ è la caduta di tensione sulla resistenza. Ricaviamo $V_R$:
+
+\begin{equation}
+    V_R = V_{cc} - V_f
+\end{equation}
+
+In un circuito in serie la corrente è uguale in ogni punto, quindi la corrente che 
+attraversa la resistenza è la stessa che attraversa il LED: $I_R = I_f$. 
+Applicando la \textbf{legge di Ohm} alla resistenza ($V = R \cdot I$):
+
+\begin{equation}
+    R = \frac{V_R}{I_f} = \frac{V_{cc} - V_f}{I_f}
+\end{equation}
+
+\subsection{Esempio di calcolo}
+
+Vogliamo collegare un \textbf{LED rosso} al pin 13 di Arduino, che fornisce 
+\SI{5}{\volt}. Il LED rosso ha $V_f = \SI{2.0}{\volt}$ e vogliamo farlo 
+lavorare a $I_f = \SI{10}{\milli\ampere}$ per sicurezza.
+
+\begin{equation}
+    R = \frac{V_{cc} - V_f}{I_f} = \frac{\SI{5}{\volt} - \SI{2.0}{\volt}}{\SI{10}{\milli\ampere}} = \frac{\SI{3}{\volt}}{\SI{0.010}{\ampere}} = \SI{300}{\ohm}
+\end{equation}
+
+Il valore esatto di \SI{300}{\ohm} potrebbe non essere disponibile nella serie 
+standard di resistenze commerciali. In questo caso scegliamo il valore 
+\textbf{immediatamente superiore} disponibile, cioè \textbf{\SI{330}{\ohm}}: 
+una resistenza leggermente più alta riduce leggermente la corrente (e quindi la 
+luminosità), ma protegge meglio il componente. Non si sceglie mai un valore 
+inferiore, perché aumenterebbe la corrente oltre il valore di progetto.
+
+\begin{tcolorbox}[colback=green!4, colframe=green!60, title=\textbf{Verifica del calcolo}]
+    Con $R = \SI{330}{\ohm}$, la corrente effettiva sarà:
+    \[
+        I_f = \frac{V_{cc} - V_f}{R} = \frac{\SI{5}{\volt} - \SI{2.0}{\volt}}{\SI{330}{\ohm}} \approx \SI{9.1}{\milli\ampere}
+    \]
+    Valore ben al di sotto dei \SI{20}{\milli\ampere} nominali: il LED è al sicuro.
+\end{tcolorbox}
+
+\subsection{Leggere il valore di una resistenza: il codice a colori}
+
+Le resistenze fisiche non hanno il valore scritto sopra (sarebbero troppo piccole), 
+ma utilizzano un \textbf{codice a colori} di bande colorate. Per una resistenza a 
+4 bande:
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l c c}
+    \toprule
+    Colore   & Cifra & Moltiplicatore \\
+    \midrule
+    Nero     & 0 & $\times 1$ \\
+    Marrone  & 1 & $\times 10$ \\
+    Rosso    & 2 & $\times 100$ \\
+    Arancione & 3 & $\times 1\,000$ \\
+    Giallo   & 4 & $\times 10\,000$ \\
+    Verde    & 5 & $\times 100\,000$ \\
+    Blu      & 6 & $\times 1\,000\,000$ \\
+    Viola    & 7 & --- \\
+    Grigio   & 8 & --- \\
+    Bianco   & 9 & --- \\
+    Oro      & --- & $\times 0.1$ (tolleranza $\pm5\%$) \\
+    Argento  & --- & $\times 0.01$ (tolleranza $\pm10\%$) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+Una resistenza da \SI{330}{\ohm} ha le bande: \textbf{arancione -- arancione -- marrone -- oro} 
+(3 -- 3 -- $\times$10 -- $\pm$5\% = 330\,\si{\ohm}).
+
+% ----------------------------------------------------------------
+\section{Schema di collegamento}
+% ----------------------------------------------------------------
+
+\subsection{Componenti necessari}
+
+\begin{itemize}
+    \item 1$\times$ Arduino Uno (o compatibile)
+    \item 1$\times$ LED (colore a scelta)
+    \item 1$\times$ Resistenza da \SI{330}{\ohm}
+    \item 1$\times$ Breadboard
+    \item 2 cavi jumper maschio-maschio
+\end{itemize}
+
+\subsection{Schema elettrico}
+
+\begin{center}
+\begin{circuitikz}[scale=1.1, american]
+    \draw (0,0) node[left] {\texttt{Pin 13}}
+        to[short] (1,0)
+        to[R, l=\SI{330}{\ohm}] (3.5,0)
+        to[led, l=LED] (5.5,0)
+        to[short] (6.5,0) node[ground] {};
+    \node[below] at (6.5,-0.3) {\texttt{GND}};
+\end{circuitikz}
+\end{center}
+
+\subsection{Procedura di montaggio su breadboard}
+
+La breadboard è una basetta forata che permette di realizzare circuiti elettronici 
+senza saldature. I fori sono collegati internamente in file orizzontali (al centro) 
+e in colonne verticali (sui bordi, riservate all'alimentazione).
+
+\begin{enumerate}
+    \item Collega un cavo jumper dal \textbf{pin 13} di Arduino a una riga 
+          della breadboard (es. riga 10, colonna e).
+    \item Inserisci la \textbf{resistenza da \SI{330}{\ohm}} con un terminale 
+          nella stessa riga del cavo (es. riga 10) e l'altro terminale in 
+          una riga diversa (es. riga 10, saltando la separazione centrale 
+          se necessario).
+    \item Inserisci il \textbf{LED} con l'\textbf{anodo} (gamba lunga) nella 
+          stessa colonna dell'altro terminale della resistenza e il 
+          \textbf{catodo} (gamba corta) in una riga adiacente libera.
+    \item Collega un cavo jumper dal catodo del LED al pin \textbf{GND} di Arduino.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=orange!4, colframe=orange!70, title=\textbf{Regola d'oro della breadboard}]
+    I fori sulla stessa riga orizzontale (stessa lettera, stesso numero) 
+    \textbf{non} sono collegati tra loro. I fori sulla stessa colonna verticale 
+    (stesso numero, lettere a-e oppure f-j) \textbf{sono} collegati tra loro. 
+    Controlla sempre bene prima di alimentare il circuito.
+\end{tcolorbox}
+
+% ----------------------------------------------------------------
+\section{Programmazione con Arduino}
+% ----------------------------------------------------------------
+
+\subsection{Struttura di uno sketch Arduino}
+
+Un programma per Arduino si chiama \textbf{sketch} e ha sempre la stessa struttura 
+di base, con due funzioni obbligatorie:
+
+\begin{itemize}
+    \item \texttt{setup()}: viene eseguita \textbf{una sola volta} all'avvio della 
+          scheda o dopo ogni reset. Qui si configurano i pin e si inizializzano 
+          le variabili.
+    \item \texttt{loop()}: viene eseguita \textbf{in modo continuo e ripetuto} 
+          dopo la \texttt{setup()}. Contiene il comportamento principale del programma.
+\end{itemize}
+
+\subsection{Configurare un pin come uscita: \texttt{pinMode()}}
+
+Prima di poter controllare un LED (o qualsiasi altro componente), dobbiamo dire 
+ad Arduino se quel pin deve comportarsi da \textbf{uscita} (Arduino manda tensione 
+al circuito) o da \textbf{ingresso} (Arduino legge la tensione dal circuito). 
+Questo si fa con la funzione \texttt{pinMode()}:
+
+\begin{center}
+\texttt{pinMode(numeroPIN, modalità);}
+\end{center}
+
+\begin{itemize}
+    \item \texttt{numeroPIN}: il numero del pin da configurare (es. \texttt{13})
+    \item \texttt{modalità}: \texttt{OUTPUT} per uscita, \texttt{INPUT} per ingresso
+\end{itemize}
+
+\subsection{Accendere e spegnere il LED: \texttt{digitalWrite()}}
+
+Per portare un pin digitale a \SI{5}{\volt} (LED acceso) o a \SI{0}{\volt} 
+(LED spento) si usa \texttt{digitalWrite()}:
+
+\begin{center}
+\texttt{digitalWrite(numeroPIN, valore);}
+\end{center}
+
+\begin{itemize}
+    \item \texttt{HIGH}: porta il pin a \SI{5}{\volt} → LED \textbf{acceso}
+    \item \texttt{LOW}: porta il pin a \SI{0}{\volt} → LED \textbf{spento}
+\end{itemize}
+
+\subsection{Mettere in pausa il programma: \texttt{delay()}}
+
+La funzione \texttt{delay(ms)} mette in pausa l'esecuzione del programma per il 
+numero di millisecondi specificato. Per esempio, \texttt{delay(1000)} aspetta 
+esattamente 1 secondo prima di proseguire.
+
+\subsection{Esempio 1 — Blink (lampeggio)}
+
+Il programma \textit{Blink} è il classico ``Hello World'' di Arduino: fa lampeggiare 
+il LED con un ritmo regolare di 1 secondo acceso e 1 secondo spento.
+
+\begin{tcblisting}{
+    listing only,
+    listing engine=listings,
+    colback=gray!5,
+    colframe=gray!50,
+    title=\textbf{Esempio 1 — Blink},
+    breakable,
+    listing options={
+        language=C++,
+        basicstyle=\ttfamily\small,
+        keywordstyle=\color{blue!80!black}\bfseries,
+        commentstyle=\color{green!50!black}\itshape,
+        stringstyle=\color{orange!80!black},
+        numbers=left,
+        numberstyle=\tiny\color{gray},
+        breaklines=true,
+        showstringspaces=false,
+        morekeywords={pinMode, digitalWrite, delay, OUTPUT, HIGH, LOW, void, const, int}
+    }
+}
+// Definiamo una costante per il numero del pin.
+// Usando una costante (invece di scrivere 13 direttamente),
+// se in futuro cambiamo pin, basta modificare solo questa riga.
+const int PIN_LED = 13;
+
+void setup() {
+  // Configuriamo PIN_LED come uscita digitale.
+  // Questo dice ad Arduino: "da questo pin voglio inviare tensione".
+  pinMode(PIN_LED, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(PIN_LED, HIGH);  // Accende il LED (porta il pin a 5V)
+  delay(1000);                  // Aspetta 1 secondo (1000 millisecondi)
+  digitalWrite(PIN_LED, LOW);   // Spegne il LED (porta il pin a 0V)
+  delay(1000);                  // Aspetta 1 secondo
+  // La funzione loop() ricomincia automaticamente dall'inizio:
+  // il LED continuerà a lampeggiare indefinitamente.
+}
+\end{tcblisting}
+
+\textbf{Analisi del codice riga per riga:}
+\begin{itemize}
+    \item \textbf{Riga 6} — \texttt{const int PIN\_LED = 13;}: dichiariamo una 
+          costante intera di nome \texttt{PIN\_LED} con valore 13. La parola chiave 
+          \texttt{const} significa che il valore non potrà essere modificato 
+          durante l'esecuzione del programma.
+    \item \textbf{Riga 11} — \texttt{pinMode(PIN\_LED, OUTPUT);}: eseguita una 
+          sola volta all'avvio, configura il pin 13 come uscita digitale.
+    \item \textbf{Riga 16} — \texttt{digitalWrite(PIN\_LED, HIGH);}: porta il 
+          pin 13 a \SI{5}{\volt}. La corrente scorre attraverso la resistenza 
+          e il LED, che si accende.
+    \item \textbf{Riga 17} — \texttt{delay(1000);}: il programma si blocca per 
+          1000 ms. Durante questo tempo il LED rimane nello stato in cui si trova.
+    \item \textbf{Riga 18} — \texttt{digitalWrite(PIN\_LED, LOW);}: porta il 
+          pin 13 a \SI{0}{\volt}. Nessuna differenza di tensione, nessuna corrente, 
+          LED spento.
+\end{itemize}
+
+\subsection{Variare la luminosità: PWM e \texttt{analogWrite()}}
+
+I pin digitali di Arduino possono essere solo in due stati: \SI{5}{\volt} (HIGH) 
+oppure \SI{0}{\volt} (LOW). Non è possibile impostare direttamente una tensione 
+intermedia di, ad esempio, \SI{2.5}{\volt}. Come facciamo allora a variare la 
+luminosità del LED?
+
+La soluzione si chiama \textbf{PWM} (\textit{Pulse Width Modulation}, Modulazione 
+di Larghezza di Impulso). L'idea è la seguente: invece di tenere il pin fisso a 
+un valore di tensione intermedio, il pin viene commutato rapidamente tra HIGH e LOW 
+a una frequenza di circa \SI{490}{\hertz} (490 volte al secondo). L'occhio umano, 
+non riuscendo a percepire variazioni così rapide, vede una luminosità \textit{media} 
+proporzionale al tempo in cui il pin è rimasto HIGH.
+
+Questo rapporto tra il tempo in cui il segnale è HIGH e il periodo totale si chiama 
+\textbf{duty cycle}:
+
+\begin{equation}
+    \text{Duty Cycle} = \frac{t_{HIGH}}{T} \times 100\%
+\end{equation}
+
+Un duty cycle del 50\% significa che il pin è HIGH per metà del tempo: il LED 
+appare a metà della sua luminosità massima. Un duty cycle del 100\% equivale a 
+\texttt{digitalWrite(pin, HIGH)}: LED alla massima luminosità.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85]
+    % Duty cycle 25%
+    \node[left] at (0,3.4) {\small 25\%};
+    \draw[thick, blue] (0,3) -- (0.5,3) -- (0.5,3.8) -- (1,3.8) -- (1,3) -- (2,3) -- (2,3.8) -- (2.5,3.8) -- (2.5,3) -- (4,3);
+    % Duty cycle 50%
+    \node[left] at (0,1.9) {\small 50\%};
+    \draw[thick, blue] (0,1.5) -- (1,1.5) -- (1,2.3) -- (2,2.3) -- (2,1.5) -- (3,1.5) -- (3,2.3) -- (4,2.3) -- (4,1.5);
+    % Duty cycle 75%
+    \node[left] at (0,0.4) {\small 75\%};
+    \draw[thick, blue] (0,0) -- (1.5,0) -- (1.5,0.8) -- (2,0.8) -- (2,0) -- (3.5,0) -- (3.5,0.8) -- (4,0.8);
+    % titolo
+    \node[right] at (4.2,3.4) {\small luminosità bassa};
+    \node[right] at (4.2,1.9) {\small luminosità media};
+    \node[right] at (4.2,0.4) {\small luminosità alta};
+\end{tikzpicture}
+\end{center}
+
+La funzione \texttt{analogWrite(pin, valore)} imposta il duty cycle del pin PWM 
+specificato. Il parametro \texttt{valore} va da \textbf{0} (duty cycle 0\%, LED 
+completamente spento) a \textbf{255} (duty cycle 100\%, LED alla massima 
+luminosità).
+
+\begin{tcolorbox}[colback=orange!4, colframe=orange!70, title=\textbf{Quali pin supportano il PWM?}]
+    Su Arduino Uno, \textbf{non tutti i pin} supportano il PWM. I pin abilitati 
+    al PWM sono contrassegnati dal simbolo \textbf{\texttildelow} sulla scheda e 
+    sono: \textbf{3, 5, 6, 9, 10, 11}. Se si tenta di usare \texttt{analogWrite()} 
+    su un pin non PWM, il comportamento è imprevedibile. Per questa ragione, 
+    negli esempi che usano il PWM, sposteremo il LED al pin 9.
+\end{tcolorbox}
+
+\subsection{Esempio 2 — Fade (dissolvenza)}
+
+\begin{tcblisting}{
+    listing only,
+    listing engine=listings,
+    colback=gray!5,
+    colframe=gray!50,
+    title=\textbf{Esempio 2 — Fade},
+    breakable,
+    listing options={
+        language=C++,
+        basicstyle=\ttfamily\small,
+        keywordstyle=\color{blue!80!black}\bfseries,
+        commentstyle=\color{green!50!black}\itshape,
+        stringstyle=\color{orange!80!black},
+        numbers=left,
+        numberstyle=\tiny\color{gray},
+        breaklines=true,
+        showstringspaces=false,
+        morekeywords={pinMode, analogWrite, delay, OUTPUT, void, const, int, for}
+    }
+}
+// Usiamo il pin 9 perché supporta il PWM (simbolo ~ sulla scheda)
+const int PIN_LED = 9;
+
+void setup() {
+  pinMode(PIN_LED, OUTPUT);
+}
+
+void loop() {
+  // --- Fase 1: aumenta gradualmente la luminosità ---
+  // La variabile 'luce' parte da 0 e arriva a 255, incrementandosi di 1.
+  // Ad ogni passo impostiamo il duty cycle del pin e aspettiamo 10 ms.
+  for (int luce = 0; luce <= 255; luce++) {
+    analogWrite(PIN_LED, luce);
+    delay(10);   // 10 ms × 256 passi = ~2.5 secondi per salire
+  }
+
+  // --- Fase 2: diminuisce gradualmente la luminosità ---
+  for (int luce = 255; luce >= 0; luce--) {
+    analogWrite(PIN_LED, luce);
+    delay(10);   // altri ~2.5 secondi per scendere
+  }
+  // Il loop riparte: effetto di respiro continuo.
+}
+\end{tcblisting}
+
+\textbf{Analisi del ciclo \texttt{for}:}
+
+Il ciclo \texttt{for} ha la struttura:
+\begin{center}
+    \texttt{for (inizializzazione; condizione; incremento) \{ ... \}}
+\end{center}
+\begin{itemize}
+    \item \textbf{Inizializzazione} (\texttt{int luce = 0}): crea la variabile 
+          \texttt{luce} e la imposta a 0. Viene eseguita \textit{una sola volta} 
+          all'inizio del ciclo.
+    \item \textbf{Condizione} (\texttt{luce <= 255}): il ciclo continua finché 
+          questa condizione è vera. Quando \texttt{luce} supera 255, il ciclo termina.
+    \item \textbf{Incremento} (\texttt{luce++}): equivale a \texttt{luce = luce + 1}. 
+          Viene eseguito alla fine di ogni iterazione.
+\end{itemize}
+
+\subsection{Esempio 3 — Lampeggio a frequenza variabile con potenziometro}
+
+Questo esempio anticipa il prossimo capitolo sul potenziometro, ma mostra come 
+rendere il lampeggio interattivo. La velocità di lampeggio viene controllata 
+da una lettura analogica:
+
+\begin{tcblisting}{
+    listing only,
+    listing engine=listings,
+    colback=gray!5,
+    colframe=gray!50,
+    title=\textbf{Esempio 3 — Blink a velocità variabile},
+    breakable,
+    listing options={
+        language=C++,
+        basicstyle=\ttfamily\small,
+        keywordstyle=\color{blue!80!black}\bfseries,
+        commentstyle=\color{green!50!black}\itshape,
+        stringstyle=\color{orange!80!black},
+        numbers=left,
+        numberstyle=\tiny\color{gray},
+        breaklines=true,
+        showstringspaces=false,
+        morekeywords={pinMode, digitalWrite, analogRead, map, delay, OUTPUT, HIGH, LOW, void, const, int, long}
+    }
+}
+const int PIN_LED  = 13;
+const int PIN_POT  = A0;  // Pin analogico per il potenziometro
+
+void setup() {
+  pinMode(PIN_LED, OUTPUT);
+}
+
+void loop() {
+  // Leggiamo il valore del potenziometro: restituisce un intero tra 0 e 1023
+  int valPot = analogRead(PIN_POT);
+
+  // Convertiamo il valore in un intervallo utile: da 50 ms a 1000 ms
+  long intervallo = map(valPot, 0, 1023, 50, 1000);
+
+  // Lampeggio con il tempo determinato dal potenziometro
+  digitalWrite(PIN_LED, HIGH);
+  delay(intervallo);
+  digitalWrite(PIN_LED, LOW);
+  delay(intervallo);
+}
+\end{tcblisting}
+
+La funzione \texttt{map(valore, minIn, maxIn, minOut, maxOut)} converte linearmente 
+un valore da un intervallo di ingresso a un intervallo di uscita. In questo caso, 
+il valore grezzo del potenziometro (0--1023) viene convertito in un tempo di 
+attesa (50--1000 ms).
+
+% ----------------------------------------------------------------
+\section{Applicazioni pratiche}
+% ----------------------------------------------------------------
+
+I LED non servono solo come segnalatori luminosi elementari. Ecco alcune applicazioni 
+concrete che potrete realizzare combinando quanto appreso in questo capitolo:
+
+\begin{itemize}
+    \item \textbf{Spia di stato}: un LED verde fisso indica che il sistema è 
+          operativo; un LED rosso lampeggiante segnala un errore o un allarme.
+    \item \textbf{Indicatore di livello}: una serie di LED disposti in fila, 
+          accesi in sequenza, simulano una barra di avanzamento (come la 
+          batteria di uno smartphone).
+    \item \textbf{Effetto \textit{breathing}}: variando il duty cycle con una 
+          funzione sinusoidale anziché lineare, si ottiene un effetto di 
+          ``respiro'' molto più morbido e naturale.
+    \item \textbf{Comunicazione ottica}: modulando il LED a frequenze elevate, 
+          è possibile trasmettere dati binari. Questo è il principio alla base 
+          del telecomando a infrarossi.
+    \item \textbf{LED RGB}: i LED RGB contengono tre diodi (rosso, verde, blu) 
+          in un unico package. Controllando separatamente il duty cycle di 
+          ciascun colore, è possibile ottenere qualsiasi colore dello spettro 
+          visibile.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\section{Domande di verifica}
+% ----------------------------------------------------------------
+
+\begin{enumerate}
+    \item Cosa significa la sigla LED e da quali componenti fisici è costituito?
+    
+    \item Come si riconosce fisicamente l'anodo dal catodo di un LED? 
+          Descrivi almeno due metodi.
+    
+    \item Un LED viene collegato direttamente ai \SI{5}{\volt} di Arduino senza 
+          resistenza. Cosa succede e perché?
+    
+    \item Calcola la resistenza di limitazione necessaria per collegare ad Arduino 
+          un LED \textbf{blu} con $V_f = \SI{3.2}{\volt}$, volendo una corrente 
+          di lavoro di $\SI{8}{\milli\ampere}$. Quale valore commerciale sceglieresti?
+    
+    \item Quali bande colorate ha una resistenza da \SI{470}{\ohm} con tolleranza 
+          del 5\%?
+    
+    \item Qual è la differenza tra la funzione \texttt{digitalWrite()} e la 
+          funzione \texttt{analogWrite()}? In quale situazione useresti l'una 
+          e in quale l'altra?
+    
+    \item Cosa si intende per \textbf{duty cycle}? Se impostassimo 
+          \texttt{analogWrite(9, 128)}, a quale percentuale di duty cycle 
+          corrisponde (approssimativamente)?
+    
+    \item Un LED è collegato al pin 6 di Arduino (PWM). Lo sketch contiene 
+          \texttt{analogWrite(6, 64)}. Stima la luminosità percepita rispetto 
+          alla massima e spiega il ragionamento.
+    
+    \item Nel codice dell'Esempio 1, cosa succederebbe se rimuovessimo la seconda 
+          \texttt{delay(1000)} (quella dopo \texttt{LOW})? Descrivi il 
+          comportamento del LED.
+    
+    \item Modifica l'Esempio 2 in modo che il LED raggiunga la massima luminosità 
+          in 1 secondo (anziché 2.5 secondi). Mostra la modifica al codice e 
+          spiega il ragionamento.
+\end{enumerate}
+
+
+
+
+
+
+
+
+\chapter{Pulsante}
+\chapter{Potenziometro}
+\chapter{Fotoresistore}
+\chapter{Sensore di Distanza HC-SR04}
+
+
+
+\end{document}
