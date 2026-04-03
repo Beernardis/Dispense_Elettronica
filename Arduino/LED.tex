@@ -252,11 +252,28 @@ Dato che nell'esempio abbiamo scelto un LED verde, possiamo supporre che la tens
     R = \frac{V_{cc} - V_f}{I_f} = \frac{\SI{5}{\volt} - \SI{2.6}{\volt}}{\SI{20}{\milli\ampere}} = \frac{\SI{2.4}{\volt}}{\SI{0.020}{\ampere}} = \SI{120}{\ohm}
 \end{equation}
 
-Una resistenza di \SI{120}{\ohm} potrebbe non essere disponibile, quindi scegliamo il valore commerciale più vicino e superiore, cioè \textbf{\SI{150}{\ohm}}, che garantisce una corrente di $\SI{16}{\milli\ampere}$, leggermente inferiore a quella nominale, ma comunque sufficiente per accendere il LED in modo visibile.
+Una resistenza di \SI{120}{\ohm} potrebbe non essere disponibile, quindi scegliamo il valore commerciale più vicino e superiore, cioè \textbf{\SI{150}{\ohm}}, che garantisce una corrente di $\SI{16}{\milli\ampere}$, leggermente inferiore a quella nominale, ma comunque sufficiente per accendere il LED in modo visibile.\\
+
+
 
 Se il circuito viene fatto utilizzando come generatore di tensione una scheda Arduino, è sempre meglio aumentare il valore di resistenza  $\SIrange{220}{330}{\ohm}$, in maniera da non stressare troppo i pin digitali di Arduino. Per verificare se il circuito è fatto correttamente, basta collegare il jumper che abbiamo precedentemente collegato alla boccola positiva dell'alimentatore al pin \texttt{+5\,V} e collegare il jumper che abbiamo precedentemente collegato alla boccola negativa dell'alimentatore al pin \texttt{GND} di Arduino. Se tutto è stato fatto correttamente, il LED si accenderà. Se il led non si accende allora bisogna controllare se il circuito è stato montato correttamente prestando attenzione ai vari collegamenti sulla breadboard e alla polarità del LED. Se continua a non accendersi se la resistenza che abbiamo scelto non sia troppo alta, oppure che il LED non sia danneggiato.
 
-
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.6\textwidth}  % Larghezza della minipagina per l'immagine
+        \centering
+        \includegraphics[width=0.8\textwidth]{img/Circuito_Led_5V.png}
+        \caption{\centering Circuito per verificare il funzionamento del circuito.}
+        \label{fig:Circuito_LED_5V}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.4\textwidth}  % Larghezza della minipagina per l'immagine
+        \centering
+        \includegraphics[width=0.8\textwidth]{img/Circuito_Led_Arduino.png}
+        \caption{\centering Circuito per accendere il LED con Arduino.}
+        \label{fig:Circuito_LED_Arduino}
+    \end{minipage}%
+\end{figure}
 
 % ----------------------------------------------------------------
 \section{Programmazione con Arduino}
@@ -276,9 +293,18 @@ Questo si fa con la funzione \texttt{pinMode()}:
 \end{center}
 
 \begin{itemize}
-    \item \texttt{numeroPIN}: il numero del pin da configurare (es. \texttt{13})
-    \item \texttt{modalità}: \texttt{OUTPUT} per uscita, \texttt{INPUT} per ingresso
+    \item \texttt{numeroPIN}: il numero del pin da configurare (es. \texttt{6}, come mostrato in figura \ref{fig:Circuito_LED_Arduino})
+    \item \texttt{modalità}: \texttt{OUTPUT} per uscita, \texttt{INPUT} per ingresso. Per accendere un LED, bisogna inviare un segnale dall'Arduino all' "esterno", quindi configureremo il pin come pin di \texttt{OUTPUT}.
 \end{itemize}
+
+Quindi per impostare il pin 6 come pin usato per accendere il led in figura \ref{fig:Circuito_LED_Arduino} bisogna scrivere:
+\begin{center}
+    \hrule
+    \vspace{0.2cm}
+    \texttt{pinMode(6, OUTPUT);}
+    \vspace{0.2cm}
+    \hrule
+\end{center}
 
 \subsection{Accendere e spegnere il LED: \texttt{digitalWrite()}}
 
@@ -298,7 +324,17 @@ Per portare un pin digitale a \SI{5}{\volt} (LED acceso) o a \SI{0}{\volt}
     \item \texttt{LOW}: porta il pin a \SI{0}{\volt} → LED \textbf{spento}
 \end{itemize}
 
-\subsection{Mettere in pausa il programma: \texttt{delay()}}
+Quindi per accendere il LED collegato al pin 6 bisogna scrivere:
+\begin{center}
+    \hrule
+    \vspace{0.2cm}
+    \texttt{digitalWrite(6, HIGH);}
+    \vspace{0.2cm}
+    \hrule
+\end{center}
+
+\subsection{Lampeggio del LED }
+
 
 La funzione \texttt{delay(ms);} mette in pausa l'esecuzione del programma per il 
 numero di millisecondi specificato. Per esempio, \texttt{delay(1000);} aspetta 
