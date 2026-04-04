@@ -54,7 +54,7 @@ materiali diversi corrispondono a livelli energetici diversi, e quindi a colori 
     la percezione del bianco da parte dell'occhio umano.
 \end{tcolorbox}
 
-\subsection{Polarità del LED: anodo e catodo}
+\subsection*{Polarità del LED: anodo e catodo}
 
 Come tutti i diodi, il LED è un componente \textbf{polarizzato}: ha un terminale positivo e uno negativo, e deve essere collegato nel verso giusto per funzionare.
 
@@ -269,7 +269,7 @@ Se il circuito viene fatto utilizzando come generatore di tensione una scheda Ar
     \hfill
     \begin{minipage}{0.45\textwidth}  % Larghezza della minipagina per l'immagine
         \centering
-        \includegraphics[width=0.71\textwidth]{img/Circuito_Led_Arduino.png}
+        \includegraphics[width=0.6\textwidth]{img/Circuito_Led_Arduino.png}
         \caption{\centering Circuito per accendere \protect\\il LED con Arduino.}
         \label{fig:Circuito_LED_Arduino}
     \end{minipage}%
@@ -290,10 +290,10 @@ Il \textbf{LED RGB} è un componente che racchiude all'interno dello stesso comp
 Un LED RGB ha quattro terminali: tre anodi (uno per ciascun colore) e un catodo comune, oppure tre catodi e un anodo comune. Le due configurazioni possibili sono:
 
 \begin{itemize}
-    \item \textbf{Catodo comune} (Common Cathode): tutti e tre i catodi sono collegati insieme al terminale negativo. Per accendere un colore, si applica una tensione positiva all'anodo corrispondente.
     \item \textbf{Anodo comune} (Common Anode): tutti e tre gli anodi sono collegati insieme al terminale positivo. Per accendere un colore, si porta a massa (GND) il catodo corrispondente.
-\end{itemize}
+    \item \textbf{Catodo comune} (Common Cathode): tutti e tre i catodi sono collegati insieme al terminale negativo. Per accendere un colore, si applica una tensione positiva all'anodo corrispondente.
 
+\end{itemize}
 \begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Quale usare con Arduino?}]
     La maggior parte dei kit didattici utilizza LED RGB a \textbf{catodo comune}. In questo caso il pin comune va collegato a GND, e i tre pin dei colori vanno collegati ad Arduino attraverso tre resistenze di limitazione (una per canale). Per un LED RGB ad anodo comune, il pin comune va collegato a \SI{5}{\volt} e i pin dei colori vanno portati a GND per accendere il LED (logica invertita).
 \end{tcolorbox}
@@ -307,38 +307,35 @@ I tre LED interni possono essere accesi singolarmente o in combinazione. La tabe
     \toprule
     Colore risultante & Rosso (R) & Verde (G) & Blu (B) \\
     \midrule
-    Rosso    & ON  & OFF & OFF \\
-    Verde    & OFF & ON  & OFF \\
-    Blu      & OFF & OFF & ON  \\
-    Giallo   & ON  & ON  & OFF \\
-    Ciano    & OFF & ON  & ON  \\
-    Magenta  & ON  & OFF & ON  \\
-    Bianco   & ON  & ON  & ON  \\
-    Nero (spento) & OFF & OFF & OFF \\
+    Rosso    & HIGH  & \textcolor{lightgray}{LOW} & \textcolor{lightgray}{LOW} \\
+    Verde    & \textcolor{lightgray}{LOW} & HIGH  & \textcolor{lightgray}{LOW} \\
+    Blu      & \textcolor{lightgray}{LOW} & \textcolor{lightgray}{LOW} & HIGH  
+    \vspace{0.4cm}\\
+    
+    Ciano    & \textcolor{lightgray}{LOW} & HIGH  & HIGH  \\
+    Magenta  & HIGH  & \textcolor{lightgray}{LOW} & HIGH \\
+    Giallo   & HIGH  & HIGH  & \textcolor{lightgray}{LOW} 
+        \vspace{0.4cm}\\
+    Bianco   & HIGH  & HIGH  & HIGH  \\
+    Spento   & \textcolor{lightgray}{LOW} & \textcolor{lightgray}{LOW} & \textcolor{lightgray}{LOW} \\
     \bottomrule
 \end{tabular}
 \end{center}
 
-Variando l'intensità di ciascun canale tramite PWM si ottengono infinite sfumature. Ad esempio, un rosso intenso si ottiene con R=255, G=0, B=0; un arancione si può ottenere con R=255, G=80, B=0.
+Variando l'intensità di ciascun canale tramite PWM si ottengono infinite sfumature. Ad esempio, un rosso intenso si ottiene con R=255, G=0, B=0; un arancione si può ottenere con R=255, G=80, B=0. Potendo usare 256 livelli di intensità per ciascun colore del LED RGB, si possono generare $256^3 = 16.777.216$ combinazioni diverse.
 
 \subsection*{Schema di collegamento}
 
-Colleghiamo un LED RGB a catodo comune ai pin digitali di Arduino. Utilizziamo tre resistenze di limitazione, una per ogni colore. Il calcolo della resistenza è identico a quello visto per il LED singolo, usando la $V_f$ di ogni colore (tipicamente: rosso $\SI{2.0}{\volt}$, verde $\SI{2.2}{\volt}$, blu $\SI{3.2}{\volt}$). Per semplicità, con alimentazione a \SI{5}{\volt} e una corrente di circa \SI{10}{\milli\ampere}, si possono usare resistenze da \SI{220}{\ohm} per tutti e tre i canali.
+Colleghiamo un LED RGB a catodo comune ai pin digitali di Arduino. Utilizziamo tre resistenze di limitazione, una per ogni colore. Il calcolo della resistenza è identico a quello visto per il LED singolo, usando la $V_f$ di ogni colore (tipicamente: rosso $\SI{2.0}{\volt}$, verde $\SI{2.2}{\volt}$, blu $\SI{3.2}{\volt}$). Per semplicità, con alimentazione a \SI{5}{\volt} e una corrente di circa \SI{10}{\milli\ampere}, si possono usare resistenze da \SI{330}{\ohm} per tutti e tre i canali.
 
 \begin{figure}[h]
     \centering
-    \begin{circuitikz}[scale=1.2, american]
-        \draw (0,0) node[ground]{} to[short] (0,1) node[below]{GND};
-        \draw (0,1) to[led, l=Rosso, color=red] (2,1) to[R, l=220$\Omega$] (2,3) to[short] (3,3) node[above]{Pin 9};
-        \draw (0,1) to[led, l=Verde, color=green] (0,3) to[R, l=220$\Omega$] (0,5) to[short] (1,5) node[above]{Pin 10};
-        \draw (0,1) to[led, l=Blu, color=blue] (-2,1) to[R, l=220$\Omega$] (-2,3) to[short] (-3,3) node[above]{Pin 11};
-    \end{circuitikz}
-    \caption{Collegamento di un LED RGB a catodo comune con Arduino. Il terminale comune va a GND.}
-    \label{fig:led_rgb_schema}
+    \includegraphics[width=0.35\textwidth]{img/LED_RGB.png}
+    \caption{Schema di collegamento di un LED RGB a catodo comune con Arduino.}
+    \label{fig:LED_RGB_Arduino}
 \end{figure}
 
-
-
+Ricordiamo che per poter controllare la luminosità di ciascun colore è necessario utilizzare i pin digitali con funzionalità PWM e la funzione \texttt{analogWrite()} per variare il duty cycle del segnale.
 
 
 
@@ -435,7 +432,7 @@ Mentre per spegnere il led bisognerà scrivere:
 
 
 
-\subsection{Lampeggio del LED}
+\subsection{Lampeggio del LED e funzione \texttt{delay/(ms);}}
 
 Proviamo subito a far lampeggiare un LED, accendendolo e spegnendolo all'interno della funzione \texttt{void loop()}. Abbiamo anche bisogno di dichiarare che il pin dove verrà collegato il LED è un pin di \texttt{OUTPUT}, quindi scriveremo \texttt{pinMode()} all'interno della funzione \texttt{void setup()}.
 Quindi il codice completo per far lampeggiare un LED collegato al pin 6 dovrebbe essere il seguente:
@@ -473,9 +470,9 @@ void loop() {
 Se proviamo a caricare questo \textit{sketch} su Arduino, vedremo che il funzionamento atteso non rispecchia quello che stiamo notando sul nostro LED: il LED si accende e si spegne così rapidamente che sembra essere sempre acceso. 
 Ricordiamo che la funzione \texttt{void loop()} viene eseguita in modo continuo e ciclico, quindi il LED viene acceso e spento migliaia di volte al secondo. Questa velocità di esecuzione è troppo elevata per essere percepita dall'occhio umano, che appunto vede il LED sempre acceso.
 
-Per risolvere questo problema, dobbiamo inserire una pausa tra l'accensione e lo spegnimento del LED. La funzione \texttt{delay()} ci permette di bloccare l'esecuzione del programma per un certo numero di \textbf{millisecondi}. Se vogliamo che il LED rimanga acceso per 1 secondo e poi spento per 1 secondo, dobbiamo inserire un \texttt{delay(1000);} dopo ogni comando di accensione o spegnimento:
+Per risolvere questo problema, dobbiamo inserire una pausa tra l'accensione e lo spegnimento del LED. La funzione \texttt{delay()} ci permette di bloccare l'esecuzione del programma per un certo numero di \textbf{millisecondi}. Se vogliamo che il LED rimanga acceso per 1 secondo e poi spento per 1 secondo, dobbiamo inserire un \texttt{delay(1000);} dopo ogni comando di accensione o spegnimento.\\
 
-
+Inoltre, aggiungiamo in questo codice una riga per creare una variabile che contiene il numero del pin a cui è collegato il LED, in modo da rendere il codice più leggibile e facilmente modificabile in futuro.
 
 \begin{tcblisting}{
     listing only,
@@ -497,14 +494,16 @@ Per risolvere questo problema, dobbiamo inserire una pausa tra l'accensione e lo
         morekeywords={pinMode, digitalWrite, delay, OUTPUT, HIGH, LOW, void, const, int}
     }
 }
+const int ledPin = 6;  // Pin a cui è collegato il LED
+
 void setup() {
-    pinMode(6, OUTPUT);
+    pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
-    digitalWrite(6, HIGH);
+    digitalWrite(ledPin, HIGH);
     delay(1000);          // Aspetta 1000 millisecondi (1 secondo)
-    digitalWrite(6, LOW);
+    digitalWrite(ledPin, LOW);
     delay(1000);          // Aspetta 1000 millisecondi (1 secondo)
 }
 \end{tcblisting}
@@ -512,10 +511,17 @@ void loop() {
 
 \textbf{Analisi del codice riga per riga:}
 \begin{itemize}
-    \item \textbf{Riga 2} - \texttt{pinMode(6, OUTPUT);}: eseguita una sola volta all'avvio, configura il pin 13 come uscita digitale.
-    \item \textbf{Riga 6} - \texttt{digitalWrite(6, HIGH);}: porta il pin 13 a \SI{5}{\volt}. La corrente scorre attraverso la resistenza e il LED, che si accende.
-    \item \textbf{Riga 7 e Riga 9} - \texttt{delay(1000);}: il programma si blocca per 1000 ms. Durante questo tempo il LED rimane nello stato in cui si trova.
-    \item \textbf{Riga 8} - \texttt{digitalWrite(6, LOW);}: porta il pin 13 a \SI{0}{\volt}. Nessuna differenza di tensione, nessuna corrente, LED spento.
+    \item \textbf{Riga 1} - \texttt{const int ledPin = 6;}: dichiara una variabile costante di tipo intero chiamata \texttt{ledPin} e le assegna il valore 6, che rappresenta il numero del pin digitale a cui è collegato il LED.
+    \begin{itemize}
+        \item \texttt{int} indica che la variabile è di tipo intero
+        \item \texttt{const} indica che il valore di questa variabile non può essere modificato durante l'esecuzione del programma, se per errore si tenta di assegnare un nuovo valore a \texttt{ledPin}, il compilatore genererà un errore, proteggendo così la costante da modifiche accidentali.
+        \item L'uso di una variabile con nome significativo come \texttt{ledPin} rende il codice più leggibile e facile da capire, rispetto a usare direttamente il numero 6 in tutto il programma. Si può facilmente modificare il numero del pin in un solo punto (la dichiarazione della variabile) se si decide di collegare il LED a un pin diverso in futuro, senza dover cercare e sostituire ogni occorrenza del numero 6 nel codice.
+    \end{itemize}
+    , mentre 
+    \item \textbf{Riga 4} - \texttt{pinMode(ledPin, OUTPUT);}: eseguita una sola volta all'avvio, configura il pin ledPin come uscita digitale.
+    \item \textbf{Riga 8} - \texttt{digitalWrite(ledPin, HIGH);}: porta il pin 13 a \SI{5}{\volt}. La corrente scorre attraverso la resistenza e il LED, che si accende.
+    \item \textbf{Riga 9 e Riga 11} - \texttt{delay(1000);}: il programma si blocca per 1000 ms. Durante questo tempo il LED rimane nello stato in cui si trova.
+    \item \textbf{Riga 10} - \texttt{digitalWrite(ledPin, LOW);}: porta il pin ledPin a \SI{0}{\volt}. Nessuna differenza di tensione, nessuna corrente, LED spento.
 \end{itemize}
 
 \subsection{Variare la luminosità: PWM e \texttt{analogWrite()}}
@@ -584,21 +590,70 @@ Quindi possiamo ora scrivere un programma che accende un LED al 20\% di luminosi
         numberstyle=\tiny\color{gray},
         breaklines=true,
         showstringspaces=false,
-        morekeywords={pinMode, digitalWrite, delay, OUTPUT, HIGH, LOW, void, const, int}
+        morekeywords={pinMode, analogWrite, digitalWrite, delay, OUTPUT, HIGH, LOW, void, const, int}
     }
 }
+const int pinLed = 6;
+
 void setup() {
-  pinMode(6, OUTPUT);
+  pinMode(pinLed, OUTPUT);
 }
 
 void loop() {
-    analogWrite(6, 51);     // Accende il LED con duty cycle 20 %
-    delay(1000);            // Aspetta 1000 millisecondi 
-    analogWrite(6, 0);      // Spegne il LED con duty cycle 0 %
-    delay(1000);            // Aspetta 1000 millisecondi 
-    analogWrite(6, 204);    // Accende il LED con duty cycle 80 %
-    delay(1000);            // Aspetta 1000 millisecondi 
-    analogWrite(6, 0);      // Spegne il LED con duty cycle 0 %
-    delay(1000);            // Aspetta 1000 millisecondi 
+    analogWrite(pinLed, 51);  // Accende il LED con duty cycle 20 %
+    delay(1000);               
+    analogWrite(pinLed, 0);   // Spegne il LED con duty cycle 0 %
+    delay(1000);               
+    analogWrite(pinLed, 204); // Accende il LED con duty cycle 80 %
+    delay(1000);              
+    analogWrite(pinLed, 0);   // Spegne il LED con duty cycle 0 %
+    delay(1000);              
 }
 \end{tcblisting}
+
+
+\subsection{LED RGB}
+
+Grazie al PWM possiamo controllare non solo la luminosità di un singolo LED, ma anche il colore di un LED RGB, miscelando in proporzioni variabili l'intensità dei tre canali Rosso, Verde e Blu.
+
+\subsubsection*{Accendere un colore primario}
+
+Per ottenere rosso, verde o blu puri, si accende a pieno il canale corrispondente (valore 255) e si spengono gli altri (valore 0). Ad esempio, per il rosso:
+
+\begin{tcblisting}{
+    listing only,
+    listing engine=listings,
+    colback=teal!5,
+    colframe=teal!50,
+    title=\textbf{Colore rosso},
+    breakable,
+    listing options={
+        language=C++,
+        basicstyle=\ttfamily\small,
+        keywordstyle=\color{blue!80!black}\bfseries,
+        commentstyle=\color{green!50!black}\itshape,
+        stringstyle=\color{orange!80!black},
+        numbers=left,
+        numberstyle=\tiny\color{gray},
+        breaklines=true,
+        showstringspaces=false,
+    }
+}
+const int PIN_G = 3;  // Pin Verde
+const int PIN_B = 5;  // Pin Blu
+const int PIN_R = 6;  // Pin Rosso
+
+void setup() {
+    pinMode(PIN_G, OUTPUT);
+    pinMode(PIN_B, OUTPUT);
+    pinMode(PIN_R, OUTPUT);
+}
+void loop() {
+    analogWrite(PIN_R, 255);
+    analogWrite(PIN_G, 0);
+    analogWrite(PIN_B, 0);
+    delay(2000);
+}
+\end{tcblisting}
+
+
