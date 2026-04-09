@@ -1,1 +1,194 @@
-\chapter{Scheda Arduino}
+% ================================================================
+%  CAPITOLO 2 - INTRODUZIONE AD ARDUINO
+% ================================================================
+\chapter{Introduzione ad Arduino}
+
+\section{La scheda Arduino Uno}
+\subsection*{Panoramica dei componenti principali}
+\subsection*{Il microcontrollore ATmega328P}
+\subsection*{Versioni e differenze principali}
+
+% ----------------------------------------------------------------
+\section{Alimentazione della scheda}
+% ----------------------------------------------------------------
+
+Per funzionare correttamente, la scheda Arduino Uno necessita di un'alimentazione a corrente continua con una tensione compresa tra \SI{5}{\volt} e \SI{12}{\volt} (a seconda della modalità scelta). La scheda è progettata per essere alimentata in tre modi diversi, ciascuno con caratteristiche e limiti specifici.
+
+\subsection*{Modalità di alimentazione: USB, Vin e alimentazione esterna}
+
+Arduino Uno può ricevere energia elettrica attraverso tre differenti ingressi:
+
+\begin{enumerate}
+    \item \textbf{Porta USB (tipo B)}: quando la scheda è collegata al computer tramite cavo USB, riceve una tensione stabile di \SI{5}{\volt} direttamente dalla porta USB del computer. Questa è la modalità più semplice e sicura per alimentare la scheda durante la fase di sviluppo e caricamento degli sketch. La corrente disponibile è limitata a \SI{500}{\milli\ampere} dalle specifiche USB 2.0.
+
+    \item \textbf{Connettore di alimentazione esterna (jack-barrel DC)}: è il connettore cilindrico di colore nero presente sulla scheda (diametro esterno \SI{5.5}{\milli\meter}, diametro interno \SI{2.1}{\milli\meter}, positivo al centro). Accetta tensioni continue comprese tra \SI{7}{\volt} e \SI{12}{\volt}. La tensione in ingresso viene poi ridotta a \SI{5}{\volt} dal regolatore di tensione a bordo.
+
+    \item \textbf{Pin Vin}: è un pin di ingresso presente sul connettore \texttt{POWER} della scheda. Può essere utilizzato per fornire una tensione non regolata (sempre tra \SI{7}{\volt} e \SI{12}{\volt}) direttamente da una batteria o da un alimentatore esterno, bypassando il jack DC ma passando comunque attraverso il regolatore di tensione.
+\end{enumerate}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l l l}
+    \toprule
+    Modalità           & Tensione in ingresso  & Note \\
+    \midrule
+    Porta USB          & \SI{5}{\volt} (stabile) & Il computer limita la corrente \\
+    Jack DC (consigliato) & \SIrange{7}{12}{\volt} & Tensione > \SI{12}{\volt} surriscalda il regolatore \\
+    Pin Vin            & \SIrange{7}{12}{\volt} & Non protegge da inversione di polarità \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Pin 5V come ingresso}]
+    Il pin etichettato \texttt{5V} sul connettore \texttt{POWER} è un'\textbf{uscita} di tensione regolata a \SI{5}{\volt}, non un ingresso. Fornire tensione direttamente su questo pin è \textbf{sconsigliato} perché si bypassano le protezioni del regolatore e si rischia di danneggiare irreversibilmente il microcontrollore se la tensione non è perfettamente stabile a \SI{5}{\volt}.
+\end{tcolorbox}
+
+\subsection*{Il regolatore di tensione a bordo}
+
+Quando la scheda viene alimentata tramite jack DC o pin Vin con una tensione superiore a \SI{5}{\volt}, entra in funzione il \textbf{regolatore di tensione lineare} integrato sulla scheda. Su Arduino Uno si tratta tipicamente di un componente siglato \textbf{NCP1117ST50T3G} o \textbf{AMS1117-5.0}, in grado di fornire una tensione stabile di \SI{5}{\volt} a partire da un ingresso compreso tra \SI{7}{\volt} e \SI{12}{\volt}.
+
+Il principio di funzionamento di un regolatore lineare è semplice: la tensione in eccesso ($V_{in} - \SI{5}{\volt}$) viene \textit{dissipata} sotto forma di calore. Maggiore è la differenza tra tensione in ingresso e tensione di uscita, maggiore sarà il calore prodotto.
+
+\begin{equation}
+    P_{\text{dissipata}} = (V_{in} - \SI{5}{\volt}) \times I_{\text{assorbita}}
+\end{equation}
+
+Ad esempio, se alimentiamo la scheda a \SI{12}{\volt} e il circuito assorbe complessivamente \SI{200}{\milli\ampere}, il regolatore deve dissipare:
+
+\[
+    P = (\SI{12}{\volt} - \SI{5}{\volt}) \times \SI{0.2}{\ampere} = \SI{1.4}{\watt}
+\]
+Questo livello di potenza dissipata è già significativo per un piccolo componente senza dissipatore, e può portare a temperature elevate che riducono la vita utile del regolatore e della scheda stessa. Per questo motivo è fortemente consigliato non superare i \SI{12}{\volt} di tensione in ingresso quando si alimenta Arduino tramite jack DC o pin Vin.
+
+\begin{tcolorbox}[colback=orange!4, colframe=orange!70, title=\textbf{Perché non superare i \SI{12}{\volt}?}]
+    Il regolatore di tensione di Arduino Uno può teoricamente accettare tensioni fino a \SI{20}{\volt} (limite massimo assoluto del datasheet), ma nella pratica tensioni superiori a \SI{12}{\volt} causano un surriscaldamento eccessivo del componente, con conseguente riduzione della vita utile della scheda o spegnimento per protezione termica. Per alimentazioni superiori a \SI{12}{\volt} è preferibile utilizzare un regolatore switching esterno.
+\end{tcolorbox}
+
+\subsection*{Selezione automatica della sorgente di alimentazione}
+
+Arduino Uno è dotato di un circuito di \textbf{selezione automatica della sorgente di alimentazione}, realizzato tramite un amplificatore operazionale (comparatore) e un MOSFET a canale P. Questo circuito decide quale delle due possibili fonti di energia utilizzare:
+
+\begin{itemize}
+    \item Se è presente tensione sul jack DC (o sul pin Vin) superiore a circa \SI{6.6}{\volt}, il circuito scollega automaticamente l'alimentazione proveniente dalla porta USB e utilizza la tensione esterna.
+    \item Se la tensione esterna scende al di sotto di tale soglia (o è assente), il circuito commuta sull'alimentazione USB.
+\end{itemize}
+
+Questa commutazione avviene in modo completamente trasparente per l'utente e garantisce che la scheda possa essere alimentata in modo sicuro anche quando sono collegate entrambe le sorgenti (ad esempio durante il caricamento di uno sketch da computer mentre la scheda è già alimentata da una batteria esterna).
+
+\section{I pin di alimentazione}
+\subsection*{Pin 5V e 3.3V: caratteristiche e limiti di corrente}
+\subsection*{Pin Vin: ingresso per alimentazione non regolata}
+\subsection*{Pin GND: massa comune del circuito}
+\subsection*{Corrente massima erogabile e protezioni}
+
+% ----------------------------------------------------------------
+\section{I pin digitali}
+% ----------------------------------------------------------------
+
+I pin digitali di Arduino Uno sono i connettori contrassegnati dai numeri da 0 a 13 sul bordo superiore e inferiore della scheda (Figura ref pinout). Ciascuno di questi pin può essere configurato via software per comportarsi come \textbf{ingresso} (INPUT) o come \textbf{uscita} (OUTPUT). Quando configurato come uscita, il pin può fornire una tensione di \SI{5}{\volt} (livello logico HIGH) o \SI{0}{\volt} (livello logico LOW). Quando configurato come ingresso, il pin è in grado di leggere la tensione presente sul terminale e interpretarla come un segnale logico HIGH o LOW.
+
+\subsection*{Configurazione come ingresso o uscita}
+
+La direzione del flusso del segnale è definita via software, ma corrisponde a una precisa configurazione hardware interna al microcontrollore. Ogni pin digitale è collegato a due sottocircuiti principali: uno di uscita (driver) e uno di ingresso (buffer di lettura).
+
+\begin{enumerate}
+    \item \textbf{Configurazione come uscita (\texttt{OUTPUT})}: viene attivato il circuito di uscita, costituito da una coppia di transistor che collegano il pin alla tensione di alimentazione oppure a massa. Il microcontrollore impone quindi direttamente il livello logico del pin (HIGH $\approx$ \SI{5}{\volt}, LOW $\approx$ \SI{0}{\volt}) ed è in grado di fornire o assorbire corrente verso il circuito esterno.
+
+    \item \textbf{Configurazione come ingresso (\texttt{INPUT})}: il circuito di uscita viene disattivato, quindi il microcontrollore non impone alcun livello di tensione sul pin. Viene invece attivato il circuito di ingresso, che misura la tensione presente sul pin senza influenzarla. L'impedenza vista dall'esterno risulta molto elevata e la corrente assorbita è trascurabile.
+\end{enumerate}
+
+Quando un pin è configurato come ingresso, il suo livello logico dipende esclusivamente dal circuito esterno. Se il pin non è collegato a una sorgente definita, la tensione può assumere valori imprevedibili a causa dei disturbi elettrici.
+
+
+
+\begin{comment}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/Schema_Pin_GPIO.png}
+    \caption{Struttura semplificata di un pin di I/O del microcontrollore ATmega328P.}
+    \label{fig:struttura_pin_gpio}
+\end{figure}
+\end{comment}
+
+\subsection*{Livelli di tensione e soglie logiche}
+
+Quando un pin digitale è configurato come \textbf{uscita}, i livelli di tensione sono ben definiti: \SI{0}{\volt} per LOW e \SI{5}{\volt} per HIGH (in realtà circa \SI{4.8}{\volt}–\SI{4.9}{\volt} a causa della caduta interna sul transistor di uscita).
+
+Quando il pin è configurato come \textbf{ingresso}, la tensione applicata dall'esterno viene interpretata secondo le \textbf{soglie logiche} definite dal costruttore del microcontrollore ATmega328P:
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l l}
+    \toprule
+    Livello logico & Tensione in ingresso ($V_{in}$) & Interpretazione \\
+    \midrule
+    LOW  & $V_{in} < \SI{1.5}{\volt}$ & Il pin legge 0 logico \\
+    HIGH & $V_{in} > \SI{3.0}{\volt}$ & Il pin legge 1 logico \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – La zona proibita}]
+    Qualsiasi tensione compresa tra \SI{1.5}{\volt} e \SI{3.0}{\volt} cade in una \textbf{zona indeterminata}: il microcontrollore potrebbe interpretare il segnale in modo casuale come HIGH o LOW, generando comportamenti imprevedibili. Per questo motivo è necessario assicurarsi che i segnali digitali in ingresso abbiano transizioni nette tra i due stati logici.
+\end{tcolorbox}
+
+\subsection*{Corrente massima per pin e per l'intera scheda}
+
+I pin di Arduino non sono in grado di erogare o assorbire una quantità illimitata di corrente. Dal datasheet dell'ATmega328P e dalle specifiche della scheda Arduino Uno si ricavano i seguenti limiti operativi:
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l}
+    \toprule
+    Parametro & Valore massimo \\
+    \midrule
+    Corrente erogata da un singolo pin configurato come uscita HIGH & \SI{40}{\milli\ampere} \\
+    Corrente assorbita da un singolo pin configurato come uscita LOW  & \SI{40}{\milli\ampere} \\
+    Corrente totale erogata dall'insieme di tutti i pin di uscita     & \SI{200}{\milli\ampere} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Superamento dei limiti di corrente}]
+    Superare anche per breve tempo i \SI{40}{\milli\ampere} su un singolo pin o i \SI{200}{\milli\ampere} complessivi può danneggiare irreversibilmente il microcontrollore o il regolatore di tensione della scheda. Per pilotare carichi che richiedono correnti superiori (motori, relè, strisce LED ad alta luminosità) è \textbf{obbligatorio} utilizzare componenti esterni come transistor o circuiti integrati driver.
+\end{tcolorbox}
+
+\subsection*{Resistenze di pull-up interne}
+
+Quando un pin digitale è configurato come \textbf{ingresso} e non è collegato ad alcun circuito esterno (né a \SI{5}{\volt} né a massa), la sua tensione non è definita e può variare in modo imprevedibile a causa dei campi elettromagnetici ambientali e dei disturbi elettrici. Questa condizione è nota come \textbf{pin flottante} e porta a letture casuali e inaffidabili.
+
+Per evitare questo problema, il microcontrollore dispone di \textbf{resistenze di pull-up interne} attivabili via software. Una resistenza di pull-up è un resistore di elevato valore (tipicamente \SIrange{20}{50}{\kilo\ohm}) che collega internamente il pin alla tensione di alimentazione \SI{5}{\volt}.
+
+Quando la resistenza di pull-up è attiva, in assenza di un circuito esterno che imponga un diverso livello di tensione, il pin assume un livello logico HIGH. Se invece il pin viene collegato a massa attraverso un circuito esterno a bassa impedenza, la tensione scende a \SI{0}{\volt} (livello LOW), poiché la corrente che attraversa la resistenza di pull-up è molto piccola e non è sufficiente a mantenere il livello alto.
+
+In questo modo si garantisce che il pin presenti sempre un livello logico definito, evitando condizioni di indeterminazione.
+
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Buona pratica – Evitare pin flottanti}]
+    Ogni pin di ingresso \textbf{deve sempre} essere portato a un livello di tensione definito, o tramite un collegamento esterno (ad esempio con una resistenza di pull-down o pull-up) o attivando le resistenze di pull-up interne del microcontrollore. Non lasciare mai pin di ingresso scollegati.
+\end{tcolorbox}
+
+\section{I pin analogici}
+\subsection*{Il convertitore analogico-digitale (ADC) a 10 bit}
+\subsection*{Tensione di riferimento e risoluzione}
+\subsection*{Lettura di tensioni variabili}
+\subsection*{Utilizzo come pin digitali aggiuntivi}
+
+\section{Pin di comunicazione seriale (TX e RX)}
+\subsection*{La porta seriale hardware USART}
+\subsection*{Pin 0 (RX) e pin 1 (TX)}
+\subsection*{Interferenza durante il caricamento degli sketch}
+\subsection*{La comunicazione con il computer tramite USB}
+
+\section{Pin di interrupt}
+\subsection*{Concetto di interrupt hardware}
+\subsection*{Pin 2 e 3: interrupt esterni disponibili}
+\subsection*{Utilizzo tipico e vantaggi}
+
+\section{L'ambiente di sviluppo Arduino IDE}
+\subsection*{Installazione e configurazione}
+\subsection*{Interfaccia principale: barra degli strumenti, editor e console}
+\subsection*{Selezione della scheda e della porta seriale}
+\subsection*{Verifica e caricamento di uno sketch}
+
+\section{Struttura fondamentale di un programma}
+\subsection*{La funzione \texttt{setup()}: inizializzazione}
+\subsection*{La funzione \texttt{loop()}: esecuzione ciclica}
+\subsection*{Il ruolo delle librerie}
