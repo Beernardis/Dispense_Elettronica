@@ -74,11 +74,79 @@ Arduino Uno è dotato di un circuito di \textbf{selezione automatica della sorge
 
 Questa commutazione avviene in modo completamente trasparente per l'utente e garantisce che la scheda possa essere alimentata in modo sicuro anche quando sono collegate entrambe le sorgenti (ad esempio durante il caricamento di uno sketch da computer mentre la scheda è già alimentata da una batteria esterna).
 
+% ----------------------------------------------------------------
 \section{I pin di alimentazione}
+% ----------------------------------------------------------------
+
+Sul connettore \texttt{POWER} di Arduino Uno sono disponibili diversi pin dedicati all'alimentazione del circuito. Questi pin possono essere utilizzati per prelevare tensione stabilizzata da destinare ai componenti esterni (sensori, LED, moduli) oppure per fornire alimentazione alla scheda stessa.
+
 \subsection*{Pin 5V e 3.3V: caratteristiche e limiti di corrente}
+
+I pin contrassegnati con \texttt{5V} e \texttt{3.3V} forniscono tensioni stabilizzate e possono essere utilizzati per alimentare circuiti esterni compatibili con tali livelli di tensione.
+
+\begin{itemize}
+    \item \textbf{Pin 5V}: fornisce una tensione stabilizzata di \SI{5}{\volt}. Questa tensione è generata dal regolatore lineare integrato sulla scheda (quando l'alimentazione proviene da jack DC o Vin) oppure proviene direttamente dalla porta USB (quando la scheda è alimentata via USB).
+
+    \item \textbf{Pin 3.3V}: fornisce una tensione stabilizzata di \SI{3.3}{\volt}, generata da un secondo regolatore lineare (tipicamente un LP2985) che preleva l'ingresso dalla linea a \SI{5}{\volt}. 
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l l}
+    \toprule
+    Pin & Tensione & Corrente massima consigliata \\
+    \midrule
+    \texttt{5V}  & \SI{5}{\volt}  & \SI{500}{\milli\ampere} (USB) / \SI{800}{\milli\ampere} (esterna) \\
+    \texttt{3.3V} & \SI{3.3}{\volt} & \SI{50}{\milli\ampere} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Non fornire tensione sui pin 5V o 3.3V}]
+    I pin \texttt{5V} e \texttt{3.3V} sono \textbf{uscite} di tensione regolata. Non devono essere utilizzati come ingressi per alimentare la scheda. Fornire una tensione esterna su questi pin, specialmente se superiore al valore nominale, può danneggiare irreversibilmente il regolatore e il microcontrollore.
+\end{tcolorbox}
+
 \subsection*{Pin Vin: ingresso per alimentazione non regolata}
+
+Il pin \texttt{Vin} (abbreviazione di \textit{Voltage input}) è un ingresso di alimentazione non regolata. Può essere utilizzato per fornire tensione alla scheda quando non si impiega il jack DC o la porta USB. Le caratteristiche principali sono:
+
+\begin{itemize}
+    \item \textbf{Tensione di ingresso consigliata}: \SIrange{7}{12}{\volt}. Tensioni inferiori a \SI{7}{\volt} potrebbero non garantire il corretto funzionamento del regolatore a \SI{5}{\volt}, causando instabilità o reset del microcontrollore.
+    \item \textbf{Tensione massima assoluta}: \SI{20}{\volt}. Tuttavia, come discusso in precedenza, tensioni superiori a \SI{12}{\volt} provocano un'eccessiva dissipazione di potenza nel regolatore, con conseguente surriscaldamento.
+    \item \textbf{Protezione da inversione di polarità}: il pin \texttt{Vin} \textbf{non} è protetto da un diodo contro l'inversione di polarità (a differenza del jack DC). Collegare accidentalmente il positivo della batteria a \texttt{GND} e il negativo a \texttt{Vin} può distruggere istantaneamente il regolatore e altri componenti.
+\end{itemize}
+
 \subsection*{Pin GND: massa comune del circuito}
+
+I pin etichettati \texttt{GND} (dall'inglese \textit{ground}, massa) costituiscono il riferimento comune a \SI{0}{\volt} per l'intero circuito. Su Arduino Uno sono presenti tre pin \texttt{GND} sul connettore \texttt{POWER} e altri due pin \texttt{GND} sui connettori digitali (vicino al pin 13 e al pin \texttt{AREF}). Tutti i pin \texttt{GND} sono collegati internamente alla stessa massa.
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Buona pratica – Masse comuni}]
+    Quando si utilizza un'alimentazione esterna per pilotare carichi di potenza (motori, relè, strisce LED), è \textbf{obbligatorio} collegare la massa dell'alimentazione esterna a un pin \texttt{GND} di Arduino. Questo garantisce che i segnali di controllo inviati da Arduino abbiano lo stesso riferimento di tensione del circuito di potenza, evitando malfunzionamenti o letture errate.
+\end{tcolorbox}
+
 \subsection*{Corrente massima erogabile e protezioni}
+
+La scheda Arduino Uno incorpora alcune protezioni per limitare i danni in caso di utilizzo improprio, ma non è progettata per resistere a condizioni di sovraccarico prolungato.
+
+\begin{itemize}
+    \item \textbf{Fusibile ripristinabile}: sulla linea di alimentazione a \SI{5}{\volt} proveniente dalla porta USB è presente un fusibile a coefficiente di temperatura positivo (PTC). Questo componente aumenta la propria resistenza quando la corrente supera una soglia (tipicamente \SI{500}{\milli\ampere}), limitando la corrente e proteggendo la porta USB del computer. Quando il sovraccarico cessa, il componente si raffredda e ripristina la conduzione normale. Il fusibile \textbf{non} protegge il regolatore a \SI{5}{\volt} quando la scheda è alimentata tramite jack DC o Vin.
+
+    \item \textbf{Diodo di protezione sul jack DC}: un diodo in serie al jack DC impedisce che una tensione inversa applicata accidentalmente raggiunga il regolatore. Tuttavia, questo diodo introduce una caduta di tensione di circa \SI{0.7}{\volt}, che deve essere considerata nella scelta dell'alimentatore.
+
+    \item \textbf{Diodi di clamping sui pin di I/O}: ciascun pin digitale è protetto da diodi interni che limitano la tensione a un massimo di $V_{cc} + \SI{0.5}{\volt}$ e a un minimo di $\SI{-0.5}{\volt}$. Questi diodi proteggono il microcontrollore da scariche elettrostatiche (ESD) e da brevi sovratensioni, ma non sono in grado di dissipare potenze significative. Applicare tensioni negative o superiori a \SI{5.5}{\volt} per periodi prolungati può distruggere i diodi e il pin corrispondente.
+\end{itemize}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Riepilogo – Limiti operativi assoluti}]
+    \begin{center}
+    \begin{tabular}{>{\bfseries}l l l}
+        Parametro & $\quad$ & \textbf{Limite} \vspace{0.1cm}\\
+        $V_\texttt{MAX}$ su jack DC / Vin & & \SI{20}{\volt} (assoluto), \textbf{\SI{12}{\volt} raccomandato} \\
+        $V_\texttt{MIN}$ su jack DC / Vin  & & \SI{7}{\volt} \\
+        $I_\texttt{MAX}$ da pin \texttt{5V} && \SI{800}{\milli\ampere} (dipende da Vin e temperatura) \\
+        $I_\texttt{MAX}$ da pin \texttt{3.3V} && \SI{50}{\milli\ampere} \\
+        $I_\texttt{MAX}$ totale da tutti i pin di I/O && \SI{200}{\milli\ampere} \\
+    \end{tabular}
+    \end{center}
+\end{tcolorbox}
 
 % ----------------------------------------------------------------
 \section{I pin digitali}
@@ -165,11 +233,84 @@ In questo modo si garantisce che il pin presenti sempre un livello logico defini
     Ogni pin di ingresso \textbf{deve sempre} essere portato a un livello di tensione definito, o tramite un collegamento esterno (ad esempio con una resistenza di pull-down o pull-up) o attivando le resistenze di pull-up interne del microcontrollore. Non lasciare mai pin di ingresso scollegati.
 \end{tcolorbox}
 
+% ----------------------------------------------------------------
 \section{I pin analogici}
+% ----------------------------------------------------------------
+
+I pin analogici di Arduino Uno sono sei, contrassegnati dalle etichette \texttt{A0} – \texttt{A5} sul lato sinistro della scheda. A differenza dei pin digitali, che possono assumere solo due stati logici (\texttt{HIGH} o \texttt{LOW}), i pin analogici sono in grado di misurare una \textbf{gamma continua di tensioni} compresa tra \SI{0}{\volt} e un valore massimo di riferimento (tipicamente \SI{5}{\volt}). Questa capacità è resa possibile dal \textbf{convertitore analogico-digitale} (ADC) integrato nel microcontrollore ATmega328P.
+
 \subsection*{Il convertitore analogico-digitale (ADC) a 10 bit}
+
+Un convertitore analogico-digitale è un circuito elettronico che trasforma una tensione continua (segnale analogico) in un numero digitale (segnale discreto) che può essere elaborato dal microcontrollore. L'ADC dell'ATmega328P ha una risoluzione di \textbf{10 bit}. Ciò significa che il valore letto viene rappresentato con un numero intero a 10 bit, che può assumere $2^{10} = 1024$ valori distinti, da \textbf{0} a \textbf{1023}.
+
+La relazione tra la tensione in ingresso $V_{in}$ e il valore numerico restituito dall'ADC è lineare:
+
+\begin{equation}
+    \text{valore ADC} = \frac{V_{in}}{V_{ref}} \times 1023
+\end{equation}
+
+dove $V_{ref}$ è la \textbf{tensione di riferimento} dell'ADC. Conoscendo il valore letto e la tensione di riferimento, è possibile risalire alla tensione originale:
+
+\begin{equation}
+    V_{in} = \frac{\text{valore ADC}}{1023} \times V_{ref}
+\end{equation}
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Nota – Il valore 1023}]
+    Poiché i valori vanno da 0 a 1023, il massimo valore numerico corrisponde a $V_{in} = V_{ref}$. Alcune formule approssimano dividendo per 1024 invece di 1023, ma la differenza è trascurabile nella maggior parte delle applicazioni pratiche. La documentazione ufficiale di Arduino utilizza il fattore $1023$.
+\end{tcolorbox}
+
 \subsection*{Tensione di riferimento e risoluzione}
-\subsection*{Lettura di tensioni variabili}
+
+La \textbf{tensione di riferimento} ($V_{ref}$) determina il fondo scala dell'ADC, ovvero la massima tensione che può essere misurata. Per impostazione predefinita, Arduino Uno utilizza la propria tensione di alimentazione come riferimento, ovvero \SI{5}{\volt}. In questa configurazione, l'ADC può misurare tensioni comprese tra \SI{0}{\volt} e \SI{5}{\volt}.
+
+Con $V_{ref} = \SI{5}{\volt}$, la \textbf{risoluzione} dell'ADC — ovvero la minima variazione di tensione che il convertitore è in grado di distinguere — è data da:
+
+\begin{equation}
+    \text{Risoluzione} = \frac{V_{ref}}{1024} \approx \frac{\SI{5}{\volt}}{1024} \approx \SI{4.9}{\milli\volt}
+\end{equation}
+
+Ciò significa che variazioni di tensione inferiori a circa \SI{5}{\milli\volt} non vengono rilevate, e il valore letto rimane invariato.
+
+È possibile modificare la tensione di riferimento utilizzando il pin \texttt{AREF} (Analog Reference) o selezionando riferimenti interni alternativi tramite software.
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Utilizzo di AREF}]
+    Se si applica una tensione di riferimento esterna sul pin \texttt{AREF}, è \textbf{obbligatorio} configurare il software per utilizzare il riferimento esterno \textbf{prima} di effettuare qualsiasi lettura analogica. In caso contrario, si rischia di danneggiare il microcontrollore a causa di un conflitto tra il riferimento interno e quello esterno.
+\end{tcolorbox}
+
+
+
+\begin{tcolorbox}[colback=orange!4, colframe=orange!70, title=\textbf{Tempo di acquisizione e frequenza di campionamento}]
+    L'ADC dell'ATmega328P richiede un certo tempo per stabilizzare la lettura dopo una variazione del segnale di ingresso. La frequenza massima di campionamento è di circa \SI{15}{\kilo\hertz} (circa \num{15000} letture al secondo) nella configurazione predefinita. Letture più rapide possono essere ottenute modificando i registri interni, ma a scapito della precisione.
+\end{tcolorbox}
+
 \subsection*{Utilizzo come pin digitali aggiuntivi}
+
+I pin analogici \texttt{A0} – \texttt{A5} possono essere utilizzati anche come \textbf{pin digitali di I/O} aggiuntivi. In questa modalità, si comportano esattamente come i pin digitali standard (0–13), supportando le funzioni \texttt{pinMode()}, \texttt{digitalWrite()} e \texttt{digitalRead()}. Per riferirsi a un pin analogico in modalità digitale, si può utilizzare l'etichetta corrispondente (es. \texttt{A0}) oppure il numero equivalente (per Arduino Uno, \texttt{A0} corrisponde al pin 14, \texttt{A1} al 15, e così via fino a \texttt{A5} che corrisponde al pin 19).
+
+Questa caratteristica è particolarmente utile quando i pin digitali standard sono già tutti occupati e si necessita di qualche I/O digitale supplementare.
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Nota – PWM sui pin analogici}]
+    A differenza di alcuni pin digitali (3, 5, 6, 9, 10, 11), i pin analogici \textbf{non} supportano l'uscita PWM (\texttt{analogWrite()}). Tentare di utilizzare \texttt{analogWrite()} su un pin analogico non produrrà l'effetto desiderato.
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l l}
+    \toprule
+    Pin analogico & Equivalente digitale & Supporta PWM? \\
+    \midrule
+    A0 & 14 & No \\
+    A1 & 15 & No \\
+    A2 & 16 & No \\
+    A3 & 17 & No \\
+    A4 & 18 & No (utilizzato anche per I²C SDA) \\
+    A5 & 19 & No (utilizzato anche per I²C SCL) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Pin A4 e A5 e comunicazione I²C}]
+    I pin analogici \texttt{A4} (SDA) e \texttt{A5} (SCL) sono condivisi con l'interfaccia di comunicazione I²C (TWI). Se si utilizzano dispositivi I²C (come display LCD o sensori), questi pin non sono disponibili per l'uso come I/O digitale generico. In caso di conflitto, è possibile utilizzare pin analogici differenti o disabilitare l'I²C via software.
+\end{tcolorbox}
 
 \section{Pin di comunicazione seriale (TX e RX)}
 \subsection*{La porta seriale hardware USART}
