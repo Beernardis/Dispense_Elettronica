@@ -312,11 +312,97 @@ Questa caratteristica è particolarmente utile quando i pin digitali standard so
     I pin analogici \texttt{A4} (SDA) e \texttt{A5} (SCL) sono condivisi con l'interfaccia di comunicazione I²C (TWI). Se si utilizzano dispositivi I²C (come display LCD o sensori), questi pin non sono disponibili per l'uso come I/O digitale generico. In caso di conflitto, è possibile utilizzare pin analogici differenti o disabilitare l'I²C via software.
 \end{tcolorbox}
 
+% ----------------------------------------------------------------
 \section{Pin di comunicazione seriale (TX e RX)}
+% ----------------------------------------------------------------
+
+La comunicazione seriale è uno dei metodi più semplici e diffusi per trasmettere dati tra due dispositivi. Arduino Uno dispone di una porta seriale hardware integrata nel microcontrollore, accessibile attraverso i pin digitali 0 e 1, contrassegnati rispettivamente con le etichette \texttt{RX} (Receive) e \texttt{TX} (Transmit).
+
 \subsection*{La porta seriale hardware USART}
+
+All'interno del microcontrollore ATmega328P è presente un modulo hardware dedicato denominato \textbf{USART} (\textit{Universal Synchronous and Asynchronous serial Receiver and Transmitter}). Questo circuito è in grado di gestire la trasmissione e la ricezione di dati seriali in modo autonomo, senza impegnare la CPU per ogni singolo bit trasmesso.
+
+Nella modalità più comune, detta \textbf{asincrona}, la comunicazione avviene secondo il seguente schema:
+
+\begin{itemize}
+    \item I dati vengono trasmessi un bit alla volta su un singolo filo (più un filo di massa come riferimento).
+    \item Il trasmettitore e il ricevitore devono concordare preventivamente una \textbf{velocità di trasmissione} (\textit{baud rate}), espressa in bit al secondo (bps).
+    \item Ogni byte di dati è incorniciato da un \textbf{bit di start} (sempre a livello logico LOW) e da uno o più \textbf{bit di stop} (sempre a livello logico HIGH).
+    \item Opzionalmente può essere aggiunto un \textbf{bit di parità} per il rilevamento di errori di trasmissione.
+\end{itemize}
+
+Su Arduino Uno, la USART è tipicamente c onfigurata con un baud rate di \SI{9600}{baud} (9600 bit al secondo) e utilizza il formato \textbf{8-N-1}: 8 bit di dati, nessun bit di parità, 1 bit di stop.
+
+\begin{center}
+\begin{tabular}{>{\bfseries}l l}
+    \toprule
+    Parametro & Valore tipico su Arduino Uno \\
+    \midrule
+    Baud rate predefinito & \SI{9600}{\texttt{baud}} (configurabile fino a \SI{115200}{\texttt{baud}}) \\
+    Bit di dati & 8 \\
+    Bit di parità & Nessuno (N) \\
+    Bit di stop & 1 \\
+    Livelli di tensione & \SI{0}{\volt} (LOW) e \SI{5}{\volt} (HIGH) \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Approfondimento – Differenza tra USART e UART}]
+    Il termine \textbf{UART} (\textit{Universal Asynchronous Receiver-Transmitter}) indica un modulo che gestisce esclusivamente la comunicazione asincrona. Il termine \textbf{USART} include anche la modalità sincrona, in cui viene trasmesso un segnale di clock separato. L'ATmega328P dispone di una USART, ma su Arduino viene utilizzata quasi esclusivamente in modalità asincrona (UART).
+\end{tcolorbox}
+
 \subsection*{Pin 0 (RX) e pin 1 (TX)}
+
+I pin digitali \textbf{0 (RX)} e \textbf{1 (TX)} sono fisicamente collegati alla USART del microcontrollore e svolgono funzioni complementari:
+
+\begin{itemize}
+    \item \textbf{Pin 0 – RX (Receive)}: è l'ingresso della porta seriale. Riceve i dati provenienti da un altro dispositivo (ad esempio un computer, un modulo GPS, un altro Arduino) e li rende disponibili al microcontrollore per la lettura.
+    \item \textbf{Pin 1 – TX (Transmit)}: è l'uscita della porta seriale. Trasmette i dati generati da Arduino verso un dispositivo esterno.
+\end{itemize}
+
+Quando si utilizza la comunicazione seriale tra due dispositivi, il pin \texttt{TX} di un dispositivo deve essere collegato al pin \texttt{RX} dell'altro, e viceversa. I due dispositivi devono inoltre condividere un riferimento di massa comune (\texttt{GND}).
+
+
+
+È importante notare che i pin 0 e 1 sono \textbf{condivisi} tra la comunicazione seriale con il computer (attraverso il chip di conversione USB-Seriale) e qualsiasi circuito esterno collegato a questi pin. Questa condivisione ha implicazioni pratiche rilevanti, discusse nella sottosezione seguente.
+
 \subsection*{Interferenza durante il caricamento degli sketch}
+
+Quando si carica un nuovo programma su Arduino tramite la porta USB, i dati vengono inviati dal computer alla scheda attraverso la connessione seriale. Durante questa fase, il chip di conversione USB-Seriale (un ATmega16U2 su Arduino Uno Rev3) comunica direttamente con i pin \texttt{RX} e \texttt{TX} del microcontrollore ATmega328P.
+
+Se in quel momento sono collegati componenti esterni ai pin 0 e 1, si possono verificare due tipi di interferenza:
+
+\begin{enumerate}
+    \item \textbf{Disturbo del segnale di caricamento}: un circuito esterno collegato al pin \texttt{RX} (pin 0) potrebbe imporre un livello di tensione che interferisce con i dati in arrivo dal computer, causando errori o l'impossibilità di caricare lo sketch.
+    \item \textbf{Danneggiamento dei componenti esterni}: durante la programmazione, il pin \texttt{TX} (pin 1) trasmette dati verso il computer. Se a questo pin è collegato un componente sensibile (ad esempio un LED senza resistenza adeguata, o l'ingresso di un altro circuito a bassa tensione), la corrente di trasmissione potrebbe danneggiarlo.
+\end{enumerate}
+
+\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione – Scollegare i circuiti esterni prima del caricamento}]
+    È buona norma \textbf{scollegare temporaneamente} qualsiasi circuito collegato ai pin 0 e 1 prima di caricare un nuovo sketch su Arduino. In alternativa, se il circuito esterno deve rimanere connesso, è possibile utilizzare pin seriali software (attraverso la libreria \texttt{SoftwareSerial}) su altri pin digitali, lasciando i pin 0 e 1 dedicati esclusivamente alla comunicazione con il computer.
+\end{tcolorbox}
+
+Una volta completato il caricamento, la comunicazione seriale tra Arduino e il computer può proseguire normalmente per lo scambio di dati a runtime (ad esempio per visualizzare i valori letti da un sensore sul \textit{Serial Monitor}).
+
 \subsection*{La comunicazione con il computer tramite USB}
+
+Sebbene i pin 0 e 1 siano fisicamente i terminali della comunicazione seriale, l'utente interagisce con essi principalmente attraverso la \textbf{porta USB} della scheda. Questa apparente contraddizione è risolta dal \textbf{chip di conversione USB-Seriale} presente sulla scheda.
+
+Su Arduino Uno Rev3, questo ruolo è svolto da un secondo microcontrollore, l'\textbf{ATmega16U2}, programmato per comportarsi come un ponte tra il protocollo USB (utilizzato dal computer) e il protocollo seriale TTL (utilizzato dall'ATmega328P). Il flusso dei dati è il seguente:
+
+\begin{enumerate}
+    \item Il computer invia dati attraverso la porta USB emulando una porta seriale virtuale (COM su Windows, \texttt{/dev/tty*} su Linux e macOS).
+    \item Il chip ATmega16U2 riceve i dati via USB, li converte in segnali seriali TTL e li inoltra al pin \texttt{RX} (pin 0) dell'ATmega328P.
+    \item L'ATmega328P legge i dati dal pin \texttt{RX} e, se necessario, risponde trasmettendo dati sul pin \texttt{TX} (pin 1).
+    \item L'ATmega16U2 riceve i dati dal pin \texttt{TX}, li converte in pacchetti USB e li invia al computer.
+\end{enumerate}
+
+Questo meccanismo è completamente trasparente per l'utente, che vede la scheda Arduino come una periferica seriale collegata al computer.
+
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=\textbf{Nota – I LED TX e RX sulla scheda}]
+    Sulla scheda Arduino Uno sono presenti due piccoli LED contrassegnati con \texttt{TX} e \texttt{RX}. Questi LED lampeggiano ogni volta che viene trasmesso o ricevuto un dato attraverso la porta seriale USB. Il loro lampeggiamento è particolarmente utile per verificare visivamente che la comunicazione sia in corso, ad esempio durante il caricamento di uno sketch o durante lo scambio di dati con il \textit{Serial Monitor}.
+\end{tcolorbox}
+
+La comunicazione seriale via USB rappresenta lo strumento principale per il \textit{debugging} dei programmi su Arduino: attraverso le funzioni \texttt{Serial.print()} e \texttt{Serial.println()} è possibile inviare messaggi e valori di variabili al computer, visualizzandoli nell'ambiente di sviluppo integrato.
 
 \section{Pin di interrupt}
 \subsection*{Concetto di interrupt hardware}

@@ -124,7 +124,7 @@ Per leggere il valore logico presente su un pin digitale si usa la funzione \tex
 
 Il valore restituito è \texttt{HIGH} se sul pin è presente una tensione di circa \SI{5}{\volt}, altrimenti se la tensione è vicina a \SI{0}{\volt} allora verrà restituito \texttt{LOW}.
 
-\subsection*{Primo esempio: leggere e stampare sul seriale}
+\subsection*{Leggere e stampare sul seriale}
 
 Colleghiamo il pulsante al pin 2 con pull-up interno e inviamo lo stato al monitor seriale.
 
@@ -174,9 +174,9 @@ void loop() {
 }
 \end{tcblisting}
 
-\subsection*{Il problema del rimbalzo (bouncing)}
+\section{Il problema del rimbalzo - Bouncing}
 
-Creiamo adesso un codice per contare quante volte il pulsante viene premuto. L'idea è semplice: ogni volta che rileviamo una transizione da \texttt{HIGH} a \texttt{LOW} (pulsante premuto), incrementiamo un contatore.
+Creiamo un codice per contare quante volte il pulsante viene premuto. L'idea è semplice: ogni volta che rileviamo una transizione da \texttt{HIGH} a \texttt{LOW} (pulsante premuto), incrementa un contatore.
 
 \begin{tcblisting}{
     listing only,
@@ -202,6 +202,7 @@ const int buttonPin = 2;      // Pin a cui è collegato il pulsante
 bool stato_attuale = HIGH;    // Memorizza lo stato attuale
 bool stato_precedente = HIGH; // Memorizza lo stato precedente
 int contatore = 0;            // Contatore di pressioni
+
 void setup() {
     Serial.begin(9600);                
     pinMode(buttonPin, INPUT_PULLUP);  // Pin con pull-up interno
@@ -238,16 +239,23 @@ Quando il pulsante viene premuto o rilasciato, i contatti meccanici non si chiud
     \label{fig:bouncing}
 \end{figure}
 
-\subsection*{Soluzione software: debouncing con \texttt{delay()}}
+\subsection*{Soluzione al problema del bouncing: Bounce2}
 
-Un modo semplice per ignorare i rimbalzi è attendere che il segnale si stabilizzi, usando \texttt{delay()}.
+Esiste una libreria chiamata \textbf{Bounce2} che implementa un algoritmo di debouncing efficace. La libreria filtra i rimbalzi e fornisce metodi per rilevare quando il pulsante è stato effettivamente premuto o rilasciato.
+
+Per installare la libreria Bounce2, apri l'IDE di Arduino, nel menù a sinistra c'è un'icona con dei libri (Gestore librerie). Cliccaci sopra, poi nella barra di ricerca scrivi "Bounce2" e installa la libreria sviluppata da Thomas Ouellet Fredericks.
+
+Questa libreria utilizza un approccio basato su timer per ignorare i rimbalzi. Quando viene rilevata una transizione, la libreria aspetta un intervallo di tempo predefinito (ad esempio 50 ms) prima di considerare la transizione come valida. Se durante questo intervallo si verificano altre transizioni, vengono ignorate.
+
+
+Vediamo un esempio di utilizzo della libreria Bounce2 per contare le pressioni di un pulsante senza essere influenzati dai rimbalzi.
 
 \begin{tcblisting}{
     listing only,
     listing engine=listings,
     colback=teal!5,
     colframe=teal!50,
-    title=\textbf{Esempio 2 - Debouncing semplice},
+    title=\textbf{Esempio - Utilizzo libreria Bounce2 con pulsante},
     breakable,
     listing options={
         language=C++,
@@ -261,78 +269,48 @@ Un modo semplice per ignorare i rimbalzi è attendere che il segnale si stabiliz
         showstringspaces=false,
     }
 }
+// Libreria per eliminare i rimbalzi del pulsante
+#include <Bounce2.h>   
+
 const int buttonPin = 2;
-int lastState = HIGH;   // Stato precedente (pull-up)
-int ledPin = 13;        // LED integrato di Arduino
+int contatore = 0;
+
+// Oggetto che gestisce il pulsante con filtro anti-rimbalzo
+Bounce debouncer = Bounce(); 
 
 void setup() {
     pinMode(buttonPin, INPUT_PULLUP);
-    pinMode(ledPin, OUTPUT);
-    digitalWrite(ledPin, LOW);
-}
+    Serial.begin(9600);
 
-void loop() {
-    int reading = digitalRead(buttonPin);
+    // Colleghiamo la libreria al pin del pulsante
+    debouncer.attach(buttonPin);  
+
+    // Impostiamo 50 ms come tempo di stabilizzazione del segnale
+    debouncer.interval(50);  
     
-    if (reading != lastState) {
-        delay(50);               // Attesa per saltare i rimbalzi
-        reading = digitalRead(buttonPin);  // Rileggi dopo il ritardo
-        if (reading != lastState) {
-            if (reading == LOW) {
-                // Premuto: cambia stato del LED
-                digitalWrite(ledPin, !digitalRead(ledPin));
-            }
-            lastState = reading;
-        }
-    }
-}
-\end{tcblisting}
-
-\subsection*{Debouncing più robusto con la libreria Bounce2}
-
-Per progetti più complessi, si consiglia di utilizzare la libreria \texttt{Bounce2}, che gestisce il debouncing in modo efficiente senza bloccare il programma.
-
-\begin{tcblisting}{
-    listing only,
-    listing engine=listings,
-    colback=teal!5,
-    colframe=teal!50,
-    title=\textbf{Esempio 3 - Con libreria Bounce2},
-    breakable,
-    listing options={
-        language=C++,
-        basicstyle=\ttfamily\small,
-        keywordstyle=\color{blue!80!black}\bfseries,
-        commentstyle=\color{green!50!black}\itshape,
-        stringstyle=\color{orange!80!black},
-        numbers=left,
-        numberstyle=\tiny\color{gray},
-        breaklines=true,
-        showstringspaces=false,
-    }
-}
-#include <Bounce2.h>
-
-const int buttonPin = 2;
-Bounce debouncer = Bounce();
-int ledPin = 13;
-bool ledState = false;
-
-void setup() {
-    pinMode(buttonPin, INPUT_PULLUP);
-    pinMode(ledPin, OUTPUT);
-    debouncer.attach(buttonPin);
-    debouncer.interval(50);  // intervallo di debouncing in ms
 }
 
 void loop() {
-    debouncer.update();
-    if (debouncer.fell()) {  // rileva fronte di discesa (premuto)
-        ledState = !ledState;
-        digitalWrite(ledPin, ledState);
+    // Aggiorna continuamente lo stato del pulsante 
+    debouncer.update();  
+
+    // Se pulsante è stato premuto, stampa il contatore aggiornato
+    if (debouncer.fell()) {
+        contatore++;
+        Serial.println(contatore);
     }
 }
 \end{tcblisting}
+
+La libreria utilizzata risolve questo problema controllando il segnale nel tempo: quando rileva un cambiamento, aspetta che il segnale si stabilizzi per un breve intervallo (in questo caso 50 millisecondi). Solo dopo questo controllo considera la pressione valida.
+Nel programma, ogni volta che viene rilevata una pressione reale del pulsante, viene aumentata di uno una variabile chiamata contatore. In questo modo si può sapere quante volte il pulsante è stato premuto in modo affidabile.
+
+\subsection*{Funzioni importanti della libreria Bounce2 DA MODIFICARE}
+La libreria \textbf{Bounce2} permette di gestire in modo affidabile i pulsanti eliminando i problemi causati dai rimbalzi elettrici. Tra i metodi più importanti c’è \texttt{attach()}, che serve a collegare la libreria a un determinato pin e a impostarne la modalità di funzionamento (come ingresso normale o con resistenza di pull-up). Un altro metodo fondamentale è \texttt{update()}, che deve essere chiamato continuamente nel ciclo principale del programma per aggiornare lo stato del pulsante e applicare il filtro anti-rimbalzo.
+
+Per definire il tempo di stabilizzazione del segnale si utilizza \texttt{interval()}, che imposta per quanti millisecondi il segnale deve restare stabile prima di essere considerato valido. Per sapere se il pulsante è premuto in un determinato momento si può usare \texttt{isPressed()}, mentre \texttt{pressed()} e \texttt{released()} servono per rilevare rispettivamente l’istante in cui il pulsante viene premuto o rilasciato.
+
+Molto utili sono anche \texttt{fell()} e \texttt{rose()}, che permettono di rilevare le transizioni del segnale: \texttt{fell()} indica il passaggio da alto a basso (tipico di una pressione con pull-up), mentre \texttt{rose()} indica il passaggio da basso ad alto. Infine, metodi come \texttt{changed()} permettono di sapere se lo stato del pulsante è cambiato dall’ultimo aggiornamento, mentre \texttt{read()} restituisce semplicemente lo stato attuale del pin.
 
 \subsection*{Rilevare la durata della pressione}
 
