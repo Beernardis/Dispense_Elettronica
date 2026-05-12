@@ -305,65 +305,9 @@ void loop() {
 La libreria utilizzata risolve questo problema controllando il segnale nel tempo: quando rileva un cambiamento, aspetta che il segnale si stabilizzi per un breve intervallo (in questo caso 50 millisecondi). Solo dopo questo controllo considera la pressione valida.
 Nel programma, ogni volta che viene rilevata una pressione reale del pulsante, viene aumentata di uno una variabile chiamata contatore. In questo modo si può sapere quante volte il pulsante è stato premuto in modo affidabile.
 
-\subsection*{Funzioni importanti della libreria Bounce2 DA MODIFICARE}
-La libreria \textbf{Bounce2} permette di gestire in modo affidabile i pulsanti eliminando i problemi causati dai rimbalzi elettrici. Tra i metodi più importanti c’è \texttt{attach()}, che serve a collegare la libreria a un determinato pin e a impostarne la modalità di funzionamento (come ingresso normale o con resistenza di pull-up). Un altro metodo fondamentale è \texttt{update()}, che deve essere chiamato continuamente nel ciclo principale del programma per aggiornare lo stato del pulsante e applicare il filtro anti-rimbalzo.
+\subsection*{Funzioni importanti della libreria Bounce2}
+La libreria \textbf{Bounce2} permette di gestire in modo affidabile i pulsanti eliminando i problemi causati dai rimbalzi elettrici. Tra i metodi più importanti c’è \texttt{attach()}, che serve a collegare la libreria a un determinato pin e a impostarne la modalità di funzionamento (come ingresso normale o con resistenza di pull-up). L'altro metodo fondamentale è \texttt{update()}, che deve essere chiamato continuamente nel ciclo principale del programma per aggiornare lo stato del pulsante e applicare il filtro anti-rimbalzo.
 
 Per definire il tempo di stabilizzazione del segnale si utilizza \texttt{interval()}, che imposta per quanti millisecondi il segnale deve restare stabile prima di essere considerato valido. Per sapere se il pulsante è premuto in un determinato momento si può usare \texttt{isPressed()}, mentre \texttt{pressed()} e \texttt{released()} servono per rilevare rispettivamente l’istante in cui il pulsante viene premuto o rilasciato.
 
 Molto utili sono anche \texttt{fell()} e \texttt{rose()}, che permettono di rilevare le transizioni del segnale: \texttt{fell()} indica il passaggio da alto a basso (tipico di una pressione con pull-up), mentre \texttt{rose()} indica il passaggio da basso ad alto. Infine, metodi come \texttt{changed()} permettono di sapere se lo stato del pulsante è cambiato dall’ultimo aggiornamento, mentre \texttt{read()} restituisce semplicemente lo stato attuale del pin.
-
-\subsection*{Rilevare la durata della pressione}
-
-Possiamo misurare per quanto tempo il pulsante rimane premuto usando \texttt{millis()}.
-
-\begin{tcblisting}{
-    listing only,
-    listing engine=listings,
-    colback=teal!5,
-    colframe=teal!50,
-    title=\textbf{Esempio 4 - Durata pressione},
-    breakable,
-    listing options={
-        language=C++,
-        basicstyle=\ttfamily\small,
-        keywordstyle=\color{blue!80!black}\bfseries,
-        commentstyle=\color{green!50!black}\itshape,
-        stringstyle=\color{orange!80!black},
-        numbers=left,
-        numberstyle=\tiny\color{gray},
-        breaklines=true,
-        showstringspaces=false,
-    }
-}
-const int buttonPin = 2;
-unsigned long pressStart = 0;
-bool wasPressed = false;
-
-void setup() {
-    Serial.begin(9600);
-    pinMode(buttonPin, INPUT_PULLUP);
-}
-
-void loop() {
-    bool isPressed = (digitalRead(buttonPin) == LOW);
-    
-    if (isPressed && !wasPressed) {
-        pressStart = millis();          // inizio pressione
-        wasPressed = true;
-    }
-    else if (!isPressed && wasPressed) {
-        unsigned long duration = millis() - pressStart;
-        Serial.print("Pulsante premuto per ");
-        Serial.print(duration);
-        Serial.println(" ms");
-        wasPressed = false;
-    }
-    delay(10);
-}
-\end{tcblisting}
-
-\begin{tcolorbox}[colback=red!4, colframe=red!60, title=\textbf{Attenzione: delay() blocca il programma}]
-    L'uso di \texttt{delay()} per il debouncing blocca l'esecuzione del programma, impedendo di leggere altri sensori o eseguire azioni contemporanee. Per applicazioni più avanzate, utilizzare tecniche non bloccanti basate su \texttt{millis()}.
-\end{tcolorbox}
-
-
