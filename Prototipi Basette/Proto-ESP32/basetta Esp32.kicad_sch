@@ -3788,6 +3788,12 @@
 		(uuid "58ac76f9-529f-4722-b91b-a0d62e9d3440")
 	)
 	(junction
+		(at 160.02 137.16)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6ba374ca-2249-4b88-940c-cca7e2c66640")
+	)
+	(junction
 		(at 44.45 30.48)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3834,12 +3840,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b5c94b03-7574-46d2-b29b-576783b7771d")
-	)
-	(junction
-		(at 160.02 137.16)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bf2a157a-50c0-4325-b8ab-0271cf752f50")
 	)
 	(junction
 		(at 250.19 111.76)
@@ -4013,6 +4013,16 @@
 	)
 	(wire
 		(pts
+			(xy 160.02 137.16) (xy 175.26 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "23854b00-4e2e-4406-8d5b-dddfbb3fa9a5")
+	)
+	(wire
+		(pts
 			(xy 181.61 39.37) (xy 203.2 39.37)
 		)
 		(stroke
@@ -4143,16 +4153,6 @@
 	)
 	(wire
 		(pts
-			(xy 182.88 144.78) (xy 182.88 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3e61d798-1536-412d-a147-15c4ffebc9ec")
-	)
-	(wire
-		(pts
 			(xy 160.02 138.43) (xy 160.02 137.16)
 		)
 		(stroke
@@ -4220,6 +4220,16 @@
 			(type default)
 		)
 		(uuid "4f9bb142-7939-4d0a-b64d-f34bb308f884")
+	)
+	(wire
+		(pts
+			(xy 182.88 125.73) (xy 182.88 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "52657b1a-a685-4d2e-85d5-c72833414584")
 	)
 	(wire
 		(pts
@@ -4303,16 +4313,6 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 137.16) (xy 175.26 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5e907c6c-61fe-462a-a7c6-cf706f3117ab")
-	)
-	(wire
-		(pts
 			(xy 33.02 63.5) (xy 44.45 63.5)
 		)
 		(stroke
@@ -4340,16 +4340,6 @@
 			(type default)
 		)
 		(uuid "6b9fdd3b-5afd-4c52-9ecf-3a1050c50cd7")
-	)
-	(wire
-		(pts
-			(xy 182.88 132.08) (xy 182.88 125.73)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6c1c40ec-a248-4f21-a6ec-0015c32527df")
 	)
 	(wire
 		(pts
@@ -4880,6 +4870,16 @@
 			(type default)
 		)
 		(uuid "cf5d9dae-f637-42a5-a134-d1f1a5092ac8")
+	)
+	(wire
+		(pts
+			(xy 182.88 142.24) (xy 182.88 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d99c9d9d-b6cf-4419-b7e6-101ce00d9156")
 	)
 	(wire
 		(pts
@@ -7742,6 +7742,7 @@
 	(symbol
 		(lib_id "Transistor_BJT:BC557")
 		(at 180.34 137.16 0)
+		(mirror x)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7749,10 +7750,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "76559ae7-abb3-47bf-9299-72f02936dfda")
 		(property "Reference" "Q5"
-			(at 185.42 135.8899 0)
+			(at 185.42 138.4301 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7763,7 +7763,7 @@
 			)
 		)
 		(property "Value" "BC557"
-			(at 185.42 138.4299 0)
+			(at 185.42 135.8901 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7774,7 +7774,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
-			(at 185.42 139.065 0)
+			(at 185.42 135.255 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
