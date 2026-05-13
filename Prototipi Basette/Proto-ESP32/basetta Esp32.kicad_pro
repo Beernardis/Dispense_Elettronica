@@ -530,7 +530,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "./",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -665,7 +665,7 @@
         "uuid": "7dff662c-5816-4f44-b24c-73522fc1f82f"
       }
     ],
-    "used_designators": "R10-11",
+    "used_designators": "J7,R10-11,Q4-5,D1,#PWR15-22",
     "variants": []
   },
   "sheets": [
