@@ -3742,6 +3742,12 @@
 		(uuid "23046982-9d14-456c-b22a-3f4506973fff")
 	)
 	(junction
+		(at 250.19 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2fdddadb-2cf9-4cb9-824b-58ab73f30589")
+	)
+	(junction
 		(at 144.78 90.17)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3752,12 +3758,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3c0f5710-73b1-4269-877e-373a59677aa0")
-	)
-	(junction
-		(at 260.35 93.98)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "439edab8-63b0-43bf-a5e0-11acf5a8cecc")
 	)
 	(junction
 		(at 189.23 101.6)
@@ -3856,16 +3856,16 @@
 		(uuid "b5c94b03-7574-46d2-b29b-576783b7771d")
 	)
 	(junction
-		(at 250.19 111.76)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c795a83c-d4b2-4dcd-b4f5-17d6c0f07002")
-	)
-	(junction
 		(at 115.57 82.55)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c7edd91e-15b6-43b4-97ac-686656182b8b")
+	)
+	(junction
+		(at 260.35 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e6d57521-1f75-4eb1-9899-b297aa490639")
 	)
 	(junction
 		(at 43.18 22.86)
@@ -6688,6 +6688,95 @@
 		)
 	)
 	(symbol
+		(lib_id "Transistor_FET:IRF9540N")
+		(at 257.81 111.76 0)
+		(mirror x)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "34501184-43f9-42ff-9d37-a6d093af9d9f")
+		(property "Reference" "Q6"
+			(at 264.16 110.4899 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "IRF9540N"
+			(at 264.16 113.0299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown"
+			(at 262.89 109.855 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" "http://www.irf.com/product-info/datasheets/data/irf9540n.pdf"
+			(at 262.89 107.95 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "-23A Id, -100V Vds, 117mOhm Rds, P-Channel HEXFET Power MOSFET, TO-220"
+			(at 257.81 111.76 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "0f383811-6cc2-47dd-904c-c1f2e9923793")
+		)
+		(pin "3"
+			(uuid "1f70c1c3-071a-459c-ab8c-b20576297a56")
+		)
+		(pin "1"
+			(uuid "35d0f36b-caf6-47b6-b838-7d40e4f8e798")
+		)
+		(instances
+			(project "basetta Esp32"
+				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
+					(reference "Q6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+5V")
 		(at 92.71 83.82 0)
 		(unit 1)
@@ -8126,95 +8215,6 @@
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
 					(reference "#PWR025")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Transistor_FET:IRF9540N")
-		(at 257.81 111.76 0)
-		(mirror x)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "83eaeed6-4e36-4e35-9287-7ebed6970204")
-		(property "Reference" "Q3"
-			(at 264.16 110.4899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "IRF9540N"
-			(at 264.16 113.0299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Package_TO_SOT_THT:TO-220-3_Vertical"
-			(at 262.89 109.855 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-		(property "Datasheet" "http://www.irf.com/product-info/datasheets/data/irf9540n.pdf"
-			(at 262.89 107.95 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Description" "-23A Id, -100V Vds, 117mOhm Rds, P-Channel HEXFET Power MOSFET, TO-220"
-			(at 257.81 111.76 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "a9207ffa-2365-4059-9515-6f40dab76116")
-		)
-		(pin "1"
-			(uuid "044e6f92-4d95-4376-ab18-94b161e88ad6")
-		)
-		(pin "3"
-			(uuid "51493286-6f6f-4429-83a9-47f717f5a3ba")
-		)
-		(instances
-			(project "basetta Esp32"
-				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q3")
 					(unit 1)
 				)
 			)
