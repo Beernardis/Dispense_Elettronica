@@ -2144,6 +2144,129 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Mechanical:MountingHole_Pad"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "H"
+				(at 0 6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole_Pad"
+				(at 0 4.445 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Mounting Hole with connection"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*Pad*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_0_1"
+				(circle
+					(center 0 1.27)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_1_1"
+				(pin input line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Simboli_Progetto:LM2596_IC"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3880,6 +4003,12 @@
 		(uuid "f51cd06d-e65f-437d-aa2d-25961fc14c47")
 	)
 	(junction
+		(at 44.45 173.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f7acf28e-18cd-4498-baab-2a19c579df04")
+	)
+	(junction
 		(at 160.02 151.13)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3946,6 +4075,16 @@
 			(type default)
 		)
 		(uuid "0515dfea-1bb5-4230-b827-e369f899f96f")
+	)
+	(wire
+		(pts
+			(xy 40.64 173.99) (xy 44.45 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05382806-bbf1-40fc-be06-7143358fe75e")
 	)
 	(wire
 		(pts
@@ -4379,6 +4518,16 @@
 	)
 	(wire
 		(pts
+			(xy 44.45 173.99) (xy 44.45 167.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5aee178d-16ca-412a-b0e2-c70c5ce3d183")
+	)
+	(wire
+		(pts
 			(xy 195.58 46.99) (xy 193.04 46.99)
 		)
 		(stroke
@@ -4666,6 +4815,16 @@
 			(type default)
 		)
 		(uuid "8a3390cc-bbcc-4c17-b1ed-8bdec1c6c50b")
+	)
+	(wire
+		(pts
+			(xy 44.45 173.99) (xy 44.45 179.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d46c937-48f1-451a-b903-39417d681b19")
 	)
 	(wire
 		(pts
@@ -5189,6 +5348,16 @@
 	)
 	(wire
 		(pts
+			(xy 44.45 167.64) (xy 40.64 167.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f5305a3b-1a61-4a86-af1b-bd31a70f4eb6")
+	)
+	(wire
+		(pts
 			(xy 100.33 66.04) (xy 111.76 66.04)
 		)
 		(stroke
@@ -5417,30 +5586,6 @@
 	)
 	(global_label "V_in_Batterie"
 		(shape input)
-		(at 31.75 116.84 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "905ed0c2-51d6-4874-9b58-49982287e981")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 16.5486 116.84 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
-	(global_label "V_in_Batterie"
-		(shape input)
 		(at 76.2 119.38 180)
 		(fields_autoplaced yes)
 		(effects
@@ -5475,8 +5620,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0748f32f-581f-461b-a644-fd2bfe894c4b")
-		(property "Reference" "R5"
-			(at 184.15 41.91 0)
+		(property "Reference" "R1"
+			(at 184.15 41.9099 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5487,7 +5632,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 184.15 44.45 0)
+			(at 184.15 44.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -5538,7 +5683,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R5")
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -5829,7 +5974,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1852da53-cadf-419f-8832-c720c767ca80")
-		(property "Reference" "R11"
+		(property "Reference" "R8"
 			(at 143.51 137.16 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5890,7 +6035,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R11")
+					(reference "R8")
 					(unit 1)
 				)
 			)
@@ -5985,7 +6130,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1e7abf12-2618-461e-8b42-282e71e579b2")
-		(property "Reference" "R3"
+		(property "Reference" "R5"
 			(at 214.63 40.64 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6046,7 +6191,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R3")
+					(reference "R5")
 					(unit 1)
 				)
 			)
@@ -6124,6 +6269,83 @@
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
 					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 44.45 179.07 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2bae2aa8-2e88-4ad9-8beb-0ba7aaeaecdf")
+		(property "Reference" "#PWR027"
+			(at 44.45 185.42 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 44.45 184.15 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 44.45 179.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 44.45 179.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 44.45 179.07 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "10089208-bcac-4cae-bcb6-5a5f0026f1d0")
+		)
+		(instances
+			(project "basetta Esp32"
+				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -6218,7 +6440,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2df84e7f-6836-4c09-9af7-5919cb324723")
-		(property "Reference" "Q2"
+		(property "Reference" "Q4"
 			(at 231.14 45.7199 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6288,7 +6510,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q2")
+					(reference "Q4")
 					(unit 1)
 				)
 			)
@@ -6700,7 +6922,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "34501184-43f9-42ff-9d37-a6d093af9d9f")
-		(property "Reference" "Q6"
+		(property "Reference" "Q5"
 			(at 264.16 110.4899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6770,7 +6992,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q6")
+					(reference "Q5")
 					(unit 1)
 				)
 			)
@@ -6866,7 +7088,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3c260409-1341-419d-80d7-e04b3c832929")
-		(property "Reference" "Q4"
+		(property "Reference" "Q3"
 			(at 162.56 142.2399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6958,7 +7180,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q4")
+					(reference "Q3")
 					(unit 1)
 				)
 			)
@@ -7143,8 +7365,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4995c3f2-b01e-4cdc-b489-86bcf7bea34b")
-		(property "Reference" "R1"
-			(at 36.83 123.19 0)
+		(property "Reference" "R11"
+			(at 36.83 123.1899 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7154,8 +7376,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 36.83 125.73 0)
+		(property "Value" "1k"
+			(at 36.83 125.7299 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7206,7 +7428,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R1")
+					(reference "R11")
 					(unit 1)
 				)
 			)
@@ -7512,8 +7734,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5d0a5025-c6e0-4d09-902d-b844379ef079")
-		(property "Reference" "R2"
-			(at 236.22 60.9893 90)
+		(property "Reference" "R3"
+			(at 236.22 60.96 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7523,7 +7745,7 @@
 			)
 		)
 		(property "Value" "4.7 k"
-			(at 236.22 63.5293 90)
+			(at 236.22 63.5 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7573,7 +7795,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R2")
+					(reference "R3")
 					(unit 1)
 				)
 			)
@@ -7672,8 +7894,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6753732a-8619-4a8d-a2a3-7038f800a82d")
-		(property "Reference" "R6"
-			(at 250.19 49.53 0)
+		(property "Reference" "R10"
+			(at 250.19 49.5299 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7684,7 +7906,7 @@
 			)
 		)
 		(property "Value" "470"
-			(at 250.19 52.07 0)
+			(at 250.19 52.0699 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7735,7 +7957,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R6")
+					(reference "R10")
 					(unit 1)
 				)
 			)
@@ -7963,8 +8185,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6ab427e8-73f7-4907-9069-86ac70585b33")
-		(property "Reference" "R4"
-			(at 195.58 69.85 0)
+		(property "Reference" "R2"
+			(at 195.58 69.8499 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7975,7 +8197,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 195.58 72.39 0)
+			(at 195.58 72.3899 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8026,7 +8248,83 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R4")
+					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 38.1 173.99 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "70502226-7214-40b2-a7df-d528ca48c57d")
+		(property "Reference" "H2"
+			(at 25.4 171.704 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "MountingHole_Pad"
+			(at 25.4 174.244 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+			(at 38.1 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 38.1 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 38.1 173.99 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0f07ee45-1cc5-4b05-930c-28c4b727bc5d")
+		)
+		(instances
+			(project "basetta Esp32"
+				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
+					(reference "H2")
 					(unit 1)
 				)
 			)
@@ -8044,7 +8342,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "76559ae7-abb3-47bf-9299-72f02936dfda")
-		(property "Reference" "Q5"
+		(property "Reference" "Q1"
 			(at 185.42 138.4301 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8136,7 +8434,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q5")
+					(reference "Q1")
 					(unit 1)
 				)
 			)
@@ -8232,7 +8530,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "84222d0b-4a53-4c53-8c92-9671a69ab5a1")
-		(property "Reference" "Q1"
+		(property "Reference" "Q2"
 			(at 250.19 66.0399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8302,7 +8600,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "Q1")
+					(reference "Q2")
 					(unit 1)
 				)
 			)
@@ -9296,6 +9594,84 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 31.75 116.84 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "acf1aae4-e375-4b8c-933b-21f969d3baee")
+		(property "Reference" "#PWR026"
+			(at 31.75 120.65 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+5V"
+			(at 31.75 111.76 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 31.75 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 31.75 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 31.75 116.84 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "cb3990f6-39be-4287-a81b-6f71211933bf")
+		)
+		(instances
+			(project "basetta Esp32"
+				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
+					(reference "#PWR026")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 271.78 52.07 0)
 		(unit 1)
@@ -9792,7 +10168,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cef5555e-115f-47e4-a23e-f20fbe4086f2")
-		(property "Reference" "R8"
+		(property "Reference" "R4"
 			(at 236.22 105.41 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9853,7 +10229,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R8")
+					(reference "R4")
 					(unit 1)
 				)
 			)
@@ -9949,7 +10325,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d9c3fa8e-1b90-459d-8ccc-a74e5a7f3e20")
-		(property "Reference" "R7"
+		(property "Reference" "R6"
 			(at 231.14 29.2099 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10012,7 +10388,83 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R7")
+					(reference "R6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 38.1 167.64 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "de0b0eea-1373-4e89-a4da-718f6c4ba112")
+		(property "Reference" "H1"
+			(at 25.4 165.354 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "MountingHole_Pad"
+			(at 25.4 167.894 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad_Via"
+			(at 38.1 167.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 38.1 167.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 38.1 167.64 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "7e871cd8-27a9-4b32-849d-7ec461a561b5")
+		)
+		(instances
+			(project "basetta Esp32"
+				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
+					(reference "H1")
 					(unit 1)
 				)
 			)
@@ -10342,8 +10794,8 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f3db5959-b516-4445-b6ee-77794c16cb75")
-		(property "Reference" "R10"
-			(at 162.56 132.08 0)
+		(property "Reference" "R7"
+			(at 162.56 132.0799 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10354,7 +10806,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 162.56 134.62 0)
+			(at 162.56 134.6199 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10405,7 +10857,7 @@
 		(instances
 			(project "basetta Esp32"
 				(path "/7dff662c-5816-4f44-b24c-73522fc1f82f"
-					(reference "R10")
+					(reference "R7")
 					(unit 1)
 				)
 			)
