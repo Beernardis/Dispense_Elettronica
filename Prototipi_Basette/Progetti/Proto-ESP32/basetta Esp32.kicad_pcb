@@ -908,7 +908,7 @@
 			(uuid "2dbd8a8b-03bd-41ac-947c-5507c0f94c0c")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/LM2596.step"
+		(model "${MIEI_MODELLI_3D}/LM2596.step"
 			(offset
 				(xyz -1.5 -1.6 2.5)
 			)
@@ -4144,7 +4144,7 @@
 			(uuid "a263742d-9c17-4d8c-9801-1b224ca89c79")
 		)
 		(embedded_fonts no)
-		(model "${KIPRJMOD}/DG350-3.96-02P-12-00AH.STEP"
+		(model "${MIEI_MODELLI_3D}/Screw_Connector_Blu.STEP"
 			(offset
 				(xyz 7.5 -4.8 0)
 			)

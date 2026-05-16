@@ -1,7 +1,6 @@
-# Ignora tutte le cartelle build in qualsiasi sottocartella
-**/build/
-
-# File temporanei LaTeX
+# ==========================================
+# FILE TEMPORANEI LaTeX
+# ==========================================
 *.aux
 *.log
 *.toc
@@ -10,5 +9,30 @@
 *.fls
 *.fdb_latexmk
 
+# Ignora tutte le cartelle build in qualsiasi sottocartella
+**/build/
+
 # Opzionale: ignora PDF generati (se vuoi tenere solo i sorgenti)
 **/build/*.pdf
+
+
+# ==========================================
+# FILE TEMPORANEI E BACKUP KiCad
+# ==========================================
+# Ignora le cartelle di backup automatico di KiCad in qualsiasi progetto
+**/*-backups/
+*.bak
+
+# Ignora i file di blocco quando i progetti sono aperti (evita conflitti Git/OneDrive)
+*.lck
+
+# Cache dei footprint di KiCad
+fp-info-cache
+
+# File temporanei e di interscambio per l'autorouter (Freerouting)
+*-freerouting.dsn
+*.dsn
+temp-freerouting.dsn
+
+# Se usi la cronologia locale di VS Code per l'elettronica
+**/.history/
